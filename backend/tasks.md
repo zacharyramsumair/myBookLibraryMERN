@@ -9,7 +9,12 @@
 [] make the last article visited appear at the top of the bookshelf 
 [] create dashboard that recommends 10 articles for the user, based on the authors they read and the tags that they have liked, if they don't like anything just show the articles with the most likes
 [] create frontend to complete app
+[] make sure xss-clean works
  
 
 
  things to add: stripe and let them only read the first 100 characters of standard or premium articles. at the top of the dashboard, show them paid articles with the most likes. Have a call to action at the top that says buy a plan. Page with the differnet plans. went you click you go to a subsciption/buy page from stripe, this updates the user from Free to Standard/Premium. Allow the user the ability to cancel subscription, and change their status back to Free tier
+
+
+ make it so unloggined users can assess free features but not be able to like, comment or save things to the bookshelf.
+
