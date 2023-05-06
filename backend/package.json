@@ -1,0 +1,31 @@
+{
+  "name": "mybooklibrarymern",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./build/app.js",
+    "build": "tsc -p .",
+    "dev": "nodemon ./src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zacharyramsumair/myBookLibraryMERN.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zacharyramsumair/myBookLibraryMERN/issues"
+  },
+  "homepage": "https://github.com/zacharyramsumair/myBookLibraryMERN#readme",
+  "dependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/express": "^4.17.17",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^20.1.0",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.1.0"
+  }
+}
