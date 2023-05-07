@@ -1,7 +1,11 @@
-// const jwt = require('jsonwebtoken')
-// const bcrypt = require('bcryptjs')
-// const User = require('../models/userModel')
-import  { Request, Response, NextFunction,} from "express";
+import { Request, Response, NextFunction } from "express";
+import { StatusCodes } from "http-status-codes";
+import User from "../models/User";
+import { IJWTUser } from "../interfaces";
+import { attachCookiesToResponse } from "../utils/jwt";
+import { CustomRequest } from "../routes/authRoutes";
+
+
 
 
 //base url '/api/v1/auth'
@@ -9,89 +13,80 @@ import  { Request, Response, NextFunction,} from "express";
 // @desc    Register new user
 // @route   POST /
 // @access  Public
-const registerUser = async (req:Request, res:Response) => {
-  const { name, email, password } = req.body
-  res.send("registerUser")
+const registerUser = async (req: Request, res: Response) => {
+	const { email, name, password } = req.body;
 
-//   if (!name || !email || !password) {
-//     res.status(400)
-//     throw new Error('Please add all fields')
-//   }
+	const emailAlreadyExists = await User.findOne({ email });
+	if (emailAlreadyExists) {
+		res.status(StatusCodes.CONFLICT);
+		throw new Error("Email already exists");
+	}
 
-//   // Check if user exists
-//   const userExists = await User.findOne({ email })
+	const user = await User.create({ name, email, password });
 
-//   if (userExists) {
-//     res.status(400)
-//     throw new Error('User already exists')
-//   }
+	const tokenUser: IJWTUser = {
+		name: user.name,
+		userId: user._id,
+		role: user.role,
+		tier: user.tier,
+	};
+	attachCookiesToResponse({ res, user: tokenUser });
+	res.status(StatusCodes.CREATED).json({ user: tokenUser });
+};
 
-//   // Hash password
-//   const salt = await bcrypt.genSalt(10)
-//   const hashedPassword = await bcrypt.hash(password, salt)
-
-//   // Create user
-//   const user = await User.create({
-//     name,
-//     email,
-//     password: hashedPassword,
-//   })
-
-//   if (user) {
-//     res.status(201).json({
-//       _id: user.id,
-//       name: user.name,
-//       email: user.email,
-//       token: generateToken(user._id),
-//     })
-//   } else {
-//     res.status(400)
-//     throw new Error('Invalid user data')
-//   }
-}
-
-// @desc    Authenticate a user
+// @desc    Login a user
 // @route   POST /login
 // @access  Public
-const loginUser = async (req:Request, res:Response) => {
-    res.send("login")
-//   const { email, password } = req.body
+const loginUser = async (req: Request, res: Response) => {
+	const { email, password } = req.body;
 
-//   // Check for user email
-//   const user = await User.findOne({ email })
+	if (!email || !password) {
+		res.status(StatusCodes.BAD_REQUEST);
+		throw new Error("Please provide email and password");
+	}
+	const user = await User.findOne({ email });
 
-//   if (user && (await bcrypt.compare(password, user.password))) {
-//     res.json({
-//       _id: user.id,
-//       name: user.name,
-//       email: user.email,
-//       token: generateToken(user._id),
-//     })
-//   } else {
-//     res.status(400)
-//     throw new Error('Invalid credentials')
-//   }
-}
+	if (!user) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Invalid email or password");
+	}
+
+	const isPasswordCorrect = await user.comparePassword(password);
+	if (!isPasswordCorrect) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Invalid email or password");
+	}
+
+	const tokenUser: IJWTUser = {
+		name: user.name,
+		userId: user._id,
+		role: user.role,
+		tier: user.tier,
+	};
+	attachCookiesToResponse({ res, user: tokenUser });
+	res.status(StatusCodes.OK).json({ user: tokenUser });
+};
 
 // @desc    Get user data
-// @route   GET /me
+// @route   GET /showCurrentUser
 // @access  Private
-const getMe = async (req:Request, res:Response) => {
-//   res.status(200).json(req.user)
-res.send("info about user")
-}
+const showCurrentUser = async (req: Request, res: Response) => {
+  res.status(StatusCodes.OK).json({ user: req.user });
+  // req.user = "hello"
+	// res.send("info about user");
+};
 
-// Generate JWT
-// const generateToken = (id) => {
-//   return jwt.sign({ id }, process.env.JWT_SECRET, {
-//     expiresIn: '30d',
-//   })
-// }
+const logout = async (req: Request, res: Response) => {
+  res.cookie('token', 'logout', {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+  res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
+};
 
 export default {
-  registerUser,
-  loginUser,
-  getMe,
-}
-
-
+	registerUser,
+	loginUser,
+	showCurrentUser,
+  logout
+};

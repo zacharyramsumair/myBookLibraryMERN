@@ -17,4 +17,25 @@
 
 
  make it so unloggined users can assess free features but not be able to like, comment or save things to the bookshelf.
+comments on articles, and comments on comments like youtube replied to @john but unlike youtube but the first 10 characters of what you are replying to e.g. replied to @ John [this is really ....] Yh i agree
 
+mark article as containing explisit language, have a check box for users to check it as explicit and as a safety have list of words that you loop throught and if >5 found mark it as explict
+ablity to ban curse words in comments, and also the abiltiy to block users from saying certain words and phrases in the comments,
+ability to turn off comments on a post
+
+
+things to include
+
+- [ ]  auth (login, register, email to verify register, forgot password, access token, refresh token)
+- [ ]  saved section like pedro tech recipe mern app (****MERN Recipe App with Authentication - Build & Deploy A React Intermediate Project****)
+- image of how to do this in the controller
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d304a7e3-6ed1-4c03-b455-23ccbc23fffd/Untitled.png)
+    
+- [ ]  stripe to pay, and have something change once you pay
+- [ ]  404 page, if not found
+- [ ]  use typescript for react and node
+- [ ]  express validator
+- [ ]  express async errors
+- [ ]  dont validate password or username or whatever when logging since we might change the validadation to register and we shouldn’t apply that to old users since their login info might not meet the new validations
+- [ ]  protected routes in frontend (source ****Learn MERN by Building a Subscription App - Part 2 1 hour 20 mins****) also in net ninja JWT auth playlist (actually the net ninja way won't work since most likely server and client are on different ports but we could try it and find out)

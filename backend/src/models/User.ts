@@ -7,7 +7,8 @@ interface IUser extends Document {
   email: string;
   password: string;
   role: 'admin' | 'user';
-//   comparePassword: (canditatePassword: string) => Promise<boolean>;
+  tier: 'free' | 'standard' | 'premium'
+  comparePassword: (canditatePassword: string) => Promise<boolean>;
 
 }
 
@@ -48,7 +49,12 @@ const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>({
     enum: ['admin', 'user'],
     default: 'user',
   },
-});
+  tier: {
+    type: String,
+    enum: ['free', 'standard', 'premium'],
+    default: 'free',
+  },
+},{ timestamps: true });
 
 UserSchema.pre<IUser>('save', async function () {
   if (!this.isModified('password')) return;
