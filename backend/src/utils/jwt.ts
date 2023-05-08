@@ -12,6 +12,15 @@ interface CreateJWTArgs {
   payload: IJWTUser;
 }
 
+interface TokenData {
+    name: string;
+    userId: string;
+    role: 'admin' |'user';
+    tier: 'free' |'standard' | 'premium';
+    iat: Date;
+    exp:Date;
+  }
+
 export const createJWT = ({ payload }: CreateJWTArgs) => {
   const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
     expiresIn: process.env.JWT_LIFETIME,

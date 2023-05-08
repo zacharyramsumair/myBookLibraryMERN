@@ -72,8 +72,6 @@ const loginUser = async (req: Request, res: Response) => {
 // @access  Private
 const showCurrentUser = async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({ user: req.user });
-  // req.user = "hello"
-	// res.send("info about user");
 };
 
 const logout = async (req: Request, res: Response) => {
