@@ -3,9 +3,8 @@ import { StatusCodes } from "http-status-codes";
 import User from "../models/User";
 import { IJWTUser } from "../interfaces";
 import { attachCookiesToResponse } from "../utils/jwt";
-import { CustomRequest } from "../routes/authRoutes";
-import jwt from "jsonwebtoken";
-
+import crypto from "crypto";
+import sendVerificationEmail from "../utils/sendVerficationEmail";
 
 //base url '/api/v1/auth'
 
@@ -22,16 +21,60 @@ const registerUser = async (req: Request, res: Response) => {
 		throw new Error("Email already exists");
 	}
 
-	const user = await User.create({ name, email, password });
+	const verificationToken = crypto.randomBytes(40).toString("hex");
 
-	const tokenUser: IJWTUser = {
+	const user = await User.create({
+		name,
+		email,
+		password,
+		verificationToken,
+	});
+
+	await sendVerificationEmail({
 		name: user.name,
-		userId: user._id,
-		role: user.role,
-		tier: user.tier,
-	};
-	attachCookiesToResponse({ res, user: tokenUser });
-	res.status(StatusCodes.CREATED).json({ user: tokenUser });
+		email: user.email,
+		verificationToken: user.verificationToken,
+		origin:process.env.EMAIL_ORIGIN as string,
+	  })
+
+
+	res.status(StatusCodes.CREATED).json({
+		msg: "Success! Please check your email to verify account",
+	});
+	// const user = await User.create({ name, email, password });
+	// const tokenUser: IJWTUser = {
+	// 	name: user.name,
+	// 	userId: user._id,
+	// 	role: user.role,
+	// 	tier: user.tier,
+	// };
+	// attachCookiesToResponse({ res, user: tokenUser });
+	// res.status(StatusCodes.CREATED).json({ user: tokenUser });
+};
+
+const verifyEmail = async (req: Request, res: Response) => {
+	const { verificationToken, email } = req.body;
+
+	const user = await User.findOne({ email });
+
+	if (!user) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Verification Failed");
+	}
+
+	if (user.verificationToken !== verificationToken) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Verification Failed");
+	}
+
+	user.isVerified = true;
+	user.verified = new Date();
+	user.verificationToken = "";
+
+	await user.save();
+
+	// res.status(StatusCodes.OK).json({ msg: 'Email Verified' });
+	res.status(StatusCodes.OK).json({ msg: 'Email Verified' });
 };
 
 // @desc    Login a user
@@ -59,6 +102,11 @@ const loginUser = async (req: Request, res: Response) => {
 		throw new Error("Invalid email or password");
 	}
 
+	if (!user.isVerified) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Please verify your email");
+	}
+
 	const tokenUser: IJWTUser = {
 		name: user.name,
 		userId: user._id,
@@ -73,7 +121,6 @@ const loginUser = async (req: Request, res: Response) => {
 // @route   GET /showCurrentUser
 // @access  Private
 const showCurrentUser = async (req: Request, res: Response) => {
-
 	// const csrfToken = req.cookies["XSRF-TOKEN"];
 	// if (!csrfToken || req.csrfToken() !== csrfToken) {
 	// 	return res
@@ -95,6 +142,7 @@ const logout = async (req: Request, res: Response) => {
 
 export default {
 	registerUser,
+	verifyEmail,
 	loginUser,
 	showCurrentUser,
 	logout,

@@ -7,7 +7,10 @@ interface IUser extends Document {
   email: string;
   password: string;
   role: 'admin' | 'user';
-  tier: 'free' | 'standard' | 'premium'
+  tier: 'free' | 'standard' | 'premium';
+  verificationToken:string;
+  isVerified:boolean;
+  verified:Date;
   comparePassword: (canditatePassword: string) => Promise<boolean>;
 
 }
@@ -54,6 +57,12 @@ const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>({
     enum: ['free', 'standard', 'premium'],
     default: 'free',
   },
+  verificationToken: String,
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verified: Date,
 },{ timestamps: true });
 
 UserSchema.pre<IUser>('save', async function () {

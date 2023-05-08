@@ -9,6 +9,7 @@ export interface CustomRequest extends Request {
   }
 
 router.post('/', authController.registerUser)
+router.post('/verify-email', authController.verifyEmail)
 router.post('/login', authController.loginUser)
 // router.get('/showCurrentUser', authController.showCurrentUser)
 router.get('/showCurrentUser',authenticateUser, authController.showCurrentUser)
