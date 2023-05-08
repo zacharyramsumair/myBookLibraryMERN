@@ -4,8 +4,7 @@ import User from "../models/User";
 import { IJWTUser } from "../interfaces";
 import { attachCookiesToResponse } from "../utils/jwt";
 import { CustomRequest } from "../routes/authRoutes";
-
-
+import jwt from "jsonwebtoken";
 
 
 //base url '/api/v1/auth'
@@ -14,6 +13,7 @@ import { CustomRequest } from "../routes/authRoutes";
 // @route   POST /
 // @access  Public
 const registerUser = async (req: Request, res: Response) => {
+	// res.cookie("XSRF-TOKEN", req.csrfToken());
 	const { email, name, password } = req.body;
 
 	const emailAlreadyExists = await User.findOne({ email });
@@ -38,6 +38,8 @@ const registerUser = async (req: Request, res: Response) => {
 // @route   POST /login
 // @access  Public
 const loginUser = async (req: Request, res: Response) => {
+	// res.cookie("XSRF-TOKEN", req.csrfToken());
+
 	const { email, password } = req.body;
 
 	if (!email || !password) {
@@ -71,20 +73,29 @@ const loginUser = async (req: Request, res: Response) => {
 // @route   GET /showCurrentUser
 // @access  Private
 const showCurrentUser = async (req: Request, res: Response) => {
-  res.status(StatusCodes.OK).json({ user: req.user });
+
+	// const csrfToken = req.cookies["XSRF-TOKEN"];
+	// if (!csrfToken || req.csrfToken() !== csrfToken) {
+	// 	return res
+	// 		.status(StatusCodes.FORBIDDEN)
+	// 		.json({ error: "Invalid CSRF token" });
+	// }
+	res.status(StatusCodes.OK).json({ user: req.user });
 };
 
 const logout = async (req: Request, res: Response) => {
-  res.cookie('token', 'logout', {
-    httpOnly: true,
-    expires: new Date(Date.now()),
-  });
-  res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
+	// res.cookie("XSRF-TOKEN", req.csrfToken());
+
+	res.cookie("token", "logout", {
+		httpOnly: true,
+		expires: new Date(Date.now()),
+	});
+	res.status(StatusCodes.OK).json({ msg: "user logged out!" });
 };
 
 export default {
 	registerUser,
 	loginUser,
 	showCurrentUser,
-  logout
+	logout,
 };

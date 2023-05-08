@@ -15,6 +15,8 @@ import errorHandler from "./middleware/errorHandler";
 
 import connectDB from "./db/connect";
 import authRouter from "./routes/authRoutes"
+import csrf from 'csurf';
+
 
 app.use(
 	rateLimiter({
@@ -29,6 +31,10 @@ app.use(mongoSanitize());
 
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
+// const csrfProtection = csrf({ cookie: true });
+// app.use(csrfProtection);
+
+
 
 // app.use(notFoundMiddleware);
 

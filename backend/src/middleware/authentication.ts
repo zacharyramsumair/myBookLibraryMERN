@@ -7,10 +7,11 @@ function isJwtPayload(obj: any): obj is JwtPayload {
 	return (
 		obj &&
 		typeof obj === "object" &&
-		"name" in obj &&
-		"userId" in obj &&
-		"role" in obj &&
-		"tier" in obj
+		// "name" in obj &&
+		"userId" in obj 
+		// "userId" in obj &&
+		// "role" in obj &&
+		// "tier" in obj
 	);
 }
 
@@ -35,7 +36,8 @@ export const authenticateUser = async (
 		}
 
 		const { name, userId, role, tier } = TokenData;
-		req.user = { name, userId, role, tier };
+		req.user = { userId };
+		// req.user = { name, userId, role, tier };
 
 
 		next();
