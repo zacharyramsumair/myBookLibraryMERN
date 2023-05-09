@@ -8,31 +8,73 @@ import cookieParser from "cookie-parser";
 import rateLimiter from "express-rate-limit";
 import helmet from "helmet";
 // import xss from 'xss-clean'
+import xss, { IFilterXSSOptions } from 'xss'
+import { filterXSS } from 'xss';
+
 import cors from "cors";
 import mongoSanitize from "express-mongo-sanitize";
 import path from "path";
 import errorHandler from "./middleware/errorHandler";
 
+
 import connectDB from "./db/connect";
 import authRouter from "./routes/authRoutes"
 import csrf from 'csurf';
+import crypto from "crypto";
+
 
 
 app.use(
 	rateLimiter({
 		windowMs: 15 * 60 * 1000,
-		max: 60,
+		max: 200,
 	})
 );
 app.use(helmet());
 app.use(cors());
-// app.use(xss());
 app.use(mongoSanitize());
-
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.JWT_SECRET));
-// const csrfProtection = csrf({ cookie: true });
+
+
+//prevent CSRF attacks
+// turn back on when done pass csrf-token in headers : learnt from https://www.youtube.com/watch?v=VrFNbqSUVP0
+
+// export const csrfProtection = csrf({ cookie: {
+//     httpOnly: true,
+//     sameSite: 'strict',
+//     maxAge: 60 // token expires 60 seconds, so when making a request, first get the token pass it into headers and then make the post put delete request
+//     // maxAge: 60 * 60 // token expires in 1 hour
+//   },
+//  });
+
 // app.use(csrfProtection);
+
+// app.use((req, res, next) => {
+//   res.locals.csrfToken = req.csrfToken();
+//   next();
+// });
+
+//remember to uncomment the GET request /getCsrfToken at the bottom of this page
+
+
+
+// Use express-sanitizer to sanitize user input
+app.use((req, res, next) => {
+	res.setHeader('Content-Security-Policy', "default-src 'self'");
+	next();
+  });
+
+
+// XSS Prevention Middleware
+export const xssOptions: IFilterXSSOptions = {
+	whiteList: {},
+	stripIgnoreTag: true,
+	stripIgnoreTagBody: ["script"],
+  };
+
+
 
 
 
@@ -58,15 +100,13 @@ const start = async () => {
 			
 		}
 
-		app.post("/post",(req, res) =>{
-			let {email, password} =req.body
-			if(!email ||!password){
-				res.status(400)
-				throw new Error("please provide both email and password")
-			}
+		//route to get the CSRF token
 
-			res.send("something posted")
-		})
+		// app.get("/getCsrfToken", async (req: Request, res: Response) => {
+		// 	res.json({csrfToken:req.csrfToken()})
+		// })
+
+	
 
 
 		app.use('/api/v1/auth', authRouter);

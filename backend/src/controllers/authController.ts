@@ -5,6 +5,8 @@ import { IJWTUser } from "../interfaces";
 import { attachCookiesToResponse } from "../utils/jwt";
 import crypto from "crypto";
 import sendVerificationEmail from "../utils/sendVerficationEmail";
+import { xssOptions } from "../app";
+import { filterXSS } from "xss";
 
 //base url '/api/v1/auth'
 
@@ -13,7 +15,12 @@ import sendVerificationEmail from "../utils/sendVerficationEmail";
 // @access  Public
 const registerUser = async (req: Request, res: Response) => {
 	// res.cookie("XSRF-TOKEN", req.csrfToken());
-	const { email, name, password } = req.body;
+	let { email, name, password } = req.body;
+	email = filterXSS(email, xssOptions);
+	name = filterXSS(name, xssOptions);
+	password = filterXSS(password, xssOptions);
+	// console.log(req.body.)
+	console.log(email, name, password);
 
 	const emailAlreadyExists = await User.findOne({ email });
 	if (emailAlreadyExists) {
@@ -34,9 +41,8 @@ const registerUser = async (req: Request, res: Response) => {
 		name: user.name,
 		email: user.email,
 		verificationToken: user.verificationToken,
-		origin:process.env.EMAIL_ORIGIN as string,
-	  })
-
+		origin: process.env.EMAIL_ORIGIN as string,
+	});
 
 	res.status(StatusCodes.CREATED).json({
 		msg: "Success! Please check your email to verify account",
@@ -53,7 +59,9 @@ const registerUser = async (req: Request, res: Response) => {
 };
 
 const verifyEmail = async (req: Request, res: Response) => {
-	const { verificationToken, email } = req.body;
+	let { verificationToken, email } = req.body;
+	email = filterXSS(email, xssOptions);
+	verificationToken = filterXSS(verificationToken, xssOptions);
 
 	const user = await User.findOne({ email });
 
@@ -74,7 +82,7 @@ const verifyEmail = async (req: Request, res: Response) => {
 	await user.save();
 
 	// res.status(StatusCodes.OK).json({ msg: 'Email Verified' });
-	res.status(StatusCodes.OK).json({ msg: 'Email Verified' });
+	res.status(StatusCodes.OK).json({ msg: "Email Verified" });
 };
 
 // @desc    Login a user
@@ -83,7 +91,9 @@ const verifyEmail = async (req: Request, res: Response) => {
 const loginUser = async (req: Request, res: Response) => {
 	// res.cookie("XSRF-TOKEN", req.csrfToken());
 
-	const { email, password } = req.body;
+	let { email, password } = req.body;
+	email = filterXSS(email, xssOptions);
+	password = filterXSS(password, xssOptions);
 
 	if (!email || !password) {
 		res.status(StatusCodes.BAD_REQUEST);

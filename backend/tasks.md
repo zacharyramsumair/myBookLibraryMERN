@@ -1,3 +1,7 @@
+vid 13
+pass csrf-token in headers : learnt from https://www.youtube.com/watch?v=VrFNbqSUVP0
+
+
 [] go in e-commerce folder and get the login and register to work to display some user info
 [] set up auth to access token and refresh token version with forget password and verify email using ethereal
 [] convert from ethereal to send grid
