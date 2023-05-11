@@ -13,6 +13,6 @@ router.post('/',authController.registerUser)
 router.post('/verify-email', authController.verifyEmail)
 router.post('/login', authController.loginUser)
 router.get('/showCurrentUser',authenticateUser, authController.showCurrentUser)
-router.get('/logout', authController.logout);
+router.delete('/logout',authenticateUser, authController.logout);
 
  export default router

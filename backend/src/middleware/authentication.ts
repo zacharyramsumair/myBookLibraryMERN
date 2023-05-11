@@ -1,7 +1,8 @@
-import { isTokenValid } from "../utils/jwt";
+import { attachCookiesToResponse, isTokenValid } from "../utils/jwt";
 import express, { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
+import Token from "../models/Token";
 
 function isJwtPayload(obj: any): obj is JwtPayload {
 	return (
@@ -20,31 +21,68 @@ export const authenticateUser = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const token = req.signedCookies.token;
-
-	if (!token) {
-		res.status(StatusCodes.UNAUTHORIZED);
-		throw new Error("Authentication Invalid 1");
-	}
+	const { refreshToken, accessToken } = req.signedCookies;
 
 	try {
-		const TokenData = isTokenValid(token);
-
-		if (!isJwtPayload(TokenData)) {
-            res.status(StatusCodes.UNAUTHORIZED);
-			throw new Error("Invalid token");
+		if (accessToken) {
+		  const payload = isTokenValid(accessToken);
+		  req.user = payload.user;
+		  return next();
 		}
 
-		const { name, userId, role, tier } = TokenData;
-		req.user = { userId };
-		// req.user = { name, userId, role, tier };
-
-
+		//refresh token 
+		const payload = isTokenValid(refreshToken);
+	
+		const existingToken = await Token.findOne({
+		  user: payload.user.userId,
+		  refreshToken: payload.refreshToken,
+		});
+	
+		if (!existingToken || !existingToken?.isValid) {
+		res.status(StatusCodes.UNAUTHORIZED)
+		  throw new Error('Authentication Invalid');
+		}
+	
+		attachCookiesToResponse({
+		  res,
+		  user: payload.user,
+		  refreshToken: existingToken.refreshToken,
+		});
+	
+		req.user = payload.user;
 		next();
-	} catch (error) {
-		res.status(StatusCodes.UNAUTHORIZED);
-		throw new Error("Authentication Invalid2");
-	}
+	  } catch (error) {
+		res.status(StatusCodes.UNAUTHORIZED)
+		throw new Error('Authentication Invalid');	  }
+
+	// try {
+		
+	// } catch (error) {
+		
+	// }
+	// if (!token) {
+	// 	res.status(StatusCodes.UNAUTHORIZED);
+	// 	throw new Error("Authentication Invalid 1");
+	// }
+
+	// try {
+	// 	const TokenData = isTokenValid(token);
+
+	// 	if (!isJwtPayload(TokenData)) {
+    //         res.status(StatusCodes.UNAUTHORIZED);
+	// 		throw new Error("Invalid token");
+	// 	}
+
+	// 	const { name, userId, role, tier } = TokenData;
+	// 	req.user = { userId };
+	// 	// req.user = { name, userId, role, tier };
+
+
+	// 	next();
+	// } catch (error) {
+	// 	res.status(StatusCodes.UNAUTHORIZED);
+	// 	throw new Error("Authentication Invalid2");
+	// }
 };
 
 // export const authorizePermissions = (...roles) => {

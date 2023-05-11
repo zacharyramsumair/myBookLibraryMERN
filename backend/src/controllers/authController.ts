@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import User from "../models/User";
+import Token from "../models/Token";
 import { IJWTUser } from "../interfaces";
 import { attachCookiesToResponse } from "../utils/jwt";
 import crypto from "crypto";
@@ -123,7 +124,33 @@ const loginUser = async (req: Request, res: Response) => {
 		role: user.role,
 		tier: user.tier,
 	};
-	attachCookiesToResponse({ res, user: tokenUser });
+
+	let refreshToken = "";
+
+	// check for existing token
+	const existingToken = await Token.findOne({ user: user._id });
+
+	if (existingToken) {
+		const { isValid } = existingToken;
+		if (!isValid) {
+			res.status(StatusCodes.UNAUTHORIZED);
+			throw new Error("Invalid Credentials");
+		}
+		refreshToken = existingToken.refreshToken;
+		attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+		res.status(StatusCodes.OK).json({ user: tokenUser });
+		return;
+	}
+
+	refreshToken = crypto.randomBytes(40).toString("hex");
+	const userAgent = req.headers["user-agent"];
+	const ip = req.ip;
+	const userToken = { refreshToken, userAgent, ip, user: user._id };
+
+	await Token.create(userToken);
+
+	attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+
 	res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
@@ -131,19 +158,17 @@ const loginUser = async (req: Request, res: Response) => {
 // @route   GET /showCurrentUser
 // @access  Private
 const showCurrentUser = async (req: Request, res: Response) => {
-	// const csrfToken = req.cookies["XSRF-TOKEN"];
-	// if (!csrfToken || req.csrfToken() !== csrfToken) {
-	// 	return res
-	// 		.status(StatusCodes.FORBIDDEN)
-	// 		.json({ error: "Invalid CSRF token" });
-	// }
 	res.status(StatusCodes.OK).json({ user: req.user });
 };
 
 const logout = async (req: Request, res: Response) => {
-	// res.cookie("XSRF-TOKEN", req.csrfToken());
+	await Token.findOneAndDelete({ user: req.user.userId });
 
-	res.cookie("token", "logout", {
+	res.cookie("accessToken", "logout", {
+		httpOnly: true,
+		expires: new Date(Date.now()),
+	});
+	res.cookie("refreshToken", "logout", {
 		httpOnly: true,
 		expires: new Date(Date.now()),
 	});

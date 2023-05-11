@@ -5,4 +5,5 @@ export interface IJWTUser {
     name: string;
     role: 'admin' | 'user';
     tier: 'free' | 'standard' | 'premium';
+
   }
