@@ -11,6 +11,8 @@ interface IUser extends Document {
   verificationToken:string;
   isVerified:boolean;
   verified:Date;
+  passwordToken:string | null;
+  passwordTokenExpirationDate:Date | null;
   comparePassword: (canditatePassword: string) => Promise<boolean>;
 
 }
@@ -63,6 +65,12 @@ const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>({
     default: false,
   },
   verified: Date,
+  passwordToken: {
+    type: String,
+  },
+  passwordTokenExpirationDate: {
+    type: Date,
+  },
 },{ timestamps: true });
 
 UserSchema.pre<IUser>('save', async function () {

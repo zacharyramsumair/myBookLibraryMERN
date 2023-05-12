@@ -43,3 +43,8 @@ things to include
 - [ ]  express async errors
 - [ ]  dont validate password or username or whatever when logging since we might change the validadation to register and we shouldn’t apply that to old users since their login info might not meet the new validations
 - [ ]  protected routes in frontend (source ****Learn MERN by Building a Subscription App - Part 2 1 hour 20 mins****) also in net ninja JWT auth playlist (actually the net ninja way won't work since most likely server and client are on different ports but we could try it and find out)
+
+
+react protected routes 
+https://www.youtube.com/watch?v=to-V-LcsXUU&list=PL4cUxeGkcC9g8OhpOZxNdhXggFz2lOuCT&index=16 (Net ninja auth)
+protected routes in frontend (source Learn MERN by Building a Subscription App - Part 2 1 hour 20 mins)

@@ -8,6 +8,8 @@ import crypto from "crypto";
 import sendVerificationEmail from "../utils/sendVerficationEmail";
 import { xssOptions } from "../app";
 import { filterXSS } from "xss";
+import sendResetPasswordEmail from "../utils/sendResetPasswordEmail";
+import createHash from "../utils/createHash";
 
 //base url '/api/v1/auth'
 
@@ -71,6 +73,10 @@ const verifyEmail = async (req: Request, res: Response) => {
 		throw new Error("Verification Failed");
 	}
 
+	if (user.verificationToken == "completed") {
+		res.status(StatusCodes.OK).json({ msg: "Email already Verified" });
+	}
+
 	if (user.verificationToken !== verificationToken) {
 		res.status(StatusCodes.UNAUTHORIZED);
 		throw new Error("Verification Failed");
@@ -78,7 +84,7 @@ const verifyEmail = async (req: Request, res: Response) => {
 
 	user.isVerified = true;
 	user.verified = new Date();
-	user.verificationToken = "";
+	user.verificationToken = "completed";
 
 	await user.save();
 
@@ -175,10 +181,73 @@ const logout = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json({ msg: "user logged out!" });
 };
 
+const forgotPassword = async (req: Request, res: Response) => {
+	const { email } = req.body;
+	if (!email) {
+		res.status(StatusCodes.BAD_REQUEST)
+	  throw new Error('Please provide valid email');
+	}
+  
+	const user = await User.findOne({ email });
+  
+	if (user) { 
+	  const passwordToken = crypto.randomBytes(70).toString('hex');
+	  // send email
+
+	  await sendResetPasswordEmail({
+		name: user.name,
+		email: user.email,
+		token: passwordToken,
+		origin: process.env.EMAIL_ORIGIN as string,
+	  });
+  
+	  const tenMinutes = 1000 * 60 * 10;
+	  const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
+  
+	  user.passwordToken = createHash(passwordToken);
+	  user.passwordTokenExpirationDate = passwordTokenExpirationDate;
+	  await user.save();
+	}
+  
+	res
+	  .status(StatusCodes.OK)
+	  .json({ msg: 'Please check your email for reset password link' });
+  };
+
+  const resetPassword = async (req: Request, res: Response) => {
+	const { token, email, password } = req.body;
+	if (!token || !email || !password) {
+		res.status(StatusCodes.BAD_REQUEST)
+	  throw new Error('Please provide all values');
+	}
+	const user = await User.findOne({ email });
+  
+	if (user) {
+	  const currentDate = new Date();
+  
+	  if (
+		user.passwordToken === createHash(token) &&
+		user.passwordTokenExpirationDate &&
+		user.passwordTokenExpirationDate > currentDate
+	  ) {
+		user.password = password;
+		user.passwordToken = null;
+		user.passwordTokenExpirationDate = null;
+		await user.save();
+	  }
+	}
+  
+	res
+	.status(StatusCodes.OK)
+	.json({ msg: 'Password Reset' });  };
+
 export default {
 	registerUser,
 	verifyEmail,
 	loginUser,
 	showCurrentUser,
 	logout,
+	forgotPassword,
+	resetPassword
+
 };
