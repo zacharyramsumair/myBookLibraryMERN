@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/zacharyramsumair/myBookLibraryMERN#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
