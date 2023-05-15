@@ -65,8 +65,9 @@ export const attachCookiesToResponse = ({
 		signed: true,
     // 60 minutes, 1000 milliseconds = 1 second
     // 1second * 60 = 1 min 
-    // 1 min * 60 
-		maxAge: 1000 * 60 * 60,
+    // 1 min * 10
+		maxAge: 1000 *60 *10,
+		// maxAge: 1000 * 60 * 10,
 	});
 
 	res.cookie("refreshToken", refreshTokenJWT, {

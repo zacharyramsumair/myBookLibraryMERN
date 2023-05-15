@@ -1,0 +1,25 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+.landingImage{
+    width: 20em;
+    height: 20em;
+
+
+
+}
+
+
+@media (max-width: 900px) {
+    .landingImage{
+        width: 15em;
+        height: 15em;
+    
+    
+    
+    }
+  }

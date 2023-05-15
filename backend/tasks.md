@@ -1,4 +1,5 @@
-vid 13
+https://docs.google.com/document/d/1D6tR1Ha-yEBQlPRVY8wFKflx02naIZAL4W842_hj_uk/edit#
+
 pass csrf-token in headers : learnt from https://www.youtube.com/watch?v=VrFNbqSUVP0
 
 
