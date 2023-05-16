@@ -22,7 +22,7 @@ interface Props {
 	window?: () => Window;
 }
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 const navItems = [
 	{ text: "Login", link: "/login" },
 	{ text: "Register", link: "/register" },
@@ -77,8 +77,8 @@ export default function Navbar(props: Props) {
 
 	return (
 		<React.Fragment>
-			{/* <CssBaseline /> */}
-			<AppBar component="nav">
+			<CssBaseline />
+			<AppBar component="nav" sx={{ overflowX: "hidden" }}>
 				<Toolbar>
 					<IconButton
 						color="inherit"
