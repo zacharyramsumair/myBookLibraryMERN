@@ -78,7 +78,7 @@ export default function Navbar(props: Props) {
 	return (
 		<React.Fragment>
 			<CssBaseline />
-			<AppBar component="nav" sx={{ overflowX: "hidden" }}>
+			<AppBar component="nav">
 				<Toolbar>
 					<IconButton
 						color="inherit"

@@ -2,6 +2,7 @@ import { Box, Button, Theme, Typography, useMediaQuery } from '@mui/material';
 import React from 'react';
 import LandingPageCallToAction from '../Components/LandingPageCallToAction';
 import FAQ from '../Components/FAQ';
+import Footer from '../Components/FooterLandingPage';
 
 const LandingPage = () => {
   //smaller than medium breakpoint ( including small)
@@ -13,8 +14,15 @@ const LandingPage = () => {
   console.log(isSmallScreen)
   return (
     <>
+    <Box sx={{
+        outline: "red dashed 1px",
+        overflowX: "hidden",
+      }}>
+
     <LandingPageCallToAction/>
-    {/* <FAQ/> */}
+    <FAQ/>
+    </Box>
+    <Footer/>
     </>
   );
 };
