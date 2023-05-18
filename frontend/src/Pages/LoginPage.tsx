@@ -1,11 +1,26 @@
-import React from 'react'
+import React from 'react';
+import LoginForm from '../Components/LoginForm';
+import { Box } from '@mui/material';
+import backgroundImage from "../assets/background.svg";
 
-type Props = {}
+type Props = {};
 
-const LoginPage = (props: Props) => {
+const LoginPage: React.FC<Props> = (props) => {
   return (
-    <div>LoginPage</div>
-  )
-}
+    <Box
+      sx={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <LoginForm />
+    </Box>
+  );
+};
 
-export default LoginPage
+export default LoginPage;

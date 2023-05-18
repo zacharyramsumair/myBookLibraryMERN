@@ -3,6 +3,7 @@ import React from 'react';
 import LandingPageCallToAction from '../Components/LandingPageCallToAction';
 import FAQ from '../Components/FAQ';
 import Footer from '../Components/FooterLandingPage';
+import Navbar from '../Components/NavbarLandingPage';
 
 const LandingPage = () => {
   //smaller than medium breakpoint ( including small)
@@ -14,6 +15,7 @@ const LandingPage = () => {
   console.log(isSmallScreen)
   return (
     <>
+    <Navbar/>
     <Box sx={{
         outline: "red dashed 1px",
         overflowX: "hidden",
