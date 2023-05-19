@@ -1,7 +1,6 @@
 import React from "react";
 
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
-import { CheckCircle } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 
 type Props = {};

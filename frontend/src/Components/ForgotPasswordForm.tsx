@@ -1,18 +1,24 @@
-import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { z } from "zod";
+import React from 'react'
+import { CircularProgress } from "@mui/material";
 
+
+type Props = {}
 const schema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
 });
 
 type FormValues = z.infer<typeof schema>;
 
-const LoginForm: React.FC = () => {
-  
+const ForgotPasswordForm = (props: Props) => {
+
+
+  let onSuccess = false
+  let Loading = false
+
   const {
     handleSubmit,
     control,
@@ -26,7 +32,7 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <Container
+<Container
       maxWidth="sm"
       sx={{
         backgroundColor: "#fff",
@@ -37,9 +43,27 @@ const LoginForm: React.FC = () => {
         // boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.2)", // Box shadow style
       }}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Login
+
+
+{Loading && (
+				<Box
+					sx={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						minHeight: 200,
+					}}
+				>
+					<CircularProgress />
+				</Box>
+			)}
+    
+    {!Loading && !onSuccess && (<form onSubmit={handleSubmit(onSubmit)}>
+    <Typography variant="h5" align="center" gutterBottom>
+          Forgot Password
+        </Typography>
+    <Typography variant="body1" align="center" gutterBottom>
+          Enter the email associated with the account
         </Typography>
 
         <Box marginBottom={2}>
@@ -61,32 +85,27 @@ const LoginForm: React.FC = () => {
           />
         </Box>
 
-        <Box marginBottom={2}>
-          <Typography>Password</Typography>
-          <Controller
-            name="password"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                variant="outlined"
-                fullWidth
-                type="password"
-                margin="normal"
-                error={!!errors.password}
-                helperText={errors.password?.message}
-              />
-            )}
-          />
-        </Box>
-
         <Button type="submit" variant="contained" color="primary" fullWidth>
-          Login
+          Submit
         </Button>
-      </form>
-    </Container>
-  );
-};
+    </form>)}
 
-export default LoginForm;
+    {onSuccess && !Loading && (
+				<Box
+					display="flex"
+					flexDirection="column"
+					alignItems="center"
+					textAlign="center"
+				>
+					<Typography variant="h6" sx={{ padding: 5 }}>
+						Please check email to reset Password
+					</Typography>
+					
+
+					
+				</Box>
+			)}
+    </Container>  )
+}
+
+export default ForgotPasswordForm

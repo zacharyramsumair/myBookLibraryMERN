@@ -1,11 +1,10 @@
 import React from 'react'
 import { Box } from '@mui/material';
 import backgroundImage from "../assets/background.svg";
-import ForgotPasswordForm from '../Components/ForgotPasswordForm';
 
 type Props = {}
 
-const ForgotPasswordPage = (props: Props) => {
+const BasePageDesign = (props: Props) => {
   return (
 <Box
       sx={{
@@ -18,8 +17,8 @@ const ForgotPasswordPage = (props: Props) => {
         alignItems: 'center',
       }}
     >
-      <ForgotPasswordForm/>
+        {/* Component goes here */}
     </Box>  )
 }
 
-export default ForgotPasswordPage
+export default BasePageDesign
