@@ -7,6 +7,10 @@ import RegisterPage from "./Pages/RegisterPage";
 import CssBaseline from "@mui/material/CssBaseline";
 import React from "react";
 import UserSettingsPage from "./Pages/UserSettingsPage";
+import VerifyEmailPage from "./Pages/VerifyEmailPage";
+import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
+import ResetPasswordPage from "./Pages/ResetPasswordPage";
+import NotFoundPage from "./Pages/NotFoundPage";
 
 function App() {
 	return (
@@ -15,10 +19,17 @@ function App() {
 			<Router>
 				{/* <Container maxWidth="sm"> */}
 				<Routes>
-					<Route path="/" element={<UserSettingsPage />} />
+					{/* public pages */}
 					<Route path="/home" element={<LandingPage />} />
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/register" element={<RegisterPage />} />
+					<Route path="/verifyEmail" element={<VerifyEmailPage />} />
+					<Route path="/forgotPassword" element={<ForgotPasswordPage />} />
+					<Route path="/resetPassword" element={<ResetPasswordPage />} />
+					{/* protected pages */}
+					<Route path="/settings" element={<UserSettingsPage />} />
+					{/* 404 Not Found */}
+					<Route path="*" element={<NotFoundPage />} />
 				</Routes>
 				{/* </Container> */}
 			</Router>

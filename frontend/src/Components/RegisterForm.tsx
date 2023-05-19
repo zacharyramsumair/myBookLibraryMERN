@@ -56,7 +56,8 @@ let Loading = false
         borderRadius: 2,
         padding: 5,
         boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)", // Box shadow style
-        minHeight:200
+        minHeight:200,
+        marginX:3
       }}
     >
 
