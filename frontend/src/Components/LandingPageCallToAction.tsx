@@ -34,7 +34,7 @@ const LandingPageCallToAction = (props: Props) => {
 					display: "flex",
 					justifyContent: "center",
 					alignItems: "center",
-					paddingBottom: { xs: "1em", sm: "5em", md: "1em" }, // Adding padding bottom for sm screen
+					paddingBottom: { xs: "4em", sm: "5em", md: "1em" }, // Adding padding bottom for sm screen
 					position: "relative", // Add position relative to enable absolute positioning of the cat image
 				}}
 			>
@@ -52,7 +52,7 @@ const LandingPageCallToAction = (props: Props) => {
 					>
 						Live your adventure
 					</Typography>
-					<Typography variant="body1" sx={{ mb: 2, color: "#6e6c65" }}>
+					<Typography variant="body1" sx={{ mb: 2, color: "#6e6c65", width:{xs:"100%",md:"75%", lg:"85%"} }}>
 						Read anything you want right now, like seriously. Come one,
 						try it. It's Free !
 					</Typography>
@@ -67,7 +67,7 @@ const LandingPageCallToAction = (props: Props) => {
 							variant="contained"
 							href="/login"
 							sx={{
-								mr: 2,
+								
 								backgroundColor: "#FFB3A6",
 								color: "#000",
 								"&:hover, &:focus": {
@@ -98,7 +98,7 @@ const LandingPageCallToAction = (props: Props) => {
 					sx={{
 						position: "absolute",
 						left: { xs: "auto", md: "-10em" },
-						top: { xs: "-9.5em", md: "13em" },
+						top: { xs: "-7.5em", md: "13em" },
 						display: { xs: "block", md: "block" },
 						overflowX: "visible",
 					}}

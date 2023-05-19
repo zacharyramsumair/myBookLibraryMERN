@@ -33,7 +33,7 @@ type FormValues = z.infer<typeof schema>;
 const RegisterForm: React.FC = () => {
 
 
-let onSuccess = true
+let onSuccess = false
 let Loading = false
 
   const {
@@ -73,7 +73,7 @@ let Loading = false
           Register
         </Typography>
 
-        <Box marginBottom={2}>
+        <Box marginBottom={0}>
           <Typography>Email</Typography>
           <Controller
             name="email"
@@ -92,7 +92,7 @@ let Loading = false
           />
         </Box>
 
-        <Box marginBottom={2}>
+        <Box marginBottom={0}>
           <Typography>Password</Typography>
           <Controller
             name="password"
@@ -112,7 +112,7 @@ let Loading = false
           />
         </Box>
 
-        <Box marginBottom={2}>
+        <Box marginBottom={0}>
           <Typography>Confirm Password</Typography>
           <Controller
             name="confirmPassword"

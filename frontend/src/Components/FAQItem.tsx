@@ -40,7 +40,7 @@ const FAQItem = ({ question, answer }: Props) => {
         <Typography variant="h6">{question}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Typography>{answer}</Typography>
+        <Typography variant="body1">{answer}</Typography>
       </AccordionDetails>
     </Accordion>
   );
