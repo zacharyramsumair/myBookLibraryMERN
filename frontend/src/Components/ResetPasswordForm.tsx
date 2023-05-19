@@ -138,11 +138,11 @@ const ResetPasswordForm = (props: Props) => {
 						display="flex"
 						justifyContent="center"
 						alignItems="center"
-						width={65}
-						height={65}
+						width={50}
+						height={50}
 						borderRadius="50%"
 						bgcolor="#4BB543"
-						marginBottom={2}
+						marginBottom={3}
 					>
 						<CheckCircle fontSize="large" style={{ color: "#fff" }} />
 					</Box>

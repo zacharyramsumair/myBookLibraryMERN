@@ -11,6 +11,7 @@ import VerifyEmailPage from "./Pages/VerifyEmailPage";
 import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
 import ResetPasswordPage from "./Pages/ResetPasswordPage";
 import NotFoundPage from "./Pages/NotFoundPage";
+import PricingPage from "./Pages/PricingPage";
 
 function App() {
 	return (
@@ -26,6 +27,7 @@ function App() {
 					<Route path="/verifyEmail" element={<VerifyEmailPage />} />
 					<Route path="/forgotPassword" element={<ForgotPasswordPage />} />
 					<Route path="/resetPassword" element={<ResetPasswordPage />} />
+					<Route path="/prices" element={<PricingPage />} />
 					{/* protected pages */}
 					<Route path="/settings" element={<UserSettingsPage />} />
 					{/* 404 Not Found */}
