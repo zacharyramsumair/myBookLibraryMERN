@@ -11,7 +11,7 @@ const BasePageDesign = (props: Props) => {
         backgroundImage: `url(${backgroundImage})`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
-        height: '100vh',
+        minHeight: '100vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
