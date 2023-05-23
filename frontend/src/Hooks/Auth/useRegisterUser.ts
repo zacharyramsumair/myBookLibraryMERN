@@ -4,11 +4,13 @@ import axios from 'axios';
 type FormValues = {
     email: string;
     password: string;
+    name: string;
     confirmPassword: string;
 }
 
 const postRequest = async (data:FormValues) => {
     const response = await axios.post(`/api/v1/auth`, data);
+    console.log(response.data)
     return response.data;
 };
 

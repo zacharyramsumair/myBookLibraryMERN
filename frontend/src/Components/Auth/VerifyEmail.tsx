@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { CircularProgress } from "@mui/material";
+import { useVerifyEmail } from "../../Hooks/Auth/useVerifyEmail";
 
 type Props = {};
 
 const VerifyEmail = (props: Props) => {
-	let onSuccess = true;
-	let Loading = false;
+	let {VerifyEmailFunction, error, data, isError, isLoading, isSuccess} = useVerifyEmail()
+	// let isSuccess = true;
+	// let isLoading = false;
+
+	useEffect(()=>{
+		
+	},[])
+
 
 	return (
 		<Container
@@ -22,7 +29,7 @@ const VerifyEmail = (props: Props) => {
 				margin: 3,
 			}}
 		>
-			{Loading && (
+			{isLoading && (
 				<Box
 					sx={{
 						display: "flex",
@@ -35,7 +42,7 @@ const VerifyEmail = (props: Props) => {
 				</Box>
 			)}
 
-			{!onSuccess && !Loading && (
+			{!isSuccess && !isLoading && (
 				<Box
 					display="flex"
 					flexDirection="column"
@@ -51,7 +58,7 @@ const VerifyEmail = (props: Props) => {
 				</Box>
 			)}
 
-			{onSuccess && !Loading && (
+			{isSuccess && !isLoading && (
 				<Box
 					display="flex"
 					flexDirection="column"

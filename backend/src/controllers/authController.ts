@@ -17,49 +17,54 @@ import createHash from "../utils/createHash";
 // @route   POST /
 // @access  Public
 const registerUser = async (req: Request, res: Response) => {
-	// res.cookie("XSRF-TOKEN", req.csrfToken());
 	let { email, name, password } = req.body;
+  
+	if (!email || !name || !password) {
+	  res.status(StatusCodes.BAD_REQUEST);
+	  throw new Error("Please provide all values");
+	}
+  
 	email = filterXSS(email, xssOptions);
 	name = filterXSS(name, xssOptions);
 	password = filterXSS(password, xssOptions);
-	// console.log(req.body.)
-	console.log(email, name, password);
-
-	const emailAlreadyExists = await User.findOne({ email });
-	if (emailAlreadyExists) {
-		res.status(StatusCodes.CONFLICT);
-		throw new Error("Email already exists");
+  
+	const user = await User.findOne({ email });
+  
+	if (user && user.isVerified) {
+	  res.status(StatusCodes.CONFLICT);
+	  throw new Error("Email already exists");
 	}
-
+  
 	const verificationToken = crypto.randomBytes(40).toString("hex");
-
-	const user = await User.create({
+  
+	if (user) {
+	  // Update existing user with the new verification token
+	  user.name = name;
+	  user.password = password;
+	  user.verificationToken = verificationToken;
+	  await user.save();
+	} else {
+	  // Create a new user with the provided email
+	  await User.create({
 		name,
 		email,
 		password,
 		verificationToken,
-	});
-
+	  });
+	}
+  
 	await sendVerificationEmail({
-		name: user.name,
-		email: user.email,
-		verificationToken: user.verificationToken,
-		origin: process.env.EMAIL_ORIGIN as string,
+	  name,
+	  email,
+	  verificationToken,
+	  origin: process.env.EMAIL_ORIGIN as string,
 	});
-
+  
 	res.status(StatusCodes.CREATED).json({
-		msg: "Success! Please check your email to verify account",
+	  msg: "Success! Please check your email to verify the account",
 	});
-	// const user = await User.create({ name, email, password });
-	// const tokenUser: IJWTUser = {
-	// 	name: user.name,
-	// 	userId: user._id,
-	// 	role: user.role,
-	// 	tier: user.tier,
-	// };
-	// attachCookiesToResponse({ res, user: tokenUser });
-	// res.status(StatusCodes.CREATED).json({ user: tokenUser });
-};
+  };
+  
 
 const verifyEmail = async (req: Request, res: Response) => {
 	let { verificationToken, email } = req.body;
