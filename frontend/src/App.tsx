@@ -1,18 +1,19 @@
 import "normalize.css"
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LandingPage from "./Pages/LandingPage";
-import LoginPage from "./Pages/LoginPage";
-import RegisterPage from "./Pages/RegisterPage";
+import LandingPage from "./Pages/LandingPage/LandingPage";
+import LoginPage from "./Pages/Auth/LoginPage";
 
 import CssBaseline from "@mui/material/CssBaseline";
+import RegisterPage from "./Pages/Auth/RegisterPage";
+import VerifyEmailPage from "./Pages/Auth/VerifyEmailPage";
+import ForgotPasswordPage from "./Pages/Auth/ForgotPasswordPage";
+import ResetPasswordPage from "./Pages/Auth/ResetPasswordPage";
+import PricingPage from "./Pages/Auth/PricingPage";
+import UserSettingsPage from "./Pages/Auth/UserSettingsPage";
+import NotFoundPage from "./Pages/Auth/NotFoundPage";
 import React from "react";
-import UserSettingsPage from "./Pages/UserSettingsPage";
-import VerifyEmailPage from "./Pages/VerifyEmailPage";
-import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
-import ResetPasswordPage from "./Pages/ResetPasswordPage";
-import NotFoundPage from "./Pages/NotFoundPage";
-import PricingPage from "./Pages/PricingPage";
+
 
 function App() {
 	return (

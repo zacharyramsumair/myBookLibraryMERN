@@ -9,7 +9,18 @@ type Props = {
 };
 
 export const UserContextProvider = ({ children }: Props) => {
-	const [user, setUser] = useState<any | null>("finally");
+	const [user, setUser] = useState<any | null>(null);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+
+  // const saveUser = (user) => {
+  //   setUser(user)
+  // }
+
+  // const removeUser = () => {
+  //   setUser(null)
+  // }
+
 
 	// const Mary = () => {
 	// 	setUser("mary");
@@ -18,7 +29,7 @@ export const UserContextProvider = ({ children }: Props) => {
 	
 
 	return (
-		<UserContext.Provider value={{ user}}>
+		<UserContext.Provider value={{ user, setUser, isLoading, setIsLoading}}>
 		{/* <UserContext.Provider value={{ user, Mary }}> */}
 			{children}
 		</UserContext.Provider>

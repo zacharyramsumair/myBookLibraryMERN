@@ -1,8 +1,11 @@
 import React from 'react'
 import { Box } from '@mui/material';
 import backgroundImage from "../assets/background.svg";
+import { ReactNode } from 'react';
 
-type Props = {}
+type Props = {
+  children: ReactNode
+}
 
 const BasePageDesign = (props: Props) => {
   return (
@@ -17,7 +20,7 @@ const BasePageDesign = (props: Props) => {
         alignItems: 'center',
       }}
     >
-        {/* Component goes here */}
+        {props.children}
     </Box>  )
 }
 

@@ -1,10 +1,13 @@
 import React from 'react'
+import BasePageDesign from '../BasePageDesign'
 
 type Props = {}
 
 const NotFoundPage = (props: Props) => {
   return (
-    <div>NotFoundPage</div>
+    <BasePageDesign>
+      <div>NotFoundPage</div>
+\ </BasePageDesign>
   )
 }
 
