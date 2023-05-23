@@ -1,11 +1,16 @@
-import React from 'react'
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import backgroundImage from "../assets/background.svg";
 import UserSettingsRead from '../Components/UserSettingsRead';
+import { UserContext } from './../Contexts/UserContext';
+import { useContext } from 'react';
+useContext
 
 type Props = {}
 
 const UserSettingsPage = (props: Props) => {
+  let {user} = useContext(UserContext)
+  console.log(user)
+
   return (
 <Box
       sx={{
@@ -19,6 +24,7 @@ const UserSettingsPage = (props: Props) => {
       }}
     >
       <UserSettingsRead/>
+      
     </Box>  )
 
 }
