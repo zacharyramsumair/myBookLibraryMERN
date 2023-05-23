@@ -5,6 +5,7 @@ import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { z } from "zod";
 import { CheckCircle } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
+import { useRegisterUser } from "../../Hooks/Auth/useRegisterUser";
 
 
 
@@ -32,9 +33,9 @@ type FormValues = z.infer<typeof schema>;
 
 const RegisterForm: React.FC = () => {
 
-
-let onSuccess = false
-let Loading = false
+let {registerUser, error, data, isError, isLoading, isSuccess} = useRegisterUser()
+// let isSuccess = false
+// let isLoading = false
 
   const {
     handleSubmit,
@@ -46,6 +47,7 @@ let Loading = false
 
   const onSubmit = (data: FormValues) => {
     console.log(data);
+    registerUser(data)
   };
 
   return (
@@ -61,14 +63,14 @@ let Loading = false
       }}
     >
 
-{Loading && (
+{isLoading && (
 <Box sx={{display:"flex", justifyContent:"center", alignItems:"center", minHeight:200}}>
 <CircularProgress />
 </Box>
 )}
 
 
-{!onSuccess && !Loading && <form onSubmit={handleSubmit(onSubmit)}>
+{!isSuccess && !isLoading && <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h4" align="center" gutterBottom>
           Register
         </Typography>
@@ -137,7 +139,7 @@ let Loading = false
         </Button>
       </form>}
 
-      {onSuccess && !Loading &&  (
+      {isSuccess && !isLoading &&  (
         <Box
           display="flex"
           flexDirection="column"
