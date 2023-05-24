@@ -1,20 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { useVerifyEmail } from "../../Hooks/Auth/useVerifyEmail";
+import { useLocation } from "react-router-dom";
+import ErrorWithResponse from "../../interfaces/ErrorWithReponse";
 
 type Props = {};
 
 const VerifyEmail = (props: Props) => {
-	let {VerifyEmailFunction, error, data, isError, isLoading, isSuccess} = useVerifyEmail()
-	// let isSuccess = true;
-	// let isLoading = false;
+	let {
+		VerifyEmailFunction,
+		error,
+		data,
+		isError,
+		isLoading,
+		isSuccess,
+	} = useVerifyEmail();
+	const location = useLocation();
+	const queryParamsString = useMemo(() => location.search, [location.search]);
+	const queryParams = useMemo(() => new URLSearchParams(queryParamsString), [
+		queryParamsString,
+	]);
 
-	useEffect(()=>{
-		
-	},[])
-
+	useEffect(() => {
+		const email = queryParams.get("email");
+		const verificationToken = queryParams.get("token");
+		VerifyEmailFunction({ email, verificationToken });
+	}, [queryParams, VerifyEmailFunction]);
 
 	return (
 		<Container
@@ -42,18 +55,19 @@ const VerifyEmail = (props: Props) => {
 				</Box>
 			)}
 
-			{!isSuccess && !isLoading && (
+			{isError && (
+				// {!isSuccess && !isLoading && (
 				<Box
 					display="flex"
 					flexDirection="column"
 					alignItems="center"
 					textAlign="center"
+					justifyContent="center"
 				>
-					<Typography variant="h6" sx={{ padding: 1 }}>
-						Opps... Something went wrong !
-					</Typography>
-					<Typography variant="h6" sx={{ padding: 1 }}>
-						Please click the link provided in the email again.
+					<Typography variant="h6" sx={{ margin: 5 }}>
+						{error
+							? (error as ErrorWithResponse).response?.data?.message
+							: "An Error Occurred"}{" "}
 					</Typography>
 				</Box>
 			)}
@@ -66,9 +80,8 @@ const VerifyEmail = (props: Props) => {
 					textAlign="center"
 				>
 					<Typography variant="h6" sx={{ padding: 3 }}>
-						Email Verified
+						{data && data.msg}
 					</Typography>
-					
 
 					<Button
 						variant="contained"

@@ -2,8 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
 type FormValues = {
-    email: string;
-    verificationToken: string;
+    email: string | null;
+    verificationToken: string| null;
 }
 
 const postRequest = async (data:FormValues) => {

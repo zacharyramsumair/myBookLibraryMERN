@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import PricingDetails from "../../assets/PricingDetails";
+import { Link } from "react-router-dom";
 
 type Props = {};
 
@@ -103,9 +104,9 @@ const PricingComponent = (props: Props) => {
 				backgroundColor: "#fff",
 				borderRadius: 2,
 				padding: 5,
-        // paddingTop: { sm: "80px" },
-        // paddingTop: { sm: "70px", md: "70px" },
-        // marginTop: { sm: "80px", md: "64px"  },
+				// paddingTop: { sm: "80px" },
+				// paddingTop: { sm: "70px", md: "70px" },
+				// marginTop: { sm: "80px", md: "64px"  },
 
 				boxShadow:
 					"0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
@@ -189,17 +190,19 @@ const PricingComponent = (props: Props) => {
 									alignItems: "center",
 								}}
 							>
-								<Button
-									variant="contained"
-									sx={{
-										backgroundColor: "#fff",
-										color: "#B315EC",
-										fontWeight: "700",
-										width: "50%",
-									}}
-								>
-									Get started
-								</Button>
+								<Link to="#">
+									<Button
+										variant="contained"
+										sx={{
+											backgroundColor: "#fff",
+											color: "#B315EC",
+											fontWeight: "700",
+											width: "50%",
+										}}
+									>
+										Get started
+									</Button>
+								</Link>
 							</Box>
 						</CardContent>
 					</Card>
@@ -243,8 +246,8 @@ const PricingComponent = (props: Props) => {
 								variant="body1"
 								sx={{ textAlign: "center", mb: "1em" }}
 							>
-								Most popular tier. Perfect for the user who just
-								wants to read everything.
+								Most popular tier. Perfect for the user who just wants
+								to read everything.
 							</Typography>
 							<Divider />
 							<List dense>{StandardFeatures}</List>
@@ -274,17 +277,19 @@ const PricingComponent = (props: Props) => {
 									alignItems: "center",
 								}}
 							>
-								<Button
-									variant="contained"
-									sx={{
-										backgroundColor: "#fff",
-										color: "#ED1593",
-										fontWeight: "700",
-										width: "50%",
-									}}
-								>
-									Get started
-								</Button>
+								<Link to="#">
+									<Button
+										variant="contained"
+										sx={{
+											backgroundColor: "#fff",
+											color: "#ED1593",
+											fontWeight: "700",
+											width: "50%",
+										}}
+									>
+										Get started
+									</Button>
+								</Link>
 							</Box>
 						</CardContent>
 					</Card>
@@ -359,17 +364,19 @@ const PricingComponent = (props: Props) => {
 									alignItems: "center",
 								}}
 							>
-								<Button
-									variant="contained"
-									sx={{
-										backgroundColor: "#fff",
-										color: "#1681ED",
-										fontWeight: "700",
-										width: "50%",
-									}}
-								>
-									Get started
-								</Button>
+								<Link to="#">
+									<Button
+										variant="contained"
+										sx={{
+											backgroundColor: "#fff",
+											color: "#1681ED",
+											fontWeight: "700",
+											width: "50%",
+										}}
+									>
+										Get started
+									</Button>
+								</Link>
 							</Box>
 						</CardContent>
 					</Card>

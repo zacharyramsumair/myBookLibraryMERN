@@ -13,6 +13,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+import { UserContext } from "../../Contexts/UserContext";
 
 interface Props {
 	/**
@@ -24,13 +26,18 @@ interface Props {
 
 const drawerWidth = 250;
 const navItems = [
-	{ text: "Login", link: "/login" },
-	{ text: "Register", link: "/register" },
-	{ text: "Pricing", link: "/pricing" },
-	{ text: "FAQ", link: "/FAQ" },
+	{ text: "Login", link: "/login", removeWhenUser: true },
+	{ text: "Register", link: "/register", removeWhenUser: true },
+	{ text: "Pricing", link: "/pricing", removeWhenUser: false },
+	{ text: "FAQ", link: "/FAQ", removeWhenUser: false },
 ];
 
 export default function Navbar(props: Props) {
+	const { user } = React.useContext(UserContext);
+	if (user) {
+		console.log(user);
+	}
+
 	const { window } = props;
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -40,34 +47,62 @@ export default function Navbar(props: Props) {
 
 	const drawer = (
 		<Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-			<Typography variant="h6" sx={{ my: 2 }}>
-				MUI
-			</Typography>
+			<Link to="/">
+				<Typography variant="h6" sx={{ my: 2 }}>
+					MUI
+				</Typography>
+			</Link>
 			<Divider />
 			<List>
-				{navItems.map((item, index) => (
-					<ListItem key={index} disablePadding>
+				{user && (
+					<ListItem disablePadding>
 						<ListItemButton sx={{ textAlign: "center" }}>
-							{/* <ListItemText primary={item} /> */}
 							<Typography
 								variant="h6"
-								
-								component="a"
-								href={item.link}
 								sx={{
-                                    textAlign:"center",
-                                    display:"flex",
-                                    justifyContent:"center",
-                                    color:"black",
-                                    textDecoration:"none",
-                                    alignItems:"center"
-                                }}
+									textAlign: "center",
+									display: "flex",
+									justifyContent: "center",
+									color: "black",
+									textDecoration: "none",
+									alignItems: "center",
+									textDecorationLine: "none", // Add this line to remove the underline
+								}}
 							>
-								{item.text}
+								Hello {user.user.name.slice(0, 10)}
 							</Typography>
 						</ListItemButton>
 					</ListItem>
-				))}
+				)}
+
+				{navItems.map((item, index) => {
+					if (item.removeWhenUser && user) {
+						return null;
+					} else {
+						return (
+							<ListItem key={index} disablePadding>
+								<ListItemButton sx={{ textAlign: "center" }}>
+									<Link to={item.link}>
+										<Typography
+											variant="h6"
+											sx={{
+												textAlign: "center",
+												display: "flex",
+												justifyContent: "center",
+												color: "black",
+												textDecoration: "none",
+												alignItems: "center",
+												textDecorationLine: "none", // Add this line to remove the underline
+											}}
+										>
+											{item.text}
+										</Typography>
+									</Link>
+								</ListItemButton>
+							</ListItem>
+						);
+					}
+				})}
 			</List>
 		</Box>
 	);
@@ -90,55 +125,112 @@ export default function Navbar(props: Props) {
 						<MenuIcon />
 					</IconButton>
 
-					<Typography
-						variant="h6"
-						noWrap
-						component="a"
-						href="/"
+					<Link to="/">
+						<Typography
+							variant="h6"
+							noWrap
+							sx={{
+								mr: 2,
+								display: { xs: "flex", sm: "none" },
+								fontFamily: "monospace",
+								fontWeight: 700,
+								letterSpacing: ".3rem",
+								textDecoration: "none",
+								flexGrow: 1,
+								justifyContent: "center",
+								color: "#fff",
+							}}
+						>
+							LOGO
+						</Typography>
+					</Link>
+
+					<Box
 						sx={{
-							mr: 2,
-							display: { xs: "flex", sm: "none" },
-							fontFamily: "monospace",
-							fontWeight: 700,
-							letterSpacing: ".3rem",
-							color: "inherit",
-							textDecoration: "none",
-							flexGrow: 1,
-							justifyContent: "center",
+							display: "flex",
+							width: "100%",
+							justifyContent: "space-between",
 						}}
 					>
-						LOGO
-					</Typography>
-					<Typography
-						variant="h6"
-						component="a"
-						sx={{ flexGrow: 1, display: { xs: "none", sm: "block" },color:"white",
-                        textDecoration:"none"  }}
-                        href="/"
-					>
-						MUI
-					</Typography>
-
-					<Box sx={{ display: { xs: "none", sm: "block" } }}>
-						{navItems.map((item,index) => (
-							<Button key={index} sx={{ color: "#fff" }}>
-								<Typography
-								variant="body1"
-								component="a"
-								href={item.link}
+						<Link to="/">
+							<Typography
+								variant="h6"
 								sx={{
-                                    textAlign:"center",
-                                    display:"flex",
-                                    justifyContent:"center",
-                                    color:"white",
-                                    textDecoration:"none",
-                                    alignItems:"center"
-                                }}
+									flexGrow: 1,
+									display: { xs: "none", sm: "block" },
+									color: "white",
+									textDecoration: "none",
+								}}
 							>
-								{item.text}
+								MUI a
 							</Typography>
-							</Button>
-						))}
+						</Link>
+
+						<Box sx={{ display: { xs: "none", sm: "block" } }}>
+							{user && (
+								<Button sx={{ color: "#fff" }}>
+									<Typography
+										variant="body1"
+										sx={{
+											textAlign: "center",
+											display: "flex",
+											justifyContent: "center",
+											color: "white",
+											textDecoration: "none",
+											alignItems: "center",
+										}}
+									>
+										Hello {user.user.name.slice(0, 10)}
+									</Typography>
+								</Button>
+							)}
+
+							{navItems.map((item, index) => {
+								if (item.removeWhenUser && user) {
+									return null;
+								} else if (item.removeWhenUser && !user) {
+									return (
+										<Button key={index} sx={{ color: "#fff" }}>
+											<Link to={item.link}>
+												<Typography
+													variant="body1"
+													sx={{
+														textAlign: "center",
+														display: "flex",
+														justifyContent: "center",
+														color: "white",
+														textDecoration: "none",
+														alignItems: "center",
+													}}
+												>
+													{item.text}
+												</Typography>
+											</Link>
+										</Button>
+									);
+								} else {
+									return (
+										<Button key={index} sx={{ color: "#fff" }}>
+											<Link to={item.link}>
+												<Typography
+													variant="body1"
+													sx={{
+														textAlign: "center",
+														display: "flex",
+														justifyContent: "center",
+														color: "white",
+														textDecoration: "none",
+														alignItems: "center",
+													}}
+												>
+													{item.text}
+												</Typography>
+											</Link>
+										</Button>
+									);
+								}
+							})}
+						</Box>
 					</Box>
 				</Toolbar>
 			</AppBar>

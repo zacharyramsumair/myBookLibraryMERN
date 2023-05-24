@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Button, Theme, Typography, useMediaQuery } from "@mui/material";
+import { UserContext } from "../../Contexts/UserContext";
+import { Link, useNavigate } from "react-router-dom";
 
 type Props = {};
 
@@ -12,6 +14,14 @@ const LandingPageCallToAction = (props: Props) => {
 	const isMediumScreen = useMediaQuery((theme: Theme) =>
 		theme.breakpoints.up("md")
 	);
+
+
+	// let { user, setUser } = useContext(UserContext);
+	// let navigate = useNavigate();
+
+	// if (user) {
+	// 	navigate("/settings");
+	//   }
 
 	return (
 		<Box
@@ -63,9 +73,10 @@ const LandingPageCallToAction = (props: Props) => {
 							alignItems: "center",
 						}}
 					>
+						<Link to="/login">
 						<Button
 							variant="contained"
-							href="/login"
+							
 							sx={{
 								
 								backgroundColor: "#FFB3A6",
@@ -77,6 +88,7 @@ const LandingPageCallToAction = (props: Props) => {
 						>
 							Try for Free
 						</Button>
+						</Link>
 						{/* <Button variant="contained" color="secondary">
             Buy ME
           </Button> */}
