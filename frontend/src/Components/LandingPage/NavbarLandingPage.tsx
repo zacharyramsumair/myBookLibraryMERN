@@ -29,7 +29,7 @@ const drawerWidth = 250;
 const navItems = [
 	{ text: "Login", link: "/login", removeWhenUser: true },
 	{ text: "Register", link: "/register", removeWhenUser: true },
-	{ text: "Pricing", link: "/pricing", removeWhenUser: false },
+	{ text: "Pricing", link: "/prices", removeWhenUser: false },
 	{ text: "FAQ", link: "/FAQ", removeWhenUser: false },
 ];
 

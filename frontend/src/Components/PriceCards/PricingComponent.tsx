@@ -197,7 +197,7 @@ const PricingComponent = (props: Props) => {
 											backgroundColor: "#fff",
 											color: "#B315EC",
 											fontWeight: "700",
-											width: "50%",
+											width: "100%",
 										}}
 									>
 										Get started
@@ -284,7 +284,7 @@ const PricingComponent = (props: Props) => {
 											backgroundColor: "#fff",
 											color: "#ED1593",
 											fontWeight: "700",
-											width: "50%",
+											width: "100%",
 										}}
 									>
 										Get started
@@ -371,7 +371,7 @@ const PricingComponent = (props: Props) => {
 											backgroundColor: "#fff",
 											color: "#1681ED",
 											fontWeight: "700",
-											width: "50%",
+											width: "100%",
 										}}
 									>
 										Get started

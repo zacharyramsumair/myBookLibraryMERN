@@ -3,7 +3,7 @@ import React, { useEffect, useMemo } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { useVerifyEmail } from "../../Hooks/Auth/useVerifyEmail";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ErrorWithResponse from "../../interfaces/ErrorWithReponse";
 
 type Props = {};
@@ -83,9 +83,9 @@ const VerifyEmail = (props: Props) => {
 						{data && data.msg}
 					</Typography>
 
+					<Link to="/login">
 					<Button
 						variant="contained"
-						href="/login"
 						sx={{
 							mr: 2,
 							backgroundColor: "#FFB3A6",
@@ -97,6 +97,7 @@ const VerifyEmail = (props: Props) => {
 					>
 						Login
 					</Button>
+					</Link>
 				</Box>
 			)}
 		</Container>

@@ -10,7 +10,7 @@ import ForgotPasswordPage from "./Pages/Auth/ForgotPasswordPage";
 import ResetPasswordPage from "./Pages/Auth/ResetPasswordPage";
 import PricingPage from "./Pages/Auth/PricingPage";
 import UserSettingsPage from "./Pages/Auth/UserSettingsPage";
-import NotFoundPage from "./Pages/Auth/NotFoundPage";
+import NotFoundPage from "./Pages/NotFoundPage";
 import React from "react";
 import { UserContext } from "./Contexts/UserContext";
 import { Box, CircularProgress } from "@mui/material";
