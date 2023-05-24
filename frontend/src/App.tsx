@@ -14,7 +14,6 @@ import NotFoundPage from "./Pages/Auth/NotFoundPage";
 import React from "react";
 import { UserContext } from "./Contexts/UserContext";
 import { Box, CircularProgress } from "@mui/material";
-import ProtectedRoute from "./Pages/ProtectedRoute";
 
 function App() {
   const { isLoading, user } = React.useContext(UserContext);

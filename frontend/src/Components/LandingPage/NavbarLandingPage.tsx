@@ -15,6 +15,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../Contexts/UserContext";
+import { useLogout } from "../../Hooks/Auth/useLogoutUser";
 
 interface Props {
 	/**
@@ -33,11 +34,12 @@ const navItems = [
 ];
 
 export default function Navbar(props: Props) {
-	const { user } = React.useContext(UserContext);
+	const { user, setUser } = React.useContext(UserContext);
 	if (user) {
 		console.log(user);
 	}
 
+	let { logout, error, data, isError, isLoading, isSuccess } = useLogout();
 	const { window } = props;
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -55,24 +57,51 @@ export default function Navbar(props: Props) {
 			<Divider />
 			<List>
 				{user && (
-					<ListItem disablePadding>
-						<ListItemButton sx={{ textAlign: "center" }}>
-							<Typography
-								variant="h6"
-								sx={{
-									textAlign: "center",
-									display: "flex",
-									justifyContent: "center",
-									color: "black",
-									textDecoration: "none",
-									alignItems: "center",
-									textDecorationLine: "none", // Add this line to remove the underline
-								}}
-							>
-								Hello {user.user.name.slice(0, 10)}
-							</Typography>
-						</ListItemButton>
-					</ListItem>
+					<>
+						<ListItem disablePadding>
+							<ListItemButton sx={{ textAlign: "center" }}>
+								<Typography
+									variant="h6"
+									sx={{
+										textAlign: "center",
+										display: "flex",
+										justifyContent: "center",
+										color: "black",
+										textDecoration: "none",
+										alignItems: "center",
+										textDecorationLine: "none", // Add this line to remove the underline
+									}}
+								>
+									Hello {user.user.name.slice(0, 10)}
+								</Typography>
+							</ListItemButton>
+						</ListItem>
+
+						<ListItem
+							disablePadding
+							onClick={() => {
+								logout();
+								setUser(null);
+							}}
+						>
+							<ListItemButton sx={{ textAlign: "center" }}>
+								<Typography
+									variant="h6"
+									sx={{
+										textAlign: "center",
+										display: "flex",
+										justifyContent: "center",
+										color: "black",
+										textDecoration: "none",
+										alignItems: "center",
+										textDecorationLine: "none", // Add this line to remove the underline
+									}}
+								>
+									Logout
+								</Typography>
+							</ListItemButton>
+						</ListItem>
+					</>
 				)}
 
 				{navItems.map((item, index) => {
@@ -168,21 +197,44 @@ export default function Navbar(props: Props) {
 
 						<Box sx={{ display: { xs: "none", sm: "block" } }}>
 							{user && (
-								<Button sx={{ color: "#fff" }}>
-									<Typography
-										variant="body1"
-										sx={{
-											textAlign: "center",
-											display: "flex",
-											justifyContent: "center",
-											color: "white",
-											textDecoration: "none",
-											alignItems: "center",
+								<>
+									<Button sx={{ color: "#fff" }}>
+										<Typography
+											variant="body1"
+											sx={{
+												textAlign: "center",
+												display: "flex",
+												justifyContent: "center",
+												color: "white",
+												textDecoration: "none",
+												alignItems: "center",
+											}}
+										>
+											Hello {user.user.name.slice(0, 10)}
+										</Typography>
+									</Button>
+									<Button
+										sx={{ color: "#fff" }}
+										onClick={() => {
+											logout();
+											setUser(null);
 										}}
 									>
-										Hello {user.user.name.slice(0, 10)}
-									</Typography>
-								</Button>
+										<Typography
+											variant="body1"
+											sx={{
+												textAlign: "center",
+												display: "flex",
+												justifyContent: "center",
+												color: "white",
+												textDecoration: "none",
+												alignItems: "center",
+											}}
+										>
+											Logout
+										</Typography>
+									</Button>
+								</>
 							)}
 
 							{navItems.map((item, index) => {

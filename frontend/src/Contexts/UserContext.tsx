@@ -5,7 +5,7 @@ import axios from "axios";
 
 export const UserContext = React.createContext<any | null>(null);
 
-interface IUser {
+export interface IUser {
 	userId: string;
 	name: string;
 	role: "admin" | "user";

@@ -1,15 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
-type FormValues = {
-    email: string;
-    password: string;
-    name: string;
-    confirmPassword: string;
-}
 
-const postRequest = async (data:FormValues) => {
-    const response = await axios.post(`/api/v1/auth`, data);
+
+const deleteRequest = async () => {
+    const response = await axios.delete(`/api/v1/auth/logout`);
     console.log(response.data)
     return response.data;
 };
@@ -21,6 +16,6 @@ const postRequest = async (data:FormValues) => {
 type Props = {}
 
 export const useRegisterUser = () => {
-    const { mutate: registerUser, isLoading, isError, isSuccess, data, error } = useMutation(postRequest);
+    const { mutate: registerUser, isLoading, isError, isSuccess, data, error } = useMutation(deleteRequest);
     return { registerUser, error, data, isError, isLoading, isSuccess }
 }
