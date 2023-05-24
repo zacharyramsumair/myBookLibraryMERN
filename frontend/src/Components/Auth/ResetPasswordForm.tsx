@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { z } from "zod";
 import { CheckCircle } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
+import { useResetPassword } from "./../../Hooks/Auth/useResetPassword";
+import { useLocation } from "react-router-dom";
+
 type Props = {};
 
 const schema = z
@@ -27,8 +30,27 @@ const schema = z
 type FormValues = z.infer<typeof schema>;
 
 const ResetPasswordForm = (props: Props) => {
-	let onSuccess = true;
-	let Loading = false;
+	let {
+		resetPassword,
+		error,
+		data,
+		isError,
+		isLoading,
+		isSuccess,
+	} = useResetPassword();
+	// let isSuccess = true;
+	// let isLoading = false;
+
+	const location = useLocation();
+	const queryParamsString = useMemo(() => location.search, [location.search]);
+	const queryParams = useMemo(() => new URLSearchParams(queryParamsString), [
+		queryParamsString,
+	]);
+
+	// useEffect(() => {
+	// 	const email = queryParams.get("email");
+	// 	const verificationToken = queryParams.get("token");
+	// }, [queryParams, resetPassword]);
 
 	const {
 		handleSubmit,
@@ -40,6 +62,10 @@ const ResetPasswordForm = (props: Props) => {
 
 	const onSubmit = (data: FormValues) => {
 		console.log(data);
+		const email = queryParams.get("email");
+		const token = queryParams.get("token");
+		// console.log(data)
+		resetPassword({ email, token, password:data.password });
 	};
 	return (
 		<Container
@@ -54,7 +80,7 @@ const ResetPasswordForm = (props: Props) => {
 				margin: 3,
 			}}
 		>
-			{Loading && (
+			{isLoading && (
 				<Box
 					sx={{
 						display: "flex",
@@ -67,7 +93,7 @@ const ResetPasswordForm = (props: Props) => {
 				</Box>
 			)}
 
-			{!onSuccess && !Loading && (
+			{!isSuccess && !isLoading && (
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Typography variant="h4" align="center" gutterBottom>
 						Reset Password
@@ -124,7 +150,7 @@ const ResetPasswordForm = (props: Props) => {
 				</form>
 			)}
 
-			{onSuccess && !Loading && (
+			{isSuccess && !isLoading && (
 				<Box
 					display="flex"
 					flexDirection="column"

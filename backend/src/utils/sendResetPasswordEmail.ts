@@ -14,7 +14,7 @@ const sendVerificationEmail = async ({
     token,
     origin,
   }:IVerificationEmailVariables) => {
-    const resetURL = `${origin}/user/reset-password?token=${token}&email=${email}`;
+    const resetURL = `${origin}/resetPassword?token=${token}&email=${email}`;
   const message = `<p>Please click the following link to reset password : 
   <a href="${resetURL}">Reset Password</a></p>`;
 

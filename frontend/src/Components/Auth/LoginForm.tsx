@@ -14,6 +14,8 @@ import { useLoginUser } from "../../Hooks/Auth/useLoginUser";
 import { UserContext } from "./../../Contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import ErrorWithResponse from "../../interfaces/ErrorWithReponse";
+// import Cookies from "js-cookie";
+
 
 const schema = z.object({
 	email: z.string().email(),
@@ -35,25 +37,22 @@ const LoginForm: React.FC = () => {
 	let { user, setUser } = useContext(UserContext);
 	let navigate = useNavigate();
 
-
-
 	useEffect(() => {
-    console.log("now")
-
-    if (user) {
-      console.log("hard")
-      navigate("/home");
-    }
+		if (user) {
+			navigate("/home");
+		}
 
 		if (isSuccess) {
-      console.log("fr")
-
 			setUser(data);
-      console.log(user)
+			// Cookies.set("user", JSON.stringify(data), { secure: true, sameSite: "strict" });
 			navigate("/home");
 		}
 	}, [isSuccess]);
 
+
+
+
+	
 	const {
 		handleSubmit,
 		control,

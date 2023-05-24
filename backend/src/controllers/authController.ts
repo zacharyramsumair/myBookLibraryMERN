@@ -197,6 +197,17 @@ const forgotPassword = async (req: Request, res: Response) => {
 	}
 
 	const user = await User.findOne({ email });
+	if (!user) {
+
+		// sent the same message so hackers can't use here to check which emails are in our database
+		setTimeout(() => {
+		  res.status(StatusCodes.OK).json({
+			msg: "Please check your email for reset password link",
+		  });
+		}, 2500); // Delay of 2 seconds (2000 milliseconds)
+		return; // Return from the function to prevent further execution
+	  }
+
 
 	if (user) {
 		const passwordToken = crypto.randomBytes(70).toString("hex");

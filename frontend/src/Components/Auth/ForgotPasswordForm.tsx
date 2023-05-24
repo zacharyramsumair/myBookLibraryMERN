@@ -4,7 +4,7 @@ import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { z } from "zod";
 import React from 'react'
 import { CircularProgress } from "@mui/material";
-
+import { useForgotPassword } from "../../Hooks/Auth/useForgotPassword";
 
 type Props = {}
 const schema = z.object({
@@ -15,9 +15,10 @@ type FormValues = z.infer<typeof schema>;
 
 const ForgotPasswordForm = (props: Props) => {
 
+  let {forgotPassword, error, data, isError, isLoading, isSuccess} = useForgotPassword()
 
-  let onSuccess = false
-  let Loading = false
+  // let isSuccess = false
+  // let isLoading = false
 
   const {
     handleSubmit,
@@ -29,6 +30,7 @@ const ForgotPasswordForm = (props: Props) => {
 
   const onSubmit = (data: FormValues) => {
     console.log(data);
+    forgotPassword(data)
   };
 
   return (
@@ -45,7 +47,7 @@ const ForgotPasswordForm = (props: Props) => {
     >
 
 
-{Loading && (
+{isLoading && (
 				<Box
 					sx={{
 						display: "flex",
@@ -58,7 +60,7 @@ const ForgotPasswordForm = (props: Props) => {
 				</Box>
 			)}
     
-    {!Loading && !onSuccess && (<form onSubmit={handleSubmit(onSubmit)}>
+    {!isLoading && !isSuccess && (<form onSubmit={handleSubmit(onSubmit)}>
     <Typography variant="h5" align="center" gutterBottom>
           Forgot Password
         </Typography>
@@ -90,7 +92,7 @@ const ForgotPasswordForm = (props: Props) => {
         </Button>
     </form>)}
 
-    {onSuccess && !Loading && (
+    {isSuccess && !isLoading && (
 				<Box
 					display="flex"
 					flexDirection="column"
@@ -98,7 +100,7 @@ const ForgotPasswordForm = (props: Props) => {
 					textAlign="center"
 				>
 					<Typography variant="h6" sx={{ padding: 5 }}>
-						Please check email to reset Password
+          {data.msg}
 					</Typography>
 					
 
