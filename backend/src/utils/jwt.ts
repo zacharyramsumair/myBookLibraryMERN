@@ -12,9 +12,9 @@ interface AttachCookiesToResponseArgs {
 interface IJWTUserTokens {
 	user: {
 		userId: Types.ObjectId;
-		name: string;
-		role: "admin" | "user";
-		tier: "free" | "standard" | "premium";
+		// name: string;
+		// role: "admin" | "user";
+		// tier: "free" | "standard" | "premium";
 	};
 	refreshToken?: string;
 }

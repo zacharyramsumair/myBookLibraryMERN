@@ -54,7 +54,7 @@ export const UserContextProvider = ({ children }: Props) => {
 	//   }, []);
 
 	return (
-		<UserContext.Provider value={{ user, setUser, isLoading }}>
+		<UserContext.Provider value={{ user, setUser, isLoading, fetchUser}}>
 			{children}
 		</UserContext.Provider>
 	);

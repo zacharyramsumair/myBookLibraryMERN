@@ -151,7 +151,7 @@ const loginUser = async (req: Request, res: Response) => {
 			throw new Error("This account has been banned for suspicious activity");
 		}
 		refreshToken = existingToken.refreshToken;
-		attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+		attachCookiesToResponse({ res, user: user._id, refreshToken });
 		res.status(StatusCodes.OK).json({ user: tokenUser });
 		return;
 	}
@@ -163,7 +163,7 @@ const loginUser = async (req: Request, res: Response) => {
 
 	await Token.create(userToken);
 
-	attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+	attachCookiesToResponse({ res, user: user._id, refreshToken });
 
 	res.status(StatusCodes.OK).json({ user: tokenUser });
 };
@@ -172,7 +172,16 @@ const loginUser = async (req: Request, res: Response) => {
 // @route   GET /showCurrentUser
 // @access  Private
 const showCurrentUser = async (req: Request, res: Response) => {
-	res.status(StatusCodes.OK).json({ user: req.user });
+	const user = await User.findOne({ _id: req.user.userId });
+    if (!user) {
+      res.status(StatusCodes.NOT_FOUND);
+      throw new Error("User not found");
+    }
+    
+    const { name, email, _id: id, role, tier } = user;
+    res.status(StatusCodes.OK).json({ name, email, id, role, tier });
+
+
 };
 
 const logout = async (req: Request, res: Response) => {

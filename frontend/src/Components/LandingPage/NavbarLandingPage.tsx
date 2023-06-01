@@ -36,7 +36,7 @@ const navItems = [
 export default function Navbar(props: Props) {
 	const { user, setUser } = React.useContext(UserContext);
 	if (user) {
-		console.log(user);
+		console.log("user", user);
 	}
 
 	let { logout, error, data, isError, isLoading, isSuccess } = useLogout();
@@ -72,7 +72,7 @@ export default function Navbar(props: Props) {
 										textDecorationLine: "none", // Add this line to remove the underline
 									}}
 								>
-									Hello {user.user.name.slice(0, 10)}
+									Hello {user.name}
 								</Typography>
 							</ListItemButton>
 						</ListItem>
@@ -210,7 +210,7 @@ export default function Navbar(props: Props) {
 												alignItems: "center",
 											}}
 										>
-											Hello {user.user.name.slice(0, 10)}
+											Hello {user.name.slice(0, 10)}
 										</Typography>
 									</Button>
 									<Button

@@ -34,7 +34,7 @@ const LoginForm: React.FC = () => {
 		isSuccess,
 	} = useLoginUser();
 
-	let { user, setUser } = useContext(UserContext);
+	let { user, setUser, fetchUser} = useContext(UserContext);
 	let navigate = useNavigate();
 
 	useEffect(() => {
@@ -43,7 +43,8 @@ const LoginForm: React.FC = () => {
 		}
 
 		if (isSuccess) {
-			setUser(data);
+			// setUser(data);
+			fetchUser()
 			// Cookies.set("user", JSON.stringify(data), { secure: true, sameSite: "strict" });
 			navigate("/home");
 		}
