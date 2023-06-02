@@ -3,6 +3,8 @@ import mongoose, { Document, Model, Schema, Types } from "mongoose";
 interface IBlock extends Document {
   title: string;
   tags: string[];
+  ratingTotal: number;
+  ratingCount: number;
   rating: number;
   imageUrl: string;
   text: string;
@@ -22,12 +24,21 @@ const BlockSchema: Schema<IBlock> = new mongoose.Schema<IBlock>(
       type: [String],
       required: [true, "Please provide at least one tag"],
     },
+    ratingTotal: {
+      type: Number,
+      default: 0,
+    },
+    ratingCount: {
+      type: Number,
+      default: 0,
+    },
     rating: {
       type: Number,
       default: 0,
     },
     imageUrl: {
       type: String,
+      default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjyma7ghZ3NnM5A58f5-B8vonB_SiDKzdgowXaUFQRb7dTh-XyUWAd1XfchvPUlwai5lE&usqp=CAU"
     },
     text: {
       type: String,

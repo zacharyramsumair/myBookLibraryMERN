@@ -17,6 +17,9 @@ interface IUser extends Document {
 	noOfGems: number;
 	favorites: Types.ObjectId[]; // Array of Block IDs
 	userShelf: Types.ObjectId[]; // Array of Block IDs
+	myBlocks: Types.ObjectId[]; // Array of Block IDs
+	blocksBought: Types.ObjectId[]; // Array of Block IDs
+	favoriteTags: string[];
 }
 
 const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>(
@@ -87,6 +90,17 @@ const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>(
 		userShelf: {
 			type: [Schema.Types.ObjectId],
 			ref: "Block", // Assuming the Block model is named "Block"
+		},
+		myBlocks: {
+			type: [Schema.Types.ObjectId],
+			ref: "Block", // Assuming the Block model is named "Block"
+		},
+		blocksBought: {
+			type: [Schema.Types.ObjectId],
+			ref: "Block", // Assuming the Block model is named "Block"
+		},
+		favoriteTags: {
+			type: [String],
 		},
 	},
 	{ timestamps: true }
