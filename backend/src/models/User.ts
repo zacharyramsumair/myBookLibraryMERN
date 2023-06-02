@@ -16,6 +16,7 @@ interface IUser extends Document {
 	comparePassword: (candidatePassword: string) => Promise<boolean>;
 	noOfGems: number;
 	favorites: Types.ObjectId[]; // Array of Block IDs
+	userShelf: Types.ObjectId[]; // Array of Block IDs
 }
 
 const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>(
@@ -80,6 +81,10 @@ const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>(
 			default: 0,
 		},
 		favorites: {
+			type: [Schema.Types.ObjectId],
+			ref: "Block", // Assuming the Block model is named "Block"
+		},
+		userShelf: {
 			type: [Schema.Types.ObjectId],
 			ref: "Block", // Assuming the Block model is named "Block"
 		},
