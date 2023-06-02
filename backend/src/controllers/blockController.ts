@@ -151,7 +151,8 @@ const searchBlocks = async (req: Request, res: Response) => {
 
 	let blocks = await Block.find({
 		title: { $regex: title, $options: "i" },
-	});
+	},"title tags price tier imageUrl createdBy"
+	).populate("createdBy", "name email");
 
 	if (sort === "rating") {
 		blocks = blocks.sort((a, b) => b.rating - a.rating);
