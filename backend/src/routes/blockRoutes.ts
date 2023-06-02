@@ -14,5 +14,6 @@ router.delete("/:id", authenticateUser, blockController.deleteBlock);
 router.get("/search", blockController.searchBlocks);
 router.post("/:id/rate", authenticateUser, blockController.rateBlock);
 router.post("/:id/favorite", authenticateUser, blockController.favoriteBlock);
+router.get("/favorite", authenticateUser, blockController.getFavoriteBlocks);
 
 export default router;

@@ -34,7 +34,7 @@ export const authenticateUser = async (
 		const payload = isTokenValid(refreshToken);
 	
 		const existingToken = await Token.findOne({
-		  user: payload.user.userId,
+		  user: payload.user,
 		  refreshToken: payload.refreshToken,
 		});
 	

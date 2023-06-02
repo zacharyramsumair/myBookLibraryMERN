@@ -199,8 +199,9 @@ const showCurrentUser = async (req: Request, res: Response) => {
       throw new Error("User not found");
     }
     
-    const { name, email, _id: id, role, tier } = user;
-    res.status(StatusCodes.OK).json({ name, email, id, role, tier });
+    // const { name, email, _id: id, role, tier } = user;
+    // res.status(StatusCodes.OK).json({ name, email, id, role, tier });
+    res.status(StatusCodes.OK).json({user});
 
 
 };
