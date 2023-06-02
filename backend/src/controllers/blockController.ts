@@ -22,16 +22,14 @@ const buyBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
-		return res
-			.status(StatusCodes.UNAUTHORIZED)
-			.json({ error: "Not authorized" });
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
 	}
 
 	const block = await Block.findById(id);
 	if (!block) {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({ error: "Block not found" });
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("Block not found");
 	}
 
 	if (block.tier == "free") {
@@ -41,9 +39,8 @@ const buyBlock = async (req: Request, res: Response) => {
 	}
 
 	if (currentUser.noOfGems < block.price) {
-		return res
-			.status(StatusCodes.EXPECTATION_FAILED)
-			.json({ error: "Not enough gems." });
+		res.status(StatusCodes.EXPECTATION_FAILED);
+		throw new Error("Not enough gems.");
 	}
 	currentUser.noOfGems -= block.price;
 	currentUser.blocksBought.push(block._id);
@@ -61,16 +58,14 @@ const getBlockById = async (req: Request, res: Response) => {
 
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
-		return res
-			.status(StatusCodes.UNAUTHORIZED)
-			.json({ error: "Not authorized" });
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
 	}
 
 	const block = await Block.findById(id);
 	if (!block) {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({ error: "Block not found" });
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("Block not found");
 	}
 
 	block.views += 1;
@@ -95,26 +90,20 @@ const createBlock = async (req: Request, res: Response) => {
 
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
-		return res
-			.status(StatusCodes.UNAUTHORIZED)
-			.json({ error: "Not authorized" });
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
 	}
 
 	if (price != 0) {
 		let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
 		if (!currentUser || currentUser.noOfGems < paidBlockCost) {
-			return res
-				.status(StatusCodes.BAD_REQUEST)
-				.json({ error: "Insufficient gems" });
+			res.status(StatusCodes.EXPECTATION_FAILED);
+			throw new Error("Not enough gems.");
 		}
 	}
 
 	const block = await Block.create({
-		title,
-		tags,
-		imageUrl,
-		text,
-		price,
+		...req.body,
 		tier: price == 0 ? "free" : "paid",
 		createdBy: req.user,
 	});
@@ -135,17 +124,15 @@ const updateBlock = async (req: Request, res: Response) => {
 
 	const block = await Block.findById(id);
 	if (!block) {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({ error: "Block not found" });
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("Block not found");
 	}
 
 	// Check if the current user is the creator of the block
 	if (!block.createdBy.equals(req.user)) {
 		console.log("this piece");
-		return res
-			.status(StatusCodes.UNAUTHORIZED)
-			.json({ error: "Not authorized" });
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
 	}
 
 	block.title = title;
@@ -167,16 +154,14 @@ const deleteBlock = async (req: Request, res: Response) => {
 
 	const block = await Block.findById(id);
 	if (!block) {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({ error: "Block not found" });
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("Block not found");
 	}
 
 	// Check if the current user is the creator of the block
 	if (!block.createdBy.equals(req.user)) {
-		return res
-			.status(StatusCodes.UNAUTHORIZED)
-			.json({ error: "Not authorized" });
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
 	}
 
 	await Block.deleteOne({ _id: id });
@@ -216,16 +201,14 @@ const rateBlock = async (req: Request, res: Response) => {
 
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
-		return res
-			.status(StatusCodes.UNAUTHORIZED)
-			.json({ error: "Not authorized" });
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
 	}
 
 	const block = await Block.findById(id);
 	if (!block) {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({ error: "Block not found" });
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("Block not found");
 	}
 
 	if (block.tier == "paid") {
@@ -236,10 +219,10 @@ const rateBlock = async (req: Request, res: Response) => {
 		}
 	}
 
-	block.ratingTotal += rating
-	block.ratingCount += 1
+	block.ratingTotal += rating;
+	block.ratingCount += 1;
 	// Update the rating of the block
-	block.rating =  (block.ratingTotal + rating)/(block.ratingCount +1)
+	block.rating = (block.ratingTotal + rating) / (block.ratingCount + 1);
 	await block.save();
 	res.status(StatusCodes.OK).json(block);
 };
@@ -252,17 +235,15 @@ const favoriteBlock = async (req: Request, res: Response) => {
 
 	const block = await Block.findById(id);
 	if (!block) {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({ error: "Block not found" });
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("Block not found");
 	}
 
 	// Add the block to the user's favorites
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
-		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({ error: "User not found" });
+		res.status(StatusCodes.UNAUTHORIZED);
+      throw new Error("Not authorized");
 	}
 
 	currentUser.favorites.push(block._id);
@@ -278,9 +259,8 @@ const getFavoriteBlocks = async (req: Request, res: Response) => {
 	const currentUser = await User.findById(req.user);
 
 	if (!currentUser) {
-		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({ error: "User not found" });
+		res.status(StatusCodes.UNAUTHORIZED);
+      throw new Error("Not authorized");
 	}
 
 	const favoriteBlockIds = currentUser.favorites;
