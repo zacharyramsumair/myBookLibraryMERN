@@ -52,7 +52,7 @@ const buyBlock = async (req: Request, res: Response) => {
 			(tag) => tag.tagName === tagName
 		);
 
-		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite
+		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite and for creating a Block with this tag
 
 		if (tagIndex !== -1) {
 			// Tag already exists, update the count
@@ -94,7 +94,7 @@ const getBlockById = async (req: Request, res: Response) => {
 			(tag) => tag.tagName === tagName
 		);
 
-		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite
+		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite and for creating a Block with this tag
 
 		if (tagIndex !== -1) {
 			// Tag already exists, update the count
@@ -159,6 +159,28 @@ const createBlock = async (req: Request, res: Response) => {
 	await block.save();
 
 	currentUser.myBlocks.push(block._id);
+
+	//update favorite tags, take this and put this when put shelf and fav
+
+	block.tags.forEach((tagName) => {
+		const tagIndex = currentUser.favoriteTags.findIndex(
+			(tag) => tag.tagName === tagName
+		);
+
+		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite and for creating a Block with this tag
+
+		if (tagIndex !== -1) {
+			// Tag already exists, update the count
+			currentUser.favoriteTags[tagIndex].count += 10;
+		} else {
+			// Tag does not exist, add it to the array
+			currentUser.favoriteTags.push({ tagName, count: 10 });
+		}
+	});
+
+	await currentUser.save();
+
+
 	await currentUser.save();
 
 	res.status(StatusCodes.CREATED).json(block);
@@ -310,7 +332,7 @@ const favoriteBlock = async (req: Request, res: Response) => {
 			(tag) => tag.tagName === tagName
 		);
 
-		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite
+		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite and for creating a Block with this tag
 
 		if (tagIndex !== -1) {
 			// Tag already exists, update the count
