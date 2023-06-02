@@ -1,6 +1,4 @@
 import React, { ReactNode, useState, useEffect } from "react";
-import Cookies from "js-cookie";
-import { useShowCurrentUser } from "../Hooks/Auth/useShowCurrentUser";
 import axios from "axios";
 
 export const UserContext = React.createContext<any | null>(null);
@@ -33,6 +31,7 @@ export const UserContextProvider = ({ children }: Props) => {
 			const { data } = await axios.get(`/api/v1/auth/showCurrentUser`);
 			setUser(data);
 		} catch (error) {
+			console.log(error)
 			setUser(null);
 		}
 		setIsLoading(false);

@@ -8,21 +8,19 @@ import cookieParser from "cookie-parser";
 import rateLimiter from "express-rate-limit";
 import helmet from "helmet";
 // import xss from 'xss-clean'
-import xss, { IFilterXSSOptions } from 'xss'
-import { filterXSS } from 'xss';
+import xss, { IFilterXSSOptions } from "xss";
+import { filterXSS } from "xss";
 
 import cors from "cors";
 import mongoSanitize from "express-mongo-sanitize";
 import path from "path";
 import errorHandler from "./middleware/errorHandler";
 
-
 import connectDB from "./db/connect";
-import authRouter from "./routes/authRoutes"
-import csrf from 'csurf';
+import authRouter from "./routes/authRoutes";
+import blockRouter from "./routes/blockRoutes";
+import csrf from "csurf";
 import crypto from "crypto";
-
-
 
 app.use(
 	rateLimiter({
@@ -36,7 +34,6 @@ app.use(mongoSanitize());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.JWT_SECRET));
-
 
 //prevent CSRF attacks
 // turn back on when done pass csrf-token in headers : learnt from https://www.youtube.com/watch?v=VrFNbqSUVP0
@@ -58,28 +55,20 @@ app.use(cookieParser(process.env.JWT_SECRET));
 
 //remember to uncomment the GET request /getCsrfToken at the bottom of this page
 
-
-
 // Use express-sanitizer to sanitize user input
 app.use((req, res, next) => {
-	res.setHeader('Content-Security-Policy', "default-src 'self'");
+	res.setHeader("Content-Security-Policy", "default-src 'self'");
 	next();
-  });
-
+});
 
 // XSS Prevention Middleware
 export const xssOptions: IFilterXSSOptions = {
 	whiteList: {},
 	stripIgnoreTag: true,
 	stripIgnoreTagBody: ["script"],
-  };
-
-
-
-
+};
 
 // app.use(notFoundMiddleware);
-
 
 const port = process.env.PORT || 5000;
 const start = async () => {
@@ -96,8 +85,6 @@ const start = async () => {
 			);
 		} else {
 			app.get("/", (req, res) => res.send("Please set to production"));
-
-			
 		}
 
 		//route to get the CSRF token
@@ -106,13 +93,13 @@ const start = async () => {
 		// 	res.json({csrfToken:req.csrfToken()})
 		// })
 
-	
+		// Use the blockRouter for the '/api/v1/blocks' route
+		app.use("/api/v1/blocks", blockRouter);
 
+		// Use the authRouter for the '/api/v1/auth' route
+		app.use("/api/v1/auth", authRouter);
 
-		app.use('/api/v1/auth', authRouter);
-
-
-		app.use(errorHandler);	
+		app.use(errorHandler);
 		app.listen(port, () =>
 			console.log(`Server is listening on port ${port}...`)
 		);

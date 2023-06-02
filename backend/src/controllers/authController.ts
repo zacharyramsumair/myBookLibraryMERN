@@ -127,7 +127,26 @@ const loginUser = async (req: Request, res: Response) => {
 		throw new Error("Invalid email or password");
 	}
 
+
+
 	if (!user.isVerified) {
+
+		const verificationToken = crypto.randomBytes(40).toString("hex");
+
+	
+		// Update existing user with the new verification token
+		user.verificationToken = verificationToken;
+		await user.save();
+	
+
+	await sendVerificationEmail({
+		name:user.name,
+		email,
+		verificationToken,
+		origin: process.env.EMAIL_ORIGIN as string,
+	});
+
+
 		res.status(StatusCodes.UNAUTHORIZED);
 		throw new Error("Please verify your email");
 	}
@@ -172,7 +191,9 @@ const loginUser = async (req: Request, res: Response) => {
 // @route   GET /showCurrentUser
 // @access  Private
 const showCurrentUser = async (req: Request, res: Response) => {
-	const user = await User.findOne({ _id: req.user.userId });
+	// res.json(req.user)
+	
+	const user = await User.findOne({ _id: req.user });
     if (!user) {
       res.status(StatusCodes.NOT_FOUND);
       throw new Error("User not found");
@@ -185,7 +206,7 @@ const showCurrentUser = async (req: Request, res: Response) => {
 };
 
 const logout = async (req: Request, res: Response) => {
-	await Token.findOneAndDelete({ user: req.user.userId });
+	await Token.findOneAndDelete({ user: req.user});
 
 	res.cookie("accessToken", "logout", {
 		httpOnly: true,
