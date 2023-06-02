@@ -44,6 +44,25 @@ const buyBlock = async (req: Request, res: Response) => {
 	}
 	currentUser.noOfGems -= block.price;
 	currentUser.blocksBought.push(block._id);
+
+	//update favorite tags, take this and put this when put shelf and fav
+
+	block.tags.forEach((tagName) => {
+		const tagIndex = currentUser.favoriteTags.findIndex(
+			(tag) => tag.tagName === tagName
+		);
+
+		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite
+
+		if (tagIndex !== -1) {
+			// Tag already exists, update the count
+			currentUser.favoriteTags[tagIndex].count += 5;
+		} else {
+			// Tag does not exist, add it to the array
+			currentUser.favoriteTags.push({ tagName, count: 5 });
+		}
+	});
+
 	await currentUser.save();
 	return res
 		.status(StatusCodes.OK)
@@ -68,6 +87,30 @@ const getBlockById = async (req: Request, res: Response) => {
 		throw new Error("Block not found");
 	}
 
+	//update favorite tags, take this and put this when put shelf and fav
+
+	block.tags.forEach((tagName) => {
+		const tagIndex = currentUser.favoriteTags.findIndex(
+			(tag) => tag.tagName === tagName
+		);
+
+		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite
+
+		if (tagIndex !== -1) {
+			// Tag already exists, update the count
+			currentUser.favoriteTags[tagIndex].count += 1;
+		} else {
+			// Tag does not exist, add it to the array
+			currentUser.favoriteTags.push({ tagName, count: 1 });
+		}
+	});
+
+	await currentUser.save();
+
+
+
+
+
 	block.views += 1;
 	await block.save();
 
@@ -88,11 +131,11 @@ const getBlockById = async (req: Request, res: Response) => {
 const createBlock = async (req: Request, res: Response) => {
 	const { title, tags, imageUrl, text, price } = req.body;
 
-	 // Check if the number of tags exceeds the limit
-	 if (tags.length > 4) {
+	// Check if the number of tags exceeds the limit
+	if (tags.length > 4) {
 		res.status(StatusCodes.BAD_REQUEST);
 		throw new Error("Number of tags cannot exceed 4");
-	  }
+	}
 
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
@@ -128,11 +171,11 @@ const updateBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const { title, tags, imageUrl, text, price, tier } = req.body;
 
-	 // Check if the number of tags exceeds the limit
-	 if (tags.length > 4) {
+	// Check if the number of tags exceeds the limit
+	if (tags.length > 4) {
 		res.status(StatusCodes.BAD_REQUEST);
 		throw new Error("Number of tags cannot exceed 4");
-	  }
+	}
 
 	const block = await Block.findById(id);
 	if (!block) {
@@ -255,10 +298,32 @@ const favoriteBlock = async (req: Request, res: Response) => {
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
 		res.status(StatusCodes.UNAUTHORIZED);
-      throw new Error("Not authorized");
+		throw new Error("Not authorized");
 	}
 
 	currentUser.favorites.push(block._id);
+
+	//update favorite tags, take this and put this when put shelf and fav
+
+	block.tags.forEach((tagName) => {
+		const tagIndex = currentUser.favoriteTags.findIndex(
+			(tag) => tag.tagName === tagName
+		);
+
+		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite
+
+		if (tagIndex !== -1) {
+			// Tag already exists, update the count
+			currentUser.favoriteTags[tagIndex].count += 10;
+		} else {
+			// Tag does not exist, add it to the array
+			currentUser.favoriteTags.push({ tagName, count: 10 });
+		}
+	});
+
+	await currentUser.save();
+
+
 	await currentUser.save();
 
 	res.status(StatusCodes.OK).json(block);
@@ -272,7 +337,7 @@ const getFavoriteBlocks = async (req: Request, res: Response) => {
 
 	if (!currentUser) {
 		res.status(StatusCodes.UNAUTHORIZED);
-      throw new Error("Not authorized");
+		throw new Error("Not authorized");
 	}
 
 	const favoriteBlockIds = currentUser.favorites;
