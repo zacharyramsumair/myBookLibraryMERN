@@ -88,6 +88,12 @@ const getBlockById = async (req: Request, res: Response) => {
 const createBlock = async (req: Request, res: Response) => {
 	const { title, tags, imageUrl, text, price } = req.body;
 
+	 // Check if the number of tags exceeds the limit
+	 if (tags.length > 4) {
+		res.status(StatusCodes.BAD_REQUEST);
+		throw new Error("Number of tags cannot exceed 4");
+	  }
+
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
 		res.status(StatusCodes.UNAUTHORIZED);
@@ -121,6 +127,12 @@ const createBlock = async (req: Request, res: Response) => {
 const updateBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const { title, tags, imageUrl, text, price, tier } = req.body;
+
+	 // Check if the number of tags exceeds the limit
+	 if (tags.length > 4) {
+		res.status(StatusCodes.BAD_REQUEST);
+		throw new Error("Number of tags cannot exceed 4");
+	  }
 
 	const block = await Block.findById(id);
 	if (!block) {
