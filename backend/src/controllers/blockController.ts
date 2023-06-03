@@ -32,10 +32,21 @@ const buyBlock = async (req: Request, res: Response) => {
 		throw new Error("Block not found");
 	}
 
+	//addBlock to the top of userShelf
+	if (!currentUser.userShelf.includes(block._id)) {
+		// Add block._id to the beginning of the array
+		currentUser.userShelf.unshift(block._id);
+	}
+
 	if (block.tier == "free") {
 		return res.status(StatusCodes.OK).json({
 			msg: `Block ${block._id} is free and does not need to be purchased.`,
 		});
+	}
+
+	if (currentUser.blocksBought.includes(block._id)) {
+		res.status(StatusCodes.BAD_REQUEST);
+		throw new Error("Block has already been purchased");
 	}
 
 	if (currentUser.noOfGems < block.price) {
@@ -105,11 +116,13 @@ const getBlockById = async (req: Request, res: Response) => {
 		}
 	});
 
+	// Move block._id to the top of the array
+	currentUser.userShelf = [
+		block._id,
+		...currentUser.userShelf.filter((itemId) => itemId !== block._id),
+	];
+
 	await currentUser.save();
-
-
-
-
 
 	block.views += 1;
 	await block.save();
@@ -180,7 +193,6 @@ const createBlock = async (req: Request, res: Response) => {
 
 	await currentUser.save();
 
-
 	await currentUser.save();
 
 	res.status(StatusCodes.CREATED).json(block);
@@ -245,29 +257,66 @@ const deleteBlock = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json({ message: "Block deleted successfully" });
 };
 
-// @desc    Search blocks by title and sort by rating or views
-// @route   GET /api/v1/blocks/search?title=<title>&sort=<rating|views>
+// @desc    Search blocks by title and sort by rating or views with pagination
+// @route   GET /api/v1/blocks/search?title=<title>&sort=<ratingDesc|ratingAsc|viewsDesc|viewsAsc>&page=<pageNumber>&limit=<pageSize>
 // @access  Public
 const searchBlocks = async (req: Request, res: Response) => {
-	const { title, sort } = req.query;
-
-	let blocks = await Block.find(
-		{
-			title: { $regex: title, $options: "i" },
-		},
-		"title tags price tier imageUrl createdBy"
-	).populate("createdBy", "name email");
-
-	if (sort === "rating") {
-		blocks = blocks.sort((a, b) => b.rating - a.rating);
-		// } else if (sort === "tags") {
-		// 	blocks = blocks.sort((a, b) => a.tags.length - b.tags.length);
-	} else if (sort === "views") {
-		blocks = blocks.sort((a, b) => b.views - a.views);
+	// Extract query parameters
+	const { title, sort, page, limit } = req.query;
+  
+	if (
+	  typeof title !== "string" ||
+	  typeof sort !== "string" ||
+	  typeof page !== "string" ||
+	  typeof limit !== "string"
+	) {
+	  res.status(StatusCodes.BAD_REQUEST);
+	  throw new Error("Invalid query parameters");
 	}
-
-	res.status(StatusCodes.OK).json(blocks);
-};
+  
+	// Parse page number and page size from query parameters
+	const pageNumber = parseInt(page) || 1;
+	const pageSize = parseInt(limit) || 10;
+  
+	// Build search query
+	const searchQuery = {
+	  title: { $regex: title, $options: "i" },
+	};
+  
+	// Start with the base query to find blocks matching the search query
+	let query = Block.find(
+	  searchQuery,
+	  "title tags price tier imageUrl createdBy"
+	).populate("createdBy", "name email");
+  
+	// Apply sorting based on the 'sort' parameter
+	if (sort.startsWith("rating")) {
+	  query = query.sort({ rating: sort === "ratingDesc" ? -1 : 1 });
+	} else if (sort.startsWith("views")) {
+	  query = query.sort({ views: sort === "viewsDesc" ? -1 : 1 });
+	}
+  
+	// Count total items matching the search query
+	const totalItems = await Block.countDocuments(searchQuery);
+  
+	// Calculate total pages based on page size
+	const totalPages = Math.ceil(totalItems / pageSize);
+  
+	// Apply pagination to the query
+	query = query.skip((pageNumber - 1) * pageSize).limit(pageSize);
+  
+	// Execute the query and retrieve blocks
+	const blocks = await query.exec();
+  
+	// Return the blocks along with pagination information in the response
+	res.status(StatusCodes.OK).json({
+	  blocks,
+	  page: pageNumber,
+	  totalPages,
+	  totalItems,
+	});
+  };
+  
 
 // @desc    Rate a block
 // @route   POST /api/v1/blocks/:id/rate
@@ -344,7 +393,6 @@ const favoriteBlock = async (req: Request, res: Response) => {
 	});
 
 	await currentUser.save();
-
 
 	await currentUser.save();
 
