@@ -534,6 +534,55 @@ const getUserShelfBlocks = async (req: Request, res: Response) => {
   };
   
 
+
+  /**
+ * @desc    Get home page information
+ * @route   GET /api/v1/home
+ * @access  Public
+ */
+const getHomePage = async (req: Request, res: Response) => {
+	const currentUser = await User.findById(req.user);
+  
+	  const homePageData:any = {};
+  
+	  if (currentUser) {
+		const continueReadingBlocks = await Block.find({ _id: { $in: currentUser.userShelf } })
+		  .populate("createdBy", "name email")
+		  .limit(5);
+  
+		const favoriteTags = currentUser.favoriteTags.slice(0, 3);
+		const favTagsBlocks = await Promise.all(
+		  favoriteTags.map(async (tag) => {
+			const blocks = await Block.find({ tags: tag })
+			  .sort({ rating: -1 })
+			  .limit(10)
+			  .populate("createdBy", "name email");
+			return { tag, blocks };
+		  })
+		);
+  
+		homePageData.continueReading = continueReadingBlocks;
+		homePageData.favtags = favTagsBlocks;
+	  }
+  
+	  const popularBlocks = await Block.find()
+		.sort({ views: -1 })
+		.limit(10)
+		.populate("createdBy", "name email");
+  
+	  const bestRatedBlocks = await Block.find()
+		.sort({ rating: -1 })
+		.limit(10)
+		.populate("createdBy", "name email");
+  
+	  homePageData.popular = popularBlocks;
+	  homePageData.bestRated = bestRatedBlocks;
+  
+	  res.status(StatusCodes.OK).json(homePageData);
+	
+  };
+  
+
 export default {
 	getAllBlocks,
 	buyBlock,
@@ -548,4 +597,5 @@ export default {
 	getBlocksByTag,
 	getMyBlocks,
 	getUserShelfBlocks,
+	getHomePage,
 };
