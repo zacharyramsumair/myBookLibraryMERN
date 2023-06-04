@@ -290,6 +290,145 @@ const resetPassword = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json({ msg: "Password Reset" });
 };
 
+
+// @desc    Get user profile page
+// @route   GET /profile/:id
+// @access  Public
+const getProfilePage = async (req: Request, res: Response) => {
+	
+	  const { id } = req.params; // Assuming the user ID is provided as a route parameter
+  
+	  const user = await User.findById(id)
+		.populate("favorites", "title image tags")
+		.populate({
+		  path: "userRatings.block",
+		  select: "title image tags",
+		})
+		.populate("myBlocks", "title image tags")
+		.exec();
+  
+	  if (!user) {
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("User not found");
+	  }
+  
+	  const userProfile = {
+		personalInfo: {
+		  name: user.name,
+		  email: user.email,
+		},
+		favoriteBlocks: user.favorites,
+		ratedBlocks: user.userRatings.map((rating) => ({
+		  block: rating.blockInfo,
+		  rating: rating.rating,
+		})),
+		createdBlocks: user.myBlocks,
+	  };
+  
+	  res.status(StatusCodes.OK).json(userProfile);
+	
+  };
+
+  
+  // @desc    Get user's favorite blocks
+// @route   GET /profile/favorite-blocks
+// @access  Public
+const getFavoriteBlocks = async (req: Request, res: Response) => {
+
+	  const { userId } = req.query;
+	  const page = parseInt(req.query.page as string) || 1;
+	  const limit = parseInt(req.query.limit as string) || 10;
+  
+	  const user = await User.findById(userId)
+		.populate({
+		  path: "favorites",
+		  select: "title image tags",
+		  options: {
+			skip: (page - 1) * limit,
+			limit,
+		  },
+		})
+		.exec();
+  
+	  if (!user) {
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("User not found");
+	  }
+  
+	  const favoriteBlocks = user.favorites;
+  
+	  res.status(StatusCodes.OK).json(favoriteBlocks);
+	
+  };
+
+  
+  // @desc    Get user's rated blocks
+// @route   GET /profile/rated-blocks
+// @access  Public
+const getRatedBlocks = async (req: Request, res: Response) => {
+	
+	  const { userId } = req.query;
+	  const page = parseInt(req.query.page as string) || 1;
+	  const limit = parseInt(req.query.limit as string) || 10;
+  
+	  const user = await User.findById(userId)
+		.populate({
+		  path: "userRatings.block",
+		  select: "title image tags",
+		  options: {
+			skip: (page - 1) * limit,
+			limit,
+		  },
+		})
+		.exec();
+  
+	  if (!user) {
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("User not found");
+	  }
+  
+	  const ratedBlocks = user.userRatings.map((rating) => ({
+		block: rating.blockInfo,
+		rating: rating.rating,
+	  }));
+  
+	  res.status(StatusCodes.OK).json(ratedBlocks);
+	
+  };
+
+  
+  // @desc    Get user's created blocks
+// @route   GET /profile/created-blocks
+// @access  Public
+const getCreatedBlocks = async (req: Request, res: Response) => {
+	
+	  const { userId } = req.query;
+	  const page = parseInt(req.query.page as string) || 1;
+	  const limit = parseInt(req.query.limit as string) || 10;
+  
+	  const user = await User.findById(userId)
+		.populate({
+		  path: "myBlocks",
+		  select: "title image tags",
+		  options: {
+			skip: (page - 1) * limit,
+			limit,
+		  },
+		})
+		.exec();
+  
+	  if (!user) {
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("User not found");
+	  }
+  
+	  const createdBlocks = user.myBlocks;
+  
+	  res.status(StatusCodes.OK).json(createdBlocks);
+	
+  };
+  
+
 export default {
 	registerUser,
 	verifyEmail,
@@ -298,4 +437,8 @@ export default {
 	logout,
 	forgotPassword,
 	resetPassword,
+	getProfilePage,
+	getFavoriteBlocks,
+	getRatedBlocks,
+	getCreatedBlocks
 };
