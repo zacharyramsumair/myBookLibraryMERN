@@ -19,7 +19,8 @@ interface IUser extends Document {
 	userShelf: Types.ObjectId[]; // Array of Block IDs
 	myBlocks: Types.ObjectId[]; // Array of Block IDs
 	blocksBought: Types.ObjectId[]; // Array of Block IDs
-	favoriteTags: { tagName: string, count: number }[];
+	favoriteTags: { tagName: string; count: number }[];
+	userRatings: { blockInfo: Types.ObjectId; rating: number }[];
 }
 
 const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>(
@@ -101,16 +102,28 @@ const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>(
 		},
 		favoriteTags: [
 			{
-			  tagName: {
-				type: String,
-				required: true,
-			  },
-			  count: {
-				type: Number,
-				default: 0,
-			  },
+				tagName: {
+					type: String,
+					required: true,
+				},
+				count: {
+					type: Number,
+					default: 0,
+				},
 			},
-		  ],
+		],
+		userRatings: [
+			{
+				blockInfo: {
+					type: [Schema.Types.ObjectId],
+					ref: "Block", // Assuming the Block model is named "Block"
+				},
+				rating: {
+					type: Number,
+					default: 0,
+				},
+			},
+		],
 	},
 	{ timestamps: true }
 );

@@ -338,9 +338,8 @@ const rateBlock = async (req: Request, res: Response) => {
 
 	if (block.tier == "paid") {
 		if (!currentUser.blocksBought.includes(block._id)) {
-			return res
-				.status(StatusCodes.UNAUTHORIZED)
-				.json({ msg: "You do not own this block. So you cannot rate it." });
+			res.status(StatusCodes.UNAUTHORIZED);
+			throw new Error("You do not own this block, so you cannot rate it");
 		}
 	}
 
@@ -348,6 +347,15 @@ const rateBlock = async (req: Request, res: Response) => {
 	block.ratingCount += 1;
 	// Update the rating of the block
 	block.rating = (block.ratingTotal + rating) / (block.ratingCount + 1);
+
+	//enter rating in userRating
+	// Remove elements from currentUser.userRatings with currentUser.userRatings.BlockInfo = block._id
+	currentUser.userRatings = currentUser.userRatings.filter(
+		(rating) => rating.blockInfo !== block._id
+	);
+
+	currentUser.userRatings.unshift({ blockInfo: block._id, rating });
+
 	await block.save();
 	res.status(StatusCodes.OK).json(block);
 };
@@ -405,59 +413,61 @@ const getFavoriteBlocks = async (req: Request, res: Response) => {
 	const currentUser = await User.findById(req.user);
 
 	if (!currentUser) {
-	  res.status(StatusCodes.UNAUTHORIZED);
-	  throw new Error("Not authorized");
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
 	}
-  
+
 	const favoriteBlockIds = currentUser.favorites;
-  
+
 	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters
 	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
 	const skip = (page - 1) * limit; // Calculate the number of documents to skip
-  
-	
-	  const favoriteBlocks = await Block.find(
+
+	const favoriteBlocks = await Block.find(
 		{ _id: { $in: favoriteBlockIds } },
 		"title tags price tier imageUrl createdBy"
-	  )
+	)
 		.populate("createdBy", "name email")
 		.skip(skip)
 		.limit(limit);
-  
-	  const totalBlocks = await Block.countDocuments({ _id: { $in: favoriteBlockIds } });
-  
-	  const totalPages = Math.ceil(totalBlocks / limit);
-  
-	  res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks: favoriteBlocks });
-	
-  };
+
+	const totalBlocks = await Block.countDocuments({
+		_id: { $in: favoriteBlockIds },
+	});
+
+	const totalPages = Math.ceil(totalBlocks / limit);
+
+	res.status(StatusCodes.OK).json({
+		currentPage: page,
+		totalPages,
+		blocks: favoriteBlocks,
+	});
+};
 
 // @desc    Get all blocks with a specific tag
 // @route   GET /api/v1/blocks/tags/:tag?page=<page_number>&limit=<limit_per_page>
 // @access  Public
 const getBlocksByTag = async (req: Request, res: Response) => {
 	const { tag } = req.params;
-  
+
 	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters
 	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
 	const skip = (page - 1) * limit; // Calculate the number of documents to skip
-  
-	
-	  const blocks = await Block.find(
+
+	const blocks = await Block.find(
 		{ tags: tag },
 		"title tags price tier imageUrl createdBy"
-	  )
+	)
 		.populate("createdBy", "name email")
 		.skip(skip)
 		.limit(limit);
-  
-	  const totalBlocks = await Block.countDocuments({ tags: tag });
-  
-	  const totalPages = Math.ceil(totalBlocks / limit);
-  
-	  res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks });
-	
-  };
+
+	const totalBlocks = await Block.countDocuments({ tags: tag });
+
+	const totalPages = Math.ceil(totalBlocks / limit);
+
+	res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks });
+};
 
 // @desc    Get all blocks created by the current user
 // @route   GET /api/v1/blocks/my-blocks?page=<page_number>&limit=<limit_per_page>&sortBy=<sort_field>&sortOrder=<asc_or_desc>
@@ -468,38 +478,36 @@ const getMyBlocks = async (req: Request, res: Response) => {
 	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
 	const sortBy = req.query.sortBy || "createdDate"; // Default sorting by creation date if not provided
 	const sortOrder = req.query.sortOrder || "desc"; // Default sorting order is descending if not provided
-  
+
 	let sortOptions = {};
-  
+
 	if (sortBy === "lastUpdated") {
-	  sortOptions = { updatedAt: sortOrder === "asc" ? 1 : -1 };
+		sortOptions = { updatedAt: sortOrder === "asc" ? 1 : -1 };
 	} else if (sortBy === "rating") {
-	  sortOptions = { rating: sortOrder === "asc" ? 1 : -1 };
+		sortOptions = { rating: sortOrder === "asc" ? 1 : -1 };
 	} else if (sortBy === "views") {
-	  sortOptions = { views: sortOrder === "asc" ? 1 : -1 };
+		sortOptions = { views: sortOrder === "asc" ? 1 : -1 };
 	} else {
-	  // Sort by creation date (default)
-	  sortOptions = { createdDate: sortOrder === "asc" ? 1 : -1 };
+		// Sort by creation date (default)
+		sortOptions = { createdDate: sortOrder === "asc" ? 1 : -1 };
 	}
-  
+
 	const skip = (page - 1) * limit; // Calculate the number of documents to skip
-  
-	
-	  const blocks = await Block.find(
+
+	const blocks = await Block.find(
 		{ createdBy: userId },
 		"title tags price tier imageUrl createdBy"
-	  )
+	)
 		.sort(sortOptions)
 		.skip(skip)
 		.limit(limit);
-  
-	  const totalBlocks = await Block.countDocuments({ createdBy: userId });
-  
-	  const totalPages = Math.ceil(totalBlocks / limit);
-  
-	  res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks });
-	
-  };
+
+	const totalBlocks = await Block.countDocuments({ createdBy: userId });
+
+	const totalPages = Math.ceil(totalBlocks / limit);
+
+	res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks });
+};
 
 // @desc    Get all blocks in the UserShelf of the current user
 // @route   GET /api/v1/blocks/user-shelf?page=<page_number>&limit=<limit_per_page>
@@ -507,81 +515,75 @@ const getMyBlocks = async (req: Request, res: Response) => {
 const getUserShelfBlocks = async (req: Request, res: Response) => {
 	// Retrieve the current user
 	const currentUser = await User.findById(req.user);
-  
+
 	if (!currentUser) {
-	  res.status(StatusCodes.UNAUTHORIZED);
-	  throw new Error("Not authorized");
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
 	}
-  
+
 	// Retrieve the blocks in the UserShelf
 	const blockIds = currentUser.userShelf;
 	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters
 	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
 	const skip = (page - 1) * limit; // Calculate the number of documents to skip
-  
-	
-	  const blocks = await Block.find({ _id: { $in: blockIds } })
+
+	const blocks = await Block.find({ _id: { $in: blockIds } })
 		.select("title tags price tier imageUrl createdBy")
 		.populate("createdBy", "name email") // Populate createdBy field with name and email
 		.skip(skip)
 		.limit(limit);
-  
-	  const totalBlocks = blockIds.length;
-	  const totalPages = Math.ceil(totalBlocks / limit);
-  
-	  res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks });
-	
-  };
-  
 
+	const totalBlocks = blockIds.length;
+	const totalPages = Math.ceil(totalBlocks / limit);
 
-  /**
- * @desc    Get home page information
- * @route   GET /api/v1/home
- * @access  Public
- */
+	res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks });
+};
+
+//   @desc    Get home page information
+//   @route   GET /api/v1/home
+//   @access  Public
 const getHomePage = async (req: Request, res: Response) => {
 	const currentUser = await User.findById(req.user);
-  
-	  const homePageData:any = {};
-  
-	  if (currentUser) {
-		const continueReadingBlocks = await Block.find({ _id: { $in: currentUser.userShelf } })
-		  .populate("createdBy", "name email")
-		  .limit(5);
-  
+
+	const homePageData: any = {};
+
+	if (currentUser) {
+		const continueReadingBlocks = await Block.find({
+			_id: { $in: currentUser.userShelf },
+		})
+			.populate("createdBy", "name email")
+			.limit(5);
+
 		const favoriteTags = currentUser.favoriteTags.slice(0, 3);
 		const favTagsBlocks = await Promise.all(
-		  favoriteTags.map(async (tag) => {
-			const blocks = await Block.find({ tags: tag })
-			  .sort({ rating: -1 })
-			  .limit(10)
-			  .populate("createdBy", "name email");
-			return { tag, blocks };
-		  })
+			favoriteTags.map(async (tag) => {
+				const blocks = await Block.find({ tags: tag })
+					.sort({ rating: -1 })
+					.limit(10)
+					.populate("createdBy", "name email");
+				return { tag, blocks };
+			})
 		);
-  
+
 		homePageData.continueReading = continueReadingBlocks;
 		homePageData.favtags = favTagsBlocks;
-	  }
-  
-	  const popularBlocks = await Block.find()
+	}
+
+	const popularBlocks = await Block.find()
 		.sort({ views: -1 })
 		.limit(10)
 		.populate("createdBy", "name email");
-  
-	  const bestRatedBlocks = await Block.find()
+
+	const bestRatedBlocks = await Block.find()
 		.sort({ rating: -1 })
 		.limit(10)
 		.populate("createdBy", "name email");
-  
-	  homePageData.popular = popularBlocks;
-	  homePageData.bestRated = bestRatedBlocks;
-  
-	  res.status(StatusCodes.OK).json(homePageData);
-	
-  };
-  
+
+	homePageData.popular = popularBlocks;
+	homePageData.bestRated = bestRatedBlocks;
+
+	res.status(StatusCodes.OK).json(homePageData);
+};
 
 export default {
 	getAllBlocks,
