@@ -433,6 +433,38 @@ const getBlocksByTag = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json(blocks);
 };
 
+// @desc    Get all blocks created by the current user
+// @route   GET /api/v1/blocks/my-blocks
+// @access  Private
+const getMyBlocks = async (req: Request, res: Response) => {
+	const userId = req.user; // Assuming the current user ID is available in the req.user property
+	const sortBy = req.query.sortBy || "createdDate"; // Default sorting by creation date if not provided
+	const sortOrder = req.query.sortOrder || "desc"; // Default sorting order is descending if not provided
+  
+	let sortOptions = {};
+  
+	if (sortBy === "lastUpdated") {
+	  sortOptions = { updatedAt: sortOrder === "asc" ? 1 : -1 };
+	} else if (sortBy === "rating") {
+	  sortOptions = { rating: sortOrder === "asc" ? 1 : -1 };
+	} else if (sortBy === "views") {
+	  sortOptions = { views: sortOrder === "asc" ? 1 : -1 };
+	} else {
+	  // Sort by creation date (default)
+	  sortOptions = { createdDate: sortOrder === "asc" ? 1 : -1 };
+	}
+  
+	const blocks = await Block.find(
+	  { createdBy: userId },
+	  "title tags price tier imageUrl createdBy"
+	)
+	  .sort(sortOptions)
+	  .exec();
+  
+	res.status(StatusCodes.OK).json({ count: blocks.length, blocks });
+  };
+  
+
 export default {
 	getAllBlocks,
 	buyBlock,
@@ -445,4 +477,5 @@ export default {
 	favoriteBlock,
 	getFavoriteBlocks, // Add the getFavoriteBlocks function
 	getBlocksByTag,
+	getMyBlocks,
 };
