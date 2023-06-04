@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import Block from "../models/Block";
 import { IBlock } from "../interfaces";
 import User from "../models/User";
+import mongoose from "mongoose";
 
 // @desc    Get all blocks
 // @route   GET /api/v1/blocks
@@ -49,11 +50,15 @@ const buyBlock = async (req: Request, res: Response) => {
 		throw new Error("Block has already been purchased");
 	}
 
-	if (currentUser.noOfGems < block.price) {
+	if (currentUser.noOfGems < block.price && currentUser.role != "admin") {
 		res.status(StatusCodes.EXPECTATION_FAILED);
 		throw new Error("Not enough gems.");
 	}
-	currentUser.noOfGems -= block.price;
+
+	if (currentUser.role != "admin") {
+		currentUser.noOfGems -= block.price;
+	}
+
 	currentUser.blocksBought.push(block._id);
 
 	//update favorite tags, take this and put this when put shelf and fav
@@ -158,7 +163,7 @@ const createBlock = async (req: Request, res: Response) => {
 
 	if (price != 0) {
 		let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
-		if (!currentUser || currentUser.noOfGems < paidBlockCost) {
+		if ( currentUser.noOfGems < paidBlockCost && currentUser.role !="admin") {
 			res.status(StatusCodes.EXPECTATION_FAILED);
 			throw new Error("Not enough gems.");
 		}
@@ -205,6 +210,12 @@ const updateBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const { title, tags, imageUrl, text, price, tier } = req.body;
 
+	const currentUser = await User.findById(req.user);
+	if (!currentUser) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
+	}
+
 	// Check if the number of tags exceeds the limit
 	if (tags.length > 4) {
 		res.status(StatusCodes.BAD_REQUEST);
@@ -218,7 +229,7 @@ const updateBlock = async (req: Request, res: Response) => {
 	}
 
 	// Check if the current user is the creator of the block
-	if (!block.createdBy.equals(req.user)) {
+	if (!block.createdBy.equals(req.user) && currentUser.role !="admin") {
 		console.log("this piece");
 		res.status(StatusCodes.UNAUTHORIZED);
 		throw new Error("Not authorized");
@@ -241,6 +252,12 @@ const updateBlock = async (req: Request, res: Response) => {
 const deleteBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
+	const currentUser = await User.findById(req.user);
+	if (!currentUser) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
+	}
+
 	const block = await Block.findById(id);
 	if (!block) {
 		res.status(StatusCodes.NOT_FOUND);
@@ -248,7 +265,7 @@ const deleteBlock = async (req: Request, res: Response) => {
 	}
 
 	// Check if the current user is the creator of the block
-	if (!block.createdBy.equals(req.user)) {
+	if (!block.createdBy.equals(req.user) && currentUser.role !="admin") {
 		res.status(StatusCodes.UNAUTHORIZED);
 		throw new Error("Not authorized");
 	}
@@ -584,6 +601,103 @@ const getHomePage = async (req: Request, res: Response) => {
 
 	res.status(StatusCodes.OK).json(homePageData);
 };
+
+// // @desc    Create a new comment on a block
+// // @route   POST /api/v1/blocks/:blockId/comments
+// // @access  Private
+// const createComment = async (req: Request, res: Response) => {
+// 	const { blockId } = req.params;
+// 	const { content } = req.body;
+
+// 		const block = await Block.findById(blockId);
+
+// 		if (!block) {
+// 			res.status(StatusCodes.NOT_FOUND);
+// 			throw new Error("Block not found");
+// 		}
+
+// 		const newComment = {
+// 			content,
+// 			createdBy: new mongoose.Types.ObjectId(req.user),
+// 			replies:[]
+// 		}
+
+// 		block.comments.push(newComment);
+// 		await block.save();
+
+// 		res.status(StatusCodes.CREATED).json({ comment: newComment });
+
+// };
+
+// // @desc    Update a comment on a block
+// // @route   PUT /api/v1/blocks/:blockId/comments/:commentId
+// // @access  Private
+// const updateComment = async (req: Request, res: Response) => {
+// 	const { blockId, commentId } = req.params;
+// 	const { content } = req.body;
+
+// 		const block = await Block.findById(blockId);
+
+// 		if (!block) {
+// 			res.status(StatusCodes.NOT_FOUND);
+// 			throw new Error("Block not found");
+// 		}
+
+// 		const comment = block.comments.id(commentId);
+
+// 		if (!comment) {
+// 			res.status(StatusCodes.NOT_FOUND);
+// 			throw new Error("Comment not found");
+// 		}
+
+// 		if (comment.userId.toString() !== userId) {
+// 			res.status(StatusCodes.UNAUTHORIZED);
+// 			throw new Error("You are not authorized to update this comment");
+// 		}
+
+// 		comment.content = content;
+// 		await block.save();
+
+// 		res.status(StatusCodes.OK).json({ comment });
+
+// };
+
+// // @desc    Delete a comment from a block
+// // @route   DELETE /api/v1/blocks/:blockId/comments/:commentId
+// // @access  Private
+// const deleteComment = async (req: Request, res: Response) => {
+// 	const { blockId, commentId } = req.params;
+// 	const { userId } = req.user;
+
+// 	try {
+// 		const block = await Block.findById(blockId);
+
+// 		if (!block) {
+// 			res.status(StatusCodes.NOT_FOUND);
+// 			throw new Error("Block not found");
+// 		}
+
+// 		const comment = block.comments.id(commentId);
+
+// 		if (!comment) {
+// 			res.status(StatusCodes.NOT_FOUND);
+// 			throw new Error("Comment not found");
+// 		}
+
+// 		if (comment.userId.toString() !== userId) {
+// 			res.status(StatusCodes.UNAUTHORIZED);
+// 			throw new Error("You are not authorized to delete this comment");
+// 		}
+
+// 		comment.remove();
+// 		await block.save();
+
+// 		res.status(StatusCodes.OK).json({ message: "Comment deleted" });
+// 	} catch (error) {
+// 		res.status(StatusCodes.INTERNAL_SERVER_ERROR);
+// 		throw new Error("Failed to delete comment");
+// 	}
+// };
 
 export default {
 	getAllBlocks,

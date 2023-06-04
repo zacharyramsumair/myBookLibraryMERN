@@ -7,8 +7,8 @@ type FormValues = {
     token: string | null ;
 }
 
-const postRequest = async (data:FormValues) => {
-    const response = await axios.post(`/api/v1/auth/reset-password`, data);
+const putRequest = async (data:FormValues) => {
+    const response = await axios.put(`/api/v1/auth/reset-password`, data);
     console.log(response.data)
     return response.data;
 };
@@ -17,9 +17,8 @@ const postRequest = async (data:FormValues) => {
 
 
 
-type Props = {}
 
 export const useResetPassword = () => {
-    const { mutate: resetPassword, isLoading, isError, isSuccess, data, error } = useMutation(postRequest);
+    const { mutate: resetPassword, isLoading, isError, isSuccess, data, error } = useMutation(putRequest);
     return { resetPassword, error, data, isError, isLoading, isSuccess }
 }

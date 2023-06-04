@@ -127,25 +127,19 @@ const loginUser = async (req: Request, res: Response) => {
 		throw new Error("Invalid email or password");
 	}
 
-
-
 	if (!user.isVerified) {
-
 		const verificationToken = crypto.randomBytes(40).toString("hex");
 
-	
 		// Update existing user with the new verification token
 		user.verificationToken = verificationToken;
 		await user.save();
-	
 
-	await sendVerificationEmail({
-		name:user.name,
-		email,
-		verificationToken,
-		origin: process.env.EMAIL_ORIGIN as string,
-	});
-
+		await sendVerificationEmail({
+			name: user.name,
+			email,
+			verificationToken,
+			origin: process.env.EMAIL_ORIGIN as string,
+		});
 
 		res.status(StatusCodes.UNAUTHORIZED);
 		throw new Error("Please verify your email");
@@ -167,7 +161,9 @@ const loginUser = async (req: Request, res: Response) => {
 		const { isValid } = existingToken;
 		if (!isValid) {
 			res.status(StatusCodes.UNAUTHORIZED);
-			throw new Error("This account has been banned for suspicious activity");
+			throw new Error(
+				"This account has been banned for suspicious activity"
+			);
 		}
 		refreshToken = existingToken.refreshToken;
 		attachCookiesToResponse({ res, user: user._id, refreshToken });
@@ -192,22 +188,25 @@ const loginUser = async (req: Request, res: Response) => {
 // @access  Private
 const showCurrentUser = async (req: Request, res: Response) => {
 	// res.json(req.user)
-	
+
 	const user = await User.findOne({ _id: req.user });
-    if (!user) {
-      res.status(StatusCodes.NOT_FOUND);
-      throw new Error("User not found");
-    }
-    
-    // const { name, email, _id: id, role, tier } = user;
-    // res.status(StatusCodes.OK).json({ name, email, id, role, tier });
-    res.status(StatusCodes.OK).json({user});
+	if (!user) {
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("User not found");
+	}
 
-
+	// const { name, email, _id: id, role, tier } = user;
+	// res.status(StatusCodes.OK).json({ name, email, id, role, tier });
+	res.status(StatusCodes.OK).json({ user });
 };
 
+
+
+// @desc    Logout User
+// @route   DELETE /logout
+// @access  Private
 const logout = async (req: Request, res: Response) => {
-	await Token.findOneAndDelete({ user: req.user});
+	await Token.findOneAndDelete({ user: req.user });
 
 	res.cookie("accessToken", "logout", {
 		httpOnly: true,
@@ -220,6 +219,11 @@ const logout = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json({ msg: "user logged out!" });
 };
 
+
+
+// @desc    Send email to reset password
+// @route   POST /forgot-password
+// @access  Public
 const forgotPassword = async (req: Request, res: Response) => {
 	const { email } = req.body;
 	if (!email) {
@@ -229,16 +233,14 @@ const forgotPassword = async (req: Request, res: Response) => {
 
 	const user = await User.findOne({ email });
 	if (!user) {
-
 		// sent the same message so hackers can't use here to check which emails are in our database
 		setTimeout(() => {
-		  res.status(StatusCodes.OK).json({
-			msg: "Please check your email for reset password link",
-		  });
+			res.status(StatusCodes.OK).json({
+				msg: "Please check your email for reset password link",
+			});
 		}, 2500); // Delay of 2 seconds (2000 milliseconds)
 		return; // Return from the function to prevent further execution
-	  }
-
+	}
 
 	if (user) {
 		const passwordToken = crypto.randomBytes(70).toString("hex");
@@ -264,6 +266,10 @@ const forgotPassword = async (req: Request, res: Response) => {
 	});
 };
 
+
+// @desc    Form to change your password
+// @route   PUT /reset-password
+// @access  Public
 const resetPassword = async (req: Request, res: Response) => {
 	const { token, email, password } = req.body;
 	if (!token || !email || !password) {
@@ -290,144 +296,131 @@ const resetPassword = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json({ msg: "Password Reset" });
 };
 
-
 // @desc    Get user profile page
 // @route   GET /profile/:id
 // @access  Public
 const getProfilePage = async (req: Request, res: Response) => {
-	
-	  const { id } = req.params; // Assuming the user ID is provided as a route parameter
-  
-	  const user = await User.findById(id)
+	const { id } = req.params; // Assuming the user ID is provided as a route parameter
+
+	const user = await User.findById(id)
 		.populate("favorites", "title image tags")
 		.populate({
-		  path: "userRatings.block",
-		  select: "title image tags",
+			path: "userRatings.block",
+			select: "title image tags",
 		})
 		.populate("myBlocks", "title image tags")
 		.exec();
-  
-	  if (!user) {
+
+	if (!user) {
 		res.status(StatusCodes.NOT_FOUND);
 		throw new Error("User not found");
-	  }
-  
-	  const userProfile = {
+	}
+
+	const userProfile = {
 		personalInfo: {
-		  name: user.name,
-		  email: user.email,
+			name: user.name,
+			email: user.email,
 		},
 		favoriteBlocks: user.favorites,
 		ratedBlocks: user.userRatings.map((rating) => ({
-		  block: rating.blockInfo,
-		  rating: rating.rating,
+			block: rating.blockInfo,
+			rating: rating.rating,
 		})),
 		createdBlocks: user.myBlocks,
-	  };
-  
-	  res.status(StatusCodes.OK).json(userProfile);
-	
-  };
+	};
 
-  
-  // @desc    Get user's favorite blocks
+	res.status(StatusCodes.OK).json(userProfile);
+};
+
+// @desc    Get user's favorite blocks
 // @route   GET /profile/favorite-blocks
 // @access  Public
 const getFavoriteBlocks = async (req: Request, res: Response) => {
+	const { userId } = req.query;
+	const page = parseInt(req.query.page as string) || 1;
+	const limit = parseInt(req.query.limit as string) || 10;
 
-	  const { userId } = req.query;
-	  const page = parseInt(req.query.page as string) || 1;
-	  const limit = parseInt(req.query.limit as string) || 10;
-  
-	  const user = await User.findById(userId)
+	const user = await User.findById(userId)
 		.populate({
-		  path: "favorites",
-		  select: "title image tags",
-		  options: {
-			skip: (page - 1) * limit,
-			limit,
-		  },
+			path: "favorites",
+			select: "title image tags",
+			options: {
+				skip: (page - 1) * limit,
+				limit,
+			},
 		})
 		.exec();
-  
-	  if (!user) {
+
+	if (!user) {
 		res.status(StatusCodes.NOT_FOUND);
 		throw new Error("User not found");
-	  }
-  
-	  const favoriteBlocks = user.favorites;
-  
-	  res.status(StatusCodes.OK).json(favoriteBlocks);
-	
-  };
+	}
 
-  
-  // @desc    Get user's rated blocks
+	const favoriteBlocks = user.favorites;
+
+	res.status(StatusCodes.OK).json(favoriteBlocks);
+};
+
+// @desc    Get user's rated blocks
 // @route   GET /profile/rated-blocks
 // @access  Public
 const getRatedBlocks = async (req: Request, res: Response) => {
-	
-	  const { userId } = req.query;
-	  const page = parseInt(req.query.page as string) || 1;
-	  const limit = parseInt(req.query.limit as string) || 10;
-  
-	  const user = await User.findById(userId)
+	const { userId } = req.query;
+	const page = parseInt(req.query.page as string) || 1;
+	const limit = parseInt(req.query.limit as string) || 10;
+
+	const user = await User.findById(userId)
 		.populate({
-		  path: "userRatings.block",
-		  select: "title image tags",
-		  options: {
-			skip: (page - 1) * limit,
-			limit,
-		  },
+			path: "userRatings.block",
+			select: "title image tags",
+			options: {
+				skip: (page - 1) * limit,
+				limit,
+			},
 		})
 		.exec();
-  
-	  if (!user) {
+
+	if (!user) {
 		res.status(StatusCodes.NOT_FOUND);
 		throw new Error("User not found");
-	  }
-  
-	  const ratedBlocks = user.userRatings.map((rating) => ({
+	}
+
+	const ratedBlocks = user.userRatings.map((rating) => ({
 		block: rating.blockInfo,
 		rating: rating.rating,
-	  }));
-  
-	  res.status(StatusCodes.OK).json(ratedBlocks);
-	
-  };
+	}));
 
-  
-  // @desc    Get user's created blocks
+	res.status(StatusCodes.OK).json(ratedBlocks);
+};
+
+// @desc    Get user's created blocks
 // @route   GET /profile/created-blocks
 // @access  Public
 const getCreatedBlocks = async (req: Request, res: Response) => {
-	
-	  const { userId } = req.query;
-	  const page = parseInt(req.query.page as string) || 1;
-	  const limit = parseInt(req.query.limit as string) || 10;
-  
-	  const user = await User.findById(userId)
+	const { userId } = req.query;
+	const page = parseInt(req.query.page as string) || 1;
+	const limit = parseInt(req.query.limit as string) || 10;
+
+	const user = await User.findById(userId)
 		.populate({
-		  path: "myBlocks",
-		  select: "title image tags",
-		  options: {
-			skip: (page - 1) * limit,
-			limit,
-		  },
+			path: "myBlocks",
+			select: "title image tags",
+			options: {
+				skip: (page - 1) * limit,
+				limit,
+			},
 		})
 		.exec();
-  
-	  if (!user) {
+
+	if (!user) {
 		res.status(StatusCodes.NOT_FOUND);
 		throw new Error("User not found");
-	  }
-  
-	  const createdBlocks = user.myBlocks;
-  
-	  res.status(StatusCodes.OK).json(createdBlocks);
-	
-  };
-  
+	}
+
+	const createdBlocks = user.myBlocks;
+
+	res.status(StatusCodes.OK).json(createdBlocks);
+};
 
 export default {
 	registerUser,
@@ -440,5 +433,5 @@ export default {
 	getProfilePage,
 	getFavoriteBlocks,
 	getRatedBlocks,
-	getCreatedBlocks
+	getCreatedBlocks,
 };
