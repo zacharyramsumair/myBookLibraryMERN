@@ -263,60 +263,59 @@ const deleteBlock = async (req: Request, res: Response) => {
 const searchBlocks = async (req: Request, res: Response) => {
 	// Extract query parameters
 	const { title, sort, page, limit } = req.query;
-  
+
 	if (
-	  typeof title !== "string" ||
-	  typeof sort !== "string" ||
-	  typeof page !== "string" ||
-	  typeof limit !== "string"
+		typeof title !== "string" ||
+		typeof sort !== "string" ||
+		typeof page !== "string" ||
+		typeof limit !== "string"
 	) {
-	  res.status(StatusCodes.BAD_REQUEST);
-	  throw new Error("Invalid query parameters");
+		res.status(StatusCodes.BAD_REQUEST);
+		throw new Error("Invalid query parameters");
 	}
-  
+
 	// Parse page number and page size from query parameters
 	const pageNumber = parseInt(page) || 1;
 	const pageSize = parseInt(limit) || 10;
-  
+
 	// Build search query
 	const searchQuery = {
-	  title: { $regex: title, $options: "i" },
+		title: { $regex: title, $options: "i" },
 	};
-  
+
 	// Start with the base query to find blocks matching the search query
 	let query = Block.find(
-	  searchQuery,
-	  "title tags price tier imageUrl createdBy"
+		searchQuery,
+		"title tags price tier imageUrl createdBy"
 	).populate("createdBy", "name email");
-  
+
 	// Apply sorting based on the 'sort' parameter
 	if (sort.startsWith("rating")) {
-	  query = query.sort({ rating: sort === "ratingDesc" ? -1 : 1 });
+		query = query.sort({ rating: sort === "ratingDesc" ? -1 : 1 });
 	} else if (sort.startsWith("views")) {
-	  query = query.sort({ views: sort === "viewsDesc" ? -1 : 1 });
+		query = query.sort({ views: sort === "viewsDesc" ? -1 : 1 });
 	}
-  
+
 	// Count total items matching the search query
 	const totalItems = await Block.countDocuments(searchQuery);
-  
+
 	// Calculate total pages based on page size
 	const totalPages = Math.ceil(totalItems / pageSize);
-  
+
 	// Apply pagination to the query
 	query = query.skip((pageNumber - 1) * pageSize).limit(pageSize);
-  
+
 	// Execute the query and retrieve blocks
 	const blocks = await query.exec();
-  
+
 	// Return the blocks along with pagination information in the response
 	res.status(StatusCodes.OK).json({
-	  blocks,
-	  page: pageNumber,
-	  totalPages,
-	  totalItems,
+		blocks,
+		page: pageNumber,
+		totalPages,
+		totalItems,
 	});
-  };
-  
+};
 
 // @desc    Rate a block
 // @route   POST /api/v1/blocks/:id/rate
@@ -400,44 +399,73 @@ const favoriteBlock = async (req: Request, res: Response) => {
 };
 
 // @desc    Get all favorited blocks
-// @route   GET /api/v1/blocks/favorites
+// @route   GET /api/v1/blocks/favorites?page=<page_number>&limit=<limit_per_page>
 // @access  Private
 const getFavoriteBlocks = async (req: Request, res: Response) => {
 	const currentUser = await User.findById(req.user);
 
 	if (!currentUser) {
-		res.status(StatusCodes.UNAUTHORIZED);
-		throw new Error("Not authorized");
+	  res.status(StatusCodes.UNAUTHORIZED);
+	  throw new Error("Not authorized");
 	}
-
+  
 	const favoriteBlockIds = currentUser.favorites;
-
-	const favoriteBlocks = await Block.find(
+  
+	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters
+	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
+	const skip = (page - 1) * limit; // Calculate the number of documents to skip
+  
+	
+	  const favoriteBlocks = await Block.find(
 		{ _id: { $in: favoriteBlockIds } },
 		"title tags price tier imageUrl createdBy"
-	).populate("createdBy", "name email");
-
-	res.status(StatusCodes.OK).json(favoriteBlocks);
-};
+	  )
+		.populate("createdBy", "name email")
+		.skip(skip)
+		.limit(limit);
+  
+	  const totalBlocks = await Block.countDocuments({ _id: { $in: favoriteBlockIds } });
+  
+	  const totalPages = Math.ceil(totalBlocks / limit);
+  
+	  res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks: favoriteBlocks });
+	
+  };
 
 // @desc    Get all blocks with a specific tag
-// @route   GET /api/v1/blocks/tags/:tag
+// @route   GET /api/v1/blocks/tags/:tag?page=<page_number>&limit=<limit_per_page>
 // @access  Public
 const getBlocksByTag = async (req: Request, res: Response) => {
 	const { tag } = req.params;
-	const blocks = await Block.find(
+  
+	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters
+	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
+	const skip = (page - 1) * limit; // Calculate the number of documents to skip
+  
+	
+	  const blocks = await Block.find(
 		{ tags: tag },
 		"title tags price tier imageUrl createdBy"
-	).populate("createdBy", "name email");
-
-	res.status(StatusCodes.OK).json(blocks);
-};
+	  )
+		.populate("createdBy", "name email")
+		.skip(skip)
+		.limit(limit);
+  
+	  const totalBlocks = await Block.countDocuments({ tags: tag });
+  
+	  const totalPages = Math.ceil(totalBlocks / limit);
+  
+	  res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks });
+	
+  };
 
 // @desc    Get all blocks created by the current user
-// @route   GET /api/v1/blocks/my-blocks
+// @route   GET /api/v1/blocks/my-blocks?page=<page_number>&limit=<limit_per_page>&sortBy=<sort_field>&sortOrder=<asc_or_desc>
 // @access  Private
 const getMyBlocks = async (req: Request, res: Response) => {
 	const userId = req.user; // Assuming the current user ID is available in the req.user property
+	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters
+	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
 	const sortBy = req.query.sortBy || "createdDate"; // Default sorting by creation date if not provided
 	const sortOrder = req.query.sortOrder || "desc"; // Default sorting order is descending if not provided
   
@@ -454,14 +482,55 @@ const getMyBlocks = async (req: Request, res: Response) => {
 	  sortOptions = { createdDate: sortOrder === "asc" ? 1 : -1 };
 	}
   
-	const blocks = await Block.find(
-	  { createdBy: userId },
-	  "title tags price tier imageUrl createdBy"
-	)
-	  .sort(sortOptions)
-	  .exec();
+	const skip = (page - 1) * limit; // Calculate the number of documents to skip
   
-	res.status(StatusCodes.OK).json({ count: blocks.length, blocks });
+	
+	  const blocks = await Block.find(
+		{ createdBy: userId },
+		"title tags price tier imageUrl createdBy"
+	  )
+		.sort(sortOptions)
+		.skip(skip)
+		.limit(limit);
+  
+	  const totalBlocks = await Block.countDocuments({ createdBy: userId });
+  
+	  const totalPages = Math.ceil(totalBlocks / limit);
+  
+	  res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks });
+	
+  };
+
+// @desc    Get all blocks in the UserShelf of the current user
+// @route   GET /api/v1/blocks/user-shelf?page=<page_number>&limit=<limit_per_page>
+// @access  Private
+const getUserShelfBlocks = async (req: Request, res: Response) => {
+	// Retrieve the current user
+	const currentUser = await User.findById(req.user);
+  
+	if (!currentUser) {
+	  res.status(StatusCodes.UNAUTHORIZED);
+	  throw new Error("Not authorized");
+	}
+  
+	// Retrieve the blocks in the UserShelf
+	const blockIds = currentUser.userShelf;
+	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters
+	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
+	const skip = (page - 1) * limit; // Calculate the number of documents to skip
+  
+	
+	  const blocks = await Block.find({ _id: { $in: blockIds } })
+		.select("title tags price tier imageUrl createdBy")
+		.populate("createdBy", "name email") // Populate createdBy field with name and email
+		.skip(skip)
+		.limit(limit);
+  
+	  const totalBlocks = blockIds.length;
+	  const totalPages = Math.ceil(totalBlocks / limit);
+  
+	  res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks });
+	
   };
   
 
@@ -478,4 +547,5 @@ export default {
 	getFavoriteBlocks, // Add the getFavoriteBlocks function
 	getBlocksByTag,
 	getMyBlocks,
+	getUserShelfBlocks,
 };
