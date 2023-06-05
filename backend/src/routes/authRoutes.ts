@@ -8,14 +8,15 @@ export interface CustomRequest extends Request {
   }
 
 router.post('/',authController.registerUser)
-
-
 router.put('/verify-email', authController.verifyEmail)
 router.post('/login', authController.loginUser)
 router.get('/showCurrentUser',authenticateUser, authController.showCurrentUser)
 router.delete('/logout',authenticateUser, authController.logout);
-router.put('/reset-password', authController.resetPassword)
 router.post('/forgot-password', authController.forgotPassword)
-
+router.put('/reset-password', authController.resetPassword)
+router.get('/profile/:id', authController.getProfilePage)
+router.get('/profile/favorite-blocks', authController.getFavoriteBlocks)
+router.get('/profile/rated-blocks', authController.getRatedBlocks)
+router.get('/profile/created-blocks', authController.getCreatedBlocks)
 
  export default router

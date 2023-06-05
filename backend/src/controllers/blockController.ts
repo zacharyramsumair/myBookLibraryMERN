@@ -6,7 +6,7 @@ import User from "../models/User";
 import mongoose from "mongoose";
 
 // @desc    Get all blocks
-// @route   GET /api/v1/blocks
+// @route   GET /
 // @access  Public
 const getAllBlocks = async (req: Request, res: Response) => {
 	const blocks = await Block.find(
@@ -17,7 +17,7 @@ const getAllBlocks = async (req: Request, res: Response) => {
 };
 
 // @desc    buy a paid block using gems
-// @route   POST /api/v1/blocks/buy/:id
+// @route   POST /buy/:id
 // @access  Private
 const buyBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
@@ -86,7 +86,7 @@ const buyBlock = async (req: Request, res: Response) => {
 };
 
 // @desc    Get a specific block by ID
-// @route   GET /api/v1/blocks/:id
+// @route   GET /:id
 // @access  Public
 const getBlockById = async (req: Request, res: Response) => {
 	const { id } = req.params;
@@ -144,7 +144,7 @@ const getBlockById = async (req: Request, res: Response) => {
 };
 
 // @desc    Create a block
-// @route   POST /api/v1/blocks
+// @route   POST /
 // @access  Private
 const createBlock = async (req: Request, res: Response) => {
 	const { title, tags, imageUrl, text, price } = req.body;
@@ -204,7 +204,7 @@ const createBlock = async (req: Request, res: Response) => {
 };
 
 // @desc    Update a block
-// @route   PUT /api/v1/blocks/:id
+// @route   PUT /:id
 // @access  Private
 const updateBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
@@ -247,7 +247,7 @@ const updateBlock = async (req: Request, res: Response) => {
 };
 
 // @desc    Delete a block
-// @route   DELETE /api/v1/blocks/:id
+// @route   DELETE /:id
 // @access  Private
 const deleteBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
@@ -275,7 +275,7 @@ const deleteBlock = async (req: Request, res: Response) => {
 };
 
 // @desc    Search blocks by title and sort by rating or views with pagination
-// @route   GET /api/v1/blocks/search?title=<title>&sort=<ratingDesc|ratingAsc|viewsDesc|viewsAsc>&page=<pageNumber>&limit=<pageSize>
+// @route   GET /search?title=<title>&sort=<ratingDesc|ratingAsc|viewsDesc|viewsAsc>&page=<pageNumber>&limit=<pageSize>
 // @access  Public
 const searchBlocks = async (req: Request, res: Response) => {
 	// Extract query parameters
@@ -335,7 +335,7 @@ const searchBlocks = async (req: Request, res: Response) => {
 };
 
 // @desc    Rate a block
-// @route   POST /api/v1/blocks/:id/rate
+// @route   POST /:id/rate
 // @access  Private
 const rateBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
@@ -378,7 +378,7 @@ const rateBlock = async (req: Request, res: Response) => {
 };
 
 // @desc    Favorite a block
-// @route   POST /api/v1/blocks/:id/favorite
+// @route   POST /:id/favorite
 // @access  Private
 const favoriteBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
@@ -424,7 +424,7 @@ const favoriteBlock = async (req: Request, res: Response) => {
 };
 
 // @desc    Get all favorited blocks
-// @route   GET /api/v1/blocks/favorites?page=<page_number>&limit=<limit_per_page>
+// @route   GET /favorites?page=<page_number>&limit=<limit_per_page>
 // @access  Private
 const getFavoriteBlocks = async (req: Request, res: Response) => {
 	const currentUser = await User.findById(req.user);
@@ -462,7 +462,7 @@ const getFavoriteBlocks = async (req: Request, res: Response) => {
 };
 
 // @desc    Get all blocks with a specific tag
-// @route   GET /api/v1/blocks/tags/:tag?page=<page_number>&limit=<limit_per_page>
+// @route   GET /tags/:tag?page=<page_number>&limit=<limit_per_page>
 // @access  Public
 const getBlocksByTag = async (req: Request, res: Response) => {
 	const { tag } = req.params;
