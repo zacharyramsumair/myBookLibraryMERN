@@ -6,8 +6,8 @@ type FormValues = {
     verificationToken: string| null;
 }
 
-const postRequest = async (data:FormValues) => {
-    const response = await axios.post(`/api/v1/auth/verify-email`, data);
+const putRequest = async (data:FormValues) => {
+    const response = await axios.put(`/api/v1/auth/verify-email`, data);
     return response.data;
 };
 
@@ -18,6 +18,6 @@ const postRequest = async (data:FormValues) => {
 type Props = {}
 
 export const useVerifyEmail = () => {
-    const { mutate: VerifyEmailFunction, isLoading, isError, isSuccess, data, error } = useMutation(postRequest);
+    const { mutate: VerifyEmailFunction, isLoading, isError, isSuccess, data, error } = useMutation(putRequest);
     return { VerifyEmailFunction, error, data, isError, isLoading, isSuccess }
 }

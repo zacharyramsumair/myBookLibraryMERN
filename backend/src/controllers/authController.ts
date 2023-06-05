@@ -65,6 +65,10 @@ const registerUser = async (req: Request, res: Response) => {
 	});
 };
 
+
+// @desc    Verify a user's email
+// @route   PUT /verify-email
+// @access  Public
 const verifyEmail = async (req: Request, res: Response) => {
 	let { verificationToken, email } = req.body;
 	email = filterXSS(email, xssOptions);
@@ -200,8 +204,6 @@ const showCurrentUser = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json({ user });
 };
 
-
-
 // @desc    Logout User
 // @route   DELETE /logout
 // @access  Private
@@ -218,8 +220,6 @@ const logout = async (req: Request, res: Response) => {
 	});
 	res.status(StatusCodes.OK).json({ msg: "user logged out!" });
 };
-
-
 
 // @desc    Send email to reset password
 // @route   POST /forgot-password
@@ -265,7 +265,6 @@ const forgotPassword = async (req: Request, res: Response) => {
 		msg: "Please check your email for reset password link",
 	});
 };
-
 
 // @desc    Form to change your password
 // @route   PUT /reset-password
