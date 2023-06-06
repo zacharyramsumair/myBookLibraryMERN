@@ -487,7 +487,7 @@ const getBlocksByTag = async (req: Request, res: Response) => {
 };
 
 // @desc    Get all blocks created by the current user
-// @route   GET /api/v1/blocks/my-blocks?page=<page_number>&limit=<limit_per_page>&sortBy=<sort_field>&sortOrder=<asc_or_desc>
+// @route   GET /my-blocks?page=<page_number>&limit=<limit_per_page>&sortBy=<sort_field>&sortOrder=<asc_or_desc>
 // @access  Private
 const getMyBlocks = async (req: Request, res: Response) => {
 	const userId = req.user; // Assuming the current user ID is available in the req.user property
@@ -527,7 +527,7 @@ const getMyBlocks = async (req: Request, res: Response) => {
 };
 
 // @desc    Get all blocks in the UserShelf of the current user
-// @route   GET /api/v1/blocks/user-shelf?page=<page_number>&limit=<limit_per_page>
+// @route   GET /user-shelf?page=<page_number>&limit=<limit_per_page>
 // @access  Private
 const getUserShelfBlocks = async (req: Request, res: Response) => {
 	// Retrieve the current user
@@ -557,7 +557,7 @@ const getUserShelfBlocks = async (req: Request, res: Response) => {
 };
 
 //   @desc    Get home page information
-//   @route   GET /api/v1/home
+//   @route   GET /home
 //   @access  Public
 const getHomePage = async (req: Request, res: Response) => {
 	const currentUser = await User.findById(req.user);
