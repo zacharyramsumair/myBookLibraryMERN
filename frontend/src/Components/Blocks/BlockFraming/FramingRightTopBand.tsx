@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
-import { Box, Theme, useMediaQuery } from "@mui/material";
+import { Box, IconButton, Paper, Theme, useMediaQuery } from "@mui/material";
 import { Drawer, List, ListItem, ListItemText, useTheme } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Framing from "./Framing.module.css";
@@ -42,6 +42,7 @@ const FramingRightTopBand = (props: Props) => {
 					position: "sticky",
 					top: 0,
 					backgroundColor: "pink",
+					zIndex:1000
 				}}
 			>
 				<Box sx={{ margin: 3, display: { xs: "flex", md: "none" } }}>
@@ -50,12 +51,13 @@ const FramingRightTopBand = (props: Props) => {
 						sx={{ fontSize: "2rem" }}
 					/>
 				</Box>
-				<Box sx={{ margin: 3, display: { xs: "none", sm: "flex" } }}>
+				<Paper sx={{ margin: 3, display: { xs: "none", sm: "flex" } }}>
 					<TextField
 						select
 						variant="outlined"
 						size="small"
 						defaultValue="All"
+						sx={{borderRadius:1, borderTopRightRadius:0, borderBottomRightRadius:0}}
 					>
 						{tags.map((tag) => (
 							<MenuItem key={tag} value={tag}>
@@ -69,8 +71,15 @@ const FramingRightTopBand = (props: Props) => {
 						size="small"
 						placeholder="Search"
 						sx={{ width: { sm: "20em", lg: "30em" } }}
+						InputProps={{
+							endAdornment: (
+							  <IconButton type="submit" aria-label="search">
+								<SearchIcon />
+							  </IconButton>
+							),
+						  }}
 					/>
-				</Box>
+				</Paper>
 
 				{isSmallScreen ? (
 					<Box

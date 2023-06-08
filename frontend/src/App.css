@@ -25,8 +25,25 @@ a {
 	display: none; /* Safari and Chrome */
 }
 
+
+
+/* important for overridding MUI styles */
 .removePadding{
     padding: 0 !important;
+}
+
+
+.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root{
+    border-radius: 4px;
+    border-bottom-right-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root{
+    border-radius: 4px;
+    border-bottom-left-radius: 0 !important;
+    border-top-left-radius: 0 !important;
 }
 
 @media (max-width: 900px) {
