@@ -1,4 +1,4 @@
-import DashboardComponent from '../../Components/Blocks/DashboardComponent';
+import DashboardComponent from '../../Components/Blocks/Dashboard/DashboardComponent';
 import BasePageDesign from '../BasePageDesign';
 
 type Props = {}

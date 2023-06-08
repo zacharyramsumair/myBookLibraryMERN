@@ -18,6 +18,7 @@ const BasePageDesign = (props: Props) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        
       }}
     >
         {props.children}
