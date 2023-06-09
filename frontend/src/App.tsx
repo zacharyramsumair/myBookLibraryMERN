@@ -22,6 +22,7 @@ import React from "react";
 import { UserContext } from "./Contexts/UserContext";
 import { Box, CircularProgress } from "@mui/material";
 import Dashboard from "./Pages/Blocks/Dashboard";
+import ReadSingleBlock from "./Pages/Blocks/ReadSingleBlock";
 
 function App() {
 	const { isLoading, user } = React.useContext(UserContext);
@@ -82,6 +83,7 @@ function App() {
 
 						{/* Blocks and main app area */}
 						<Route path="/" element={<Dashboard />} />
+						<Route path="/single" element={<ReadSingleBlock />} />
 						{/* 404 Not Found */}
 						<Route path="*" element={<NotFoundPage />} />
 					</Routes>
