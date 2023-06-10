@@ -68,7 +68,7 @@ const ImageCarousel = (props: Props) => {
 					{props.headerText}
 				</Typography>
 				<Slider ref={slider} {...settings}>
-					{data?.map((item, index) => (
+					{data.slice(0, 10)?.map((item, index) => (
 						<OurCard item={item} key={index} />
 					))}
 				</Slider>

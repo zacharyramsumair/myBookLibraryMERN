@@ -1,0 +1,25 @@
+
+.gridAreaMd{
+    grid-template-areas: 
+    "image basicBookInfo rating tags stats" ;
+}
+
+
+/* .gridAreaSm{
+    grid-template-areas: 
+    "image image image"
+    "basicBookInfo basicBookInfo basicBookInfo"
+    "tags tags tags"
+    "rating stats stats";
+    gap: 1em;
+} */
+
+.gridAreaSm{
+    grid-template-areas: 
+    "image image image"
+    "basicBookInfo basicBookInfo basicBookInfo"
+    "tags tags tags"
+    "rating rating rating"
+    "stats stats stats";
+    gap: 1em;
+}

@@ -5,7 +5,8 @@ import FramingRight from "./FramingRight";
 import FramingRightTopBand from "./FramingRightTopBand";
 
 type Props = {
-	children:ReactNode
+	children:ReactNode,
+	hideSearch:boolean
 };
 
 const BlockFraming = (props: Props) => {
@@ -43,7 +44,7 @@ const BlockFraming = (props: Props) => {
 							borderBottomRightRadius: 10,
 						}}
 					>
-						<FramingRightTopBand />
+						<FramingRightTopBand hideSearch={props.hideSearch} />
 						{props.children}
 					</Grid>
 				</FramingRight>

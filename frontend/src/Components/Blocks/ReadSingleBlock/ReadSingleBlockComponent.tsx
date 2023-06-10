@@ -16,7 +16,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 	let fullContent = false;
 
 	return (
-		<BlockFraming>
+		<BlockFraming hideSearch={false}>
 			<Box sx={{ padding: 4 }}>
 				{/* Section 1: Book Details */}
 				<Box

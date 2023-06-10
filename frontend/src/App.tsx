@@ -23,6 +23,12 @@ import { UserContext } from "./Contexts/UserContext";
 import { Box, CircularProgress } from "@mui/material";
 import Dashboard from "./Pages/Blocks/Dashboard";
 import ReadSingleBlock from "./Pages/Blocks/ReadSingleBlock";
+import MyShelf from "./Pages/Blocks/MyShelf";
+import MyFavorites from "./Pages/Blocks/MyFavorites";
+import SearchBlocks from "./Pages/Blocks/SearchBlocks";
+import CreatorStudio from "./Pages/Blocks/CreatorStudio";
+import MyBlocks from "./Pages/Blocks/MyBlocks";
+import CreateBlock from "./Pages/Blocks/CreateBlock";
 
 function App() {
 	const { isLoading, user } = React.useContext(UserContext);
@@ -74,16 +80,30 @@ function App() {
 							path="/resetPassword"
 							element={<ResetPasswordPage />}
 						/>
+
+
 						<Route
+							path="settings"
+							element={
+								 <UserSettingsPage /> 
+							}
+						/>
+						{/* <Route
 							path="settings"
 							element={
 								user ? <UserSettingsPage /> : <Navigate to="/login" />
 							}
-						/>
+						/> */}
 
 						{/* Blocks and main app area */}
 						<Route path="/" element={<Dashboard />} />
 						<Route path="/single" element={<ReadSingleBlock />} />
+						<Route path="/Shelf" element={<MyShelf />} />
+						<Route path="/favorites" element={<MyFavorites />} />
+						<Route path="/search" element={<SearchBlocks />} />
+						<Route path="/creatorStudio" element={<CreatorStudio />} />
+						<Route path="/myBlocks" element={<MyBlocks />} />
+						<Route path="/create" element={<CreateBlock />} />
 						{/* 404 Not Found */}
 						<Route path="*" element={<NotFoundPage />} />
 					</Routes>

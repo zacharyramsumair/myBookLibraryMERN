@@ -8,7 +8,7 @@ type Props = {};
 
 const DashboardComponent = (props: Props) => {
 	return (
-		<BlockFraming>
+		<BlockFraming hideSearch={false}>
 			<Box sx={{ paddingX: 4 }}>
 				{/* quote and new arrivals */}
 				<Box

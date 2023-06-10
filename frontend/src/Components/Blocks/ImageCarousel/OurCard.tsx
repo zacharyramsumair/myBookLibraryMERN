@@ -21,28 +21,21 @@ export default function OurCard(props: Props) {
 				display: "flex",
 				flexDirection: "column",
 				alignItems: "center",
-        background:"transparent",
-        boxShadow:"none"
+				// justifyContent: "space-around",
+				background: "transparent",
+				boxShadow: "none",
 			}}
-      
 		>
-			<Box
-				component="div"
-        sx={{marginTop:1}}
-			>
+			<Box component="div" marginTop={2}>
 				<img
 					src={props.item.image}
 					className={Styles.cardImage}
 					loading="lazy"
-					alt=""
+					alt={props.item.title}
 				/>
 			</Box>
-			<CardContent sx={{ margin:"auto" }}>
+			<CardContent sx={{ margin: "auto" }}>
 				<Typography variant="subtitle2">{props.item.title}</Typography>
-				{/* <Typography variant="subtitle2" sx={{minHeight:"3.5em"}}>{props.item.rating}</Typography> */}
-				{/* <Typography startDecorator={<LocationOnRoundedIcon />} textColor="neutral.300">
-          California, USA
-        </Typography> */}
 			</CardContent>
 		</Card>
 	);

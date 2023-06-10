@@ -3,6 +3,7 @@ import UserSettingsRead from '../../Components/Auth/UserSettingsRead';
 import { UserContext } from '../../Contexts/UserContext';
 import { useContext } from 'react';
 import BasePageDesign from '../BasePageDesign';
+import UserSettingsEdit from '../../Components/Auth/UserSettingsEdit';
 useContext
 
 type Props = {}
@@ -13,7 +14,7 @@ const UserSettingsPage = (props: Props) => {
 
   return (
     <BasePageDesign>
-    <UserSettingsRead/>
+    <UserSettingsEdit/>
 </BasePageDesign> )
 
 }
