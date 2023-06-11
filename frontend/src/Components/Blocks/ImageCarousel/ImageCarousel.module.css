@@ -3,4 +3,6 @@
     width: 6em;
 }
 
-
+.slick-prev:before , .slick-next:before {
+    color: black; 
+}

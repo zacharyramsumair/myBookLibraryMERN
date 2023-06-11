@@ -12,12 +12,12 @@ const QuoteofTheDay = (props: Props) => {
         backgroundColor: "orange",
         backgroundImage: "linear-gradient(300deg, #792A8E, #BD4246)",
         borderRadius: 3,
-        padding: "1.5rem",
+        padding: "1rem",
         width: isMdScreen ? "35%" : "80%",
         minHeight:"10em",
         textAlign: "left",
         // textAlign: isMdScreen ? "left" : "center",
-        margin: {xs:"1rem auto", md:"0"},
+        margin: {xs:"1rem 0", md:"0"},
       }}
     >
       <Typography variant="h5" sx={{ fontWeight: "bold", color: "white" }}>

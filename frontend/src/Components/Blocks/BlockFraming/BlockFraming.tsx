@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { Container, Grid, List, ListItem, Typography } from "@mui/material";
 import FramingLeft from "./FramingLeft";
 import FramingRight from "./FramingRight";
@@ -10,6 +10,7 @@ type Props = {
 };
 
 const BlockFraming = (props: Props) => {
+
 	return (
 		<Container
 		className="removePadding"
@@ -25,7 +26,7 @@ const BlockFraming = (props: Props) => {
 			}}
 		>
 			<Grid container>
-				<FramingLeft />
+				<FramingLeft  />
 
 				<FramingRight>
 					<Grid
@@ -34,7 +35,8 @@ const BlockFraming = (props: Props) => {
 						xs={12}
 						md={10}
 						sx={{
-							backgroundColor: "lightgray",
+							backgroundColor: "#F3F3F7",
+							// backgroundColor: "lightgray",
 							height: "90vh",
 							overflow: "hidden",
 							overflowY: "scroll",

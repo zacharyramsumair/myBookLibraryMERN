@@ -1,7 +1,8 @@
 import React from "react";
 import OurCard from "./OurCard";
 import Slider from "react-slick";
-import Styles from "./ImageCarousel.module.css";
+// import Styles from "./ImageCarousel.module.css";
+// import "./ImageCarousel.module.css";
 import { Box, Theme, Typography, useMediaQuery } from "@mui/material";
 import data from "../sampleBlocks";
 
@@ -28,7 +29,7 @@ const ImageCarousel = (props: Props) => {
 		} else if (isSmallScreen) {
 			numberOfSlidesToShow = 4;
 		} else {
-			numberOfSlidesToShow = 5;
+			numberOfSlidesToShow = 4;
 		}
 	} else {
 		if (isExtraSmallScreen) {
@@ -54,8 +55,8 @@ const ImageCarousel = (props: Props) => {
 			<Box
 				sx={{
 					width: {
-						xs: props.fullRow ? "100%" : "80%",
-						md: props.fullRow ? "100%" : "60%",
+						xs: props.fullRow ? "95%" : "80%",
+						md: props.fullRow ? "95%" : "60%",
 					},
 					padding: 2,
 					display: "inline",

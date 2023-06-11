@@ -1,14 +1,22 @@
-import DashboardComponent from '../../Components/Blocks/Dashboard/DashboardComponent';
-import BasePageDesign from '../BasePageDesign';
+import DashboardComponent from "../../Components/Blocks/Dashboard/DashboardComponent";
+import { ActiveNavbarContext } from "../../Contexts/activeNavbarContext";
+import BasePageDesign from "../BasePageDesign";
+import { useContext , useEffect} from "react";
 
-type Props = {}
+type Props = {};
 
 const Dashboard = (props: Props) => {
-  return (
-    <BasePageDesign>
-    <DashboardComponent/>
-    </BasePageDesign>
-)
-}
+	let { setActiveNavSection } = useContext(ActiveNavbarContext);
 
-export default Dashboard
+	useEffect(() => {
+		setActiveNavSection("home");
+	}, []);
+
+	return (
+		<BasePageDesign>
+			<DashboardComponent />
+		</BasePageDesign>
+	);
+};
+
+export default Dashboard;

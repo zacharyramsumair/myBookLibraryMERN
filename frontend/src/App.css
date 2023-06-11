@@ -46,6 +46,11 @@ a {
     border-top-left-radius: 0 !important;
 }
 
+
+.slick-prev:before , .slick-next:before {
+    color: black; 
+}
+
 @media (max-width: 900px) {
 	.landingImage {
 		width: 15em;

@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
-import { Box, IconButton, Menu, Paper, Theme, useMediaQuery } from "@mui/material";
+import {
+	Box,
+	IconButton,
+	Menu,
+	Paper,
+	Theme,
+	useMediaQuery,
+} from "@mui/material";
 import { Drawer, List, ListItem, ListItemText, useTheme } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Framing from "./Framing.module.css";
@@ -13,6 +20,9 @@ import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import BookIcon from "@mui/icons-material/Book";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import logo from "../../../assets/logo.png";
+import { ActiveNavbarContext } from "../../../Contexts/activeNavbarContext";
+import { useNavigate } from "react-router-dom";
 
 export const tags = ["All", "nonfiction", "romance", "action"];
 
@@ -21,11 +31,20 @@ type Props = {
 };
 
 const FramingRightTopBand = (props: Props) => {
+	let { activeNavSection, setActiveNavSection } = useContext(
+		ActiveNavbarContext
+	);
+	let navigate = useNavigate();
+
 	const [isDrawerOpen, setDrawerOpen] = React.useState(false);
 
-	const [anchorEl, setAnchorEl] = React.useState<EventTarget & HTMLDivElement | null>(null);
+	const [anchorEl, setAnchorEl] = React.useState<
+		(EventTarget & HTMLDivElement) | null
+	>(null);
 
-	const handleAvatarClick = (event:React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+	const handleAvatarClick = (
+		event: React.MouseEvent<HTMLDivElement, MouseEvent>
+	) => {
 		setAnchorEl(event.currentTarget);
 	};
 
@@ -53,8 +72,10 @@ const FramingRightTopBand = (props: Props) => {
 					alignItems: "center",
 					position: "sticky",
 					top: 0,
-					backgroundColor: "pink",
+					background: "#F3F3F7",
+					// background: "pink",
 					zIndex: 1000,
+					borderBottom: "1px solid #dedee3",
 				}}
 			>
 				<Box sx={{ margin: 3, display: { xs: "flex", md: "none" } }}>
@@ -161,23 +182,59 @@ const FramingRightTopBand = (props: Props) => {
 					<ListItem>
 						<img
 							className={Framing.logo}
-							src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c51f.png"
+							src={logo}
+							// src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c51f.png"
 							alt=""
+							onClick={() => {
+								navigate("/");
+								setActiveNavSection("home");
+							}}
 						/>
 					</ListItem>
-					<ListItem sx={{ padding: { xs: "1.0em 1.5em" } }}>
+					<ListItem
+						sx={{ padding: { xs: "1.0em 1.5em" },
+						opacity:activeNavSection === "home" ? 1:0.5, 
+					 background:activeNavSection === "home" ? "#e3e3e3":"inherit",
+					
+					}}
+						onClick={() => {
+							navigate("/");
+							setActiveNavSection("home");
+						}}
+					>
 						<HomeIcon />
 						<Typography sx={{ marginLeft: 1 }}>Home</Typography>
 					</ListItem>
-					<ListItem sx={{ padding: { xs: "1.0em 1.5em" } }}>
+					<ListItem
+						sx={{ padding: { xs: "1.0em 1.5em" },opacity:activeNavSection === "search" ? 1:0.5, 
+						background:activeNavSection === "search" ? "#e3e3e3":"inherit", }}
+						onClick={() => {
+							navigate("/search");
+							setActiveNavSection("search");
+						}}
+					>
 						<SearchIcon />
 						<Typography sx={{ marginLeft: 1 }}>Search</Typography>
 					</ListItem>
-					<ListItem sx={{ padding: { xs: "1.0em 1.5em" } }}>
+					<ListItem
+						sx={{ padding: { xs: "1.0em 1.5em" },opacity:activeNavSection === "shelf" ? 1:0.5, 
+						background:activeNavSection === "shelf" ? "#e3e3e3":"inherit", }}
+						onClick={() => {
+							navigate("/shelf");
+							setActiveNavSection("shelf");
+						}}
+					>
 						<BookIcon />
 						<Typography sx={{ marginLeft: 1 }}>My Shelf</Typography>
 					</ListItem>
-					<ListItem sx={{ padding: { xs: "1.0em 1.5em" } }}>
+					<ListItem
+						sx={{ padding: { xs: "1.0em 1.5em" },opacity:activeNavSection === "favorites" ? 1:0.5, 
+						background:activeNavSection === "favorites" ? "#e3e3e3":"inherit", }}
+						onClick={() => {
+							navigate("/favorites");
+							setActiveNavSection("favorites");
+						}}
+					>
 						<FavoriteIcon />
 						<Typography sx={{ marginLeft: 1 }}>Favorites</Typography>
 					</ListItem>
