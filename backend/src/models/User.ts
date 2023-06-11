@@ -135,9 +135,17 @@ const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>(
 		},
 		location: {
 			type: String,
+			validate: {
+				validator: (location: string) => validator.isLength(location, { max: 50 }),
+				message: "Location must be at most 50 characters",
+			  },
 		},
 		aboutMe: {
 			type: String,
+			validate: {
+				validator: (aboutMe: string) => validator.isLength(aboutMe, { max: 250 }),
+				message: "About Me must be at most 250 characters",
+			  },
 		},
 		website: {
 			type: String,

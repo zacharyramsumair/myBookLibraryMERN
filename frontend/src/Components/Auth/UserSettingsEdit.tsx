@@ -10,10 +10,7 @@ import {
   Modal,
 } from "@mui/material";
 import { toast } from "react-toastify";
-
-
-
-
+import BlockFraming from "../Blocks/BlockFraming/BlockFraming";
 
 interface ProfileData {
   name: string;
@@ -36,6 +33,7 @@ const UserSettingsEdit = () => {
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  
 
   const handleProfileChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -45,6 +43,12 @@ const UserSettingsEdit = () => {
       ...prevData,
       [name]: value,
     }));
+
+    if (name === "location") {
+      setLocationCount(value.length);
+    } else if (name === "aboutMe") {
+      setAboutMeCount(value.length);
+    }
   };
 
   const handleSave = () => {
@@ -65,26 +69,28 @@ const UserSettingsEdit = () => {
   };
 
   const isValidImageUrl = async (url: string): Promise<boolean> => {
-		const img = new Image();
-	  
-		const loadImage = (): Promise<boolean> =>
-		  new Promise((resolve) => {
-			img.onload = () => resolve(img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0);
-			img.onerror = () => resolve(false);
-			img.src = url;
-		  });
-	  
-		return await loadImage();
-	  };
+    const img = new Image();
+
+    const loadImage = (): Promise<boolean> =>
+      new Promise((resolve) => {
+        img.onload = () =>
+          resolve(
+            img.complete &&
+              img.naturalWidth !== 0 &&
+              img.naturalHeight !== 0
+          );
+        img.onerror = () => resolve(false);
+        img.src = url;
+      });
+
+    return await loadImage();
+  };
 
   const handleImageUpload = async () => {
     try {
       // const isValid = await imageUrlValidator(inputValue);
 
-      const isValid = await isValidImageUrl(inputValue)
-
-     
-
+      const isValid = await isValidImageUrl(inputValue);
 
       if (isValid) {
         setProfileData((prevData) => ({
@@ -92,11 +98,10 @@ const UserSettingsEdit = () => {
           profilePic: inputValue,
         }));
 
-
-        handleModalClose()
+        handleModalClose();
       } else {
         console.log("Invalid image URL");
-        toast.error('Invalid image URL', {
+        toast.error("Invalid image URL", {
           position: toast.POSITION.TOP_CENTER,
         });
       }
@@ -106,18 +111,8 @@ const UserSettingsEdit = () => {
   };
 
   return (
-    <Container maxWidth="lg">
-      <Box
-        sx={{
-          backgroundColor: "#fff",
-          borderRadius: 2,
-          padding: 5,
-          boxShadow:
-            "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-          margin: 3,
-          minHeight: 200,
-        }}
-      >
+    <BlockFraming hideSearch={true}>
+      <Box sx={{ padding: 4 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <Box
@@ -160,7 +155,7 @@ const UserSettingsEdit = () => {
               <Box>
                 <Typography variant="h5">Edit Profile</Typography>
               </Box>
-              <Box sx={{ width: "100%" }}>
+              <Box sx={{ width: "100%", position:"relative" }}>
                 <TextField
                   label="Name"
                   variant="outlined"
@@ -169,7 +164,11 @@ const UserSettingsEdit = () => {
                   value={profileData.name}
                   onChange={handleProfileChange}
                   margin="normal"
+                  inputProps={{ maxLength: 50 }}
                 />
+                <Typography variant="caption" align="right" sx={{position:"absolute", bottom:5, right:5}}>
+                  {profileData.name.length}/{50}
+                </Typography>
               </Box>
               <Box sx={{ width: "100%" }}>
                 <TextField
@@ -183,7 +182,7 @@ const UserSettingsEdit = () => {
                   margin="normal"
                 />
               </Box>
-              <Box sx={{ width: "100%" }}>
+              <Box sx={{ width: "100%", position:"relative"}}>
                 <TextField
                   label="Location"
                   variant="outlined"
@@ -192,20 +191,28 @@ const UserSettingsEdit = () => {
                   value={profileData.location}
                   onChange={handleProfileChange}
                   margin="normal"
+                  inputProps={{ maxLength: 50 }}
                 />
+                <Typography variant="caption" align="right" sx={{position:"absolute", bottom:5, right:5}}>
+                  {profileData.location.length}/{50}
+                </Typography>
               </Box>
-              <Box sx={{ width: "100%" }}>
+              <Box sx={{ width: "100%", position:"relative" }}>
                 <TextField
                   label="About Me"
                   variant="outlined"
                   fullWidth
                   multiline
-                  rows={4}
+                  rows={2}
                   name="aboutMe"
                   value={profileData.aboutMe}
                   onChange={handleProfileChange}
                   margin="normal"
+                  inputProps={{ maxLength: 250 }}
                 />
+                <Typography variant="caption" align="right" sx={{position:"absolute", bottom:5, right:5}}>
+                  {profileData.aboutMe.length}/{250}
+                </Typography>
               </Box>
               <Box sx={{ width: "100%" }}>
                 <TextField
@@ -218,52 +225,57 @@ const UserSettingsEdit = () => {
                   margin="normal"
                 />
               </Box>
-              <Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSave}
-                >
-                  Save
-                </Button>
-              </Box>
+              <Button variant="contained" color="primary" onClick={handleSave}>
+                Save
+              </Button>
             </Box>
           </Grid>
         </Grid>
       </Box>
-      <Modal open={modalOpen} onClose={handleModalClose}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            backgroundColor: "#fff",
-            borderRadius: 2,
-            padding: 5,
-            boxShadow:
-              "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-          }}
-        >
-          <Typography variant="h6">Upload Picture</Typography>
-          <TextField
-            label="Image URL"
-            variant="outlined"
-            fullWidth
-            value={inputValue}
-            onChange={handleInputChange}
-            margin="normal"
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleImageUpload}
+      <Modal
+        open={modalOpen}
+        onClose={handleModalClose}
+        aria-labelledby="image-upload-modal"
+        aria-describedby="image-upload-modal-description"
+      >
+        <Container sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#fff",
+              padding: 4,
+              borderRadius: 4,
+              boxShadow: 24,
+              width: "50%",
+              maxWidth: 500,
+            }}
           >
-            Upload
-          </Button>
-        </Box>
+            <Typography variant="h5" align="center" gutterBottom>
+              Upload Profile Picture
+            </Typography>
+            <TextField
+              label="Image URL"
+              variant="outlined"
+              fullWidth
+              value={inputValue}
+              onChange={handleInputChange}
+              margin="normal"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleImageUpload}
+              disabled={!inputValue}
+            >
+              Upload
+            </Button>
+          </Box>
+        </Container>
       </Modal>
-    </Container>
+    </BlockFraming>
   );
 };
 

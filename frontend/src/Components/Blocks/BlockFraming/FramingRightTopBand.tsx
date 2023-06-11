@@ -20,6 +20,8 @@ import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import BookIcon from "@mui/icons-material/Book";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import SettingsIcon from '@mui/icons-material/Settings';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import logo from "../../../assets/logo.png";
 import { ActiveNavbarContext } from "../../../Contexts/activeNavbarContext";
 import { useNavigate } from "react-router-dom";
@@ -148,12 +150,17 @@ const FramingRightTopBand = (props: Props) => {
 						open={Boolean(anchorEl)}
 						onClose={handleMenuClose}
 					>
-						<MenuItem onClick={handleMenuClose}>
-							<HomeIcon sx={{ marginRight: 1 }} />
+						<MenuItem onClick={() => {
+							handleMenuClose()
+							navigate("/creatorStudio")
+						}}>
+							<ConstructionIcon sx={{ marginRight: 1 }} />
 							<Typography>Creator Studio</Typography>
 						</MenuItem>
-						<MenuItem onClick={handleMenuClose}>
-							<SearchIcon sx={{ marginRight: 1 }} />
+						<MenuItem onClick={() => {
+							handleMenuClose()
+							navigate("/settings")
+						}}>							<SettingsIcon sx={{ marginRight: 1 }} />
 							<Typography>Settings</Typography>
 						</MenuItem>
 					</Menu>{" "}

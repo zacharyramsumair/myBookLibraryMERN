@@ -16,7 +16,7 @@ import VerifyEmailPage from "./Pages/Auth/VerifyEmailPage";
 import ForgotPasswordPage from "./Pages/Auth/ForgotPasswordPage";
 import ResetPasswordPage from "./Pages/Auth/ResetPasswordPage";
 import PricingPage from "./Pages/Auth/PricingPage";
-import UserSettingsPage from "./Pages/Auth/UserSettingsPage";
+import UserSettingsPage from "./Pages/Blocks/UserSettingsPage";
 import NotFoundPage from "./Pages/NotFoundPage";
 import React from "react";
 import { UserContext } from "./Contexts/UserContext";
