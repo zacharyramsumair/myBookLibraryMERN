@@ -1,20 +1,25 @@
 import React, { ChangeEvent, useState } from "react";
-import { Box, Typography, TextField, Button, Modal } from "@mui/material";
+import { Box, Typography, TextField, Button } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BlockFraming from "../BlockFraming/BlockFraming";
 import allTags from "../allTags";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Modal from "@mui/material/Modal";
+import { useNavigate } from "react-router-dom";
 
-const CreateBlockComponent = () => {
+const EditBlockComponent = () => {
 	const [formData, setFormData] = useState({
-		title: "",
+		title: "title of a thousand men",
 		price: 0,
 		tier: "free",
-		content: "",
-		tags: [] as string[],
+		content: "the best thinng ever is just about htere",
+		tags: ["action", "music", "maths"] as string[],
 		image:
 			"https://png.pngtree.com/png-vector/20191027/ourmid/pngtree-book-cover-template-vector-realistic-illustration-isolated-on-gray-background-empty-png-image_1893997.jpg",
 	});
+
+	let navigate = useNavigate();
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [imageModalValue, setImageModalValue] = useState("");
@@ -30,32 +35,26 @@ const CreateBlockComponent = () => {
 
 	const isValidImageUrl = async (url: string): Promise<boolean> => {
 		const img = new Image();
-
+	  
 		const loadImage = (): Promise<boolean> =>
-			new Promise((resolve) => {
-				img.onload = () =>
-					resolve(
-						img.complete &&
-							img.naturalWidth !== 0 &&
-							img.naturalHeight !== 0
-					);
-				img.onerror = () => resolve(false);
-				img.src = url;
-			});
-
+		  new Promise((resolve) => {
+			img.onload = () => resolve(img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0);
+			img.onerror = () => resolve(false);
+			img.src = url;
+		  });
+	  
 		return await loadImage();
-	};
-
-	const handleImageModalValueChange = (
-		event: ChangeEvent<HTMLInputElement>
-	) => {
+	  };
+	
+	const handleImageModalValueChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setImageModalValue(event.target.value);
-	};
+	  };
+
 
 	const handleImageUpload = async () => {
 		try {
 			// const isValid = await imageUrlValidator(inputValue);
-			console.log(imageModalValue);
+			console.log(imageModalValue)
 			const isValid = await isValidImageUrl(imageModalValue);
 
 			if (isValid) {
@@ -75,6 +74,9 @@ const CreateBlockComponent = () => {
 			console.error("Error validating image URL", error);
 		}
 	};
+
+
+	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
 	const handleInputChange = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -132,6 +134,20 @@ const CreateBlockComponent = () => {
 		console.log(formData);
 	};
 
+	const handleDeleteClick = () => {
+		setDeleteModalOpen(true);
+	};
+
+	const handleDeleteConfirm = () => {
+		console.log("Block deleted");
+		setDeleteModalOpen(false);
+		// Redirect logic goes here
+	};
+
+	const handleDeleteCancel = () => {
+		setDeleteModalOpen(false);
+	};
+
 	const tagElements = allTags.map((tag, index) => (
 		<Button
 			variant="contained"
@@ -143,10 +159,23 @@ const CreateBlockComponent = () => {
 			{tag}
 		</Button>
 	));
+
 	return (
 		<BlockFraming hideSearch={true}>
 			<Box sx={{ padding: 4 }}>
-				<Typography variant="h6">Create Block</Typography>
+				<Box
+					sx={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "space-between",
+					}}
+				>
+					<Typography variant="h6">Edit Block</Typography>
+					<DeleteIcon
+						sx={{ ml: 2, cursor: "pointer", color: "red" }}
+						onClick={handleDeleteClick}
+					/>
+				</Box>
 				<form onSubmit={handleSubmit}>
 					<Box
 						sx={{
@@ -177,7 +206,6 @@ const CreateBlockComponent = () => {
 							Upload Picture
 						</Button>
 					</Box>
-
 					<TextField
 						label="Title"
 						variant="outlined"
@@ -224,13 +252,65 @@ const CreateBlockComponent = () => {
 							{tagElements}
 						</Box>
 					</Box>
-					<Box sx={{ marginTop: 2 }}>
-						<Button variant="contained" color="success" type="submit">
-							Create Block
+					<Box sx={{ marginTop: 5 }}>
+						<Button
+							variant="contained"
+							color="error"
+							type="button"
+							onClick={() => navigate(-1)}
+							sx={{ marginX: 1 }}
+						>
+							Cancel
+						</Button>
+						<Button
+							variant="contained"
+							color="success"
+							type="submit"
+							sx={{ marginX: 1 }}
+						>
+							Edit Block
 						</Button>
 					</Box>
 				</form>
 			</Box>
+			<Modal open={isDeleteModalOpen} onClose={handleDeleteCancel}>
+				<Box
+					sx={{
+						position: "fixed",
+						top: "50%",
+						left: "50%",
+						transform: "translate(-50%, -50%)",
+						maxWidth: "90%",
+						width: 400,
+						bgcolor: "background.paper",
+						p: 2,
+						outline: "none",
+						borderRadius: "4px",
+						boxShadow: 24,
+					}}
+				>
+					<Typography variant="h6">Confirm Deletion</Typography>
+					<Typography variant="body1">
+						Are you sure you want to delete this block?
+					</Typography>
+					<Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+						<Button
+							variant="contained"
+							onClick={handleDeleteCancel}
+							sx={{ mr: 2 }}
+						>
+							Cancel
+						</Button>
+						<Button
+							variant="contained"
+							color="error"
+							onClick={handleDeleteConfirm}
+						>
+							Delete
+						</Button>
+					</Box>
+				</Box>
+			</Modal>
 			<Modal open={modalOpen} onClose={handleModalClose}>
 				<Box
 					sx={{
@@ -271,4 +351,4 @@ const CreateBlockComponent = () => {
 	);
 };
 
-export default CreateBlockComponent;
+export default EditBlockComponent;

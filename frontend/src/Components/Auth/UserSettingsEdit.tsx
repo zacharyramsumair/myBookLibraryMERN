@@ -64,17 +64,24 @@ const UserSettingsEdit = () => {
     setInputValue(event.target.value);
   };
 
-  const isValidImageUrl = (url: string): boolean => {
-    const img = new Image();
-    img.src = url;
-    return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
-  };
+  const isValidImageUrl = async (url: string): Promise<boolean> => {
+		const img = new Image();
+	  
+		const loadImage = (): Promise<boolean> =>
+		  new Promise((resolve) => {
+			img.onload = () => resolve(img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0);
+			img.onerror = () => resolve(false);
+			img.src = url;
+		  });
+	  
+		return await loadImage();
+	  };
 
   const handleImageUpload = async () => {
     try {
       // const isValid = await imageUrlValidator(inputValue);
 
-      const isValid = isValidImageUrl(inputValue)
+      const isValid = await isValidImageUrl(inputValue)
 
      
 

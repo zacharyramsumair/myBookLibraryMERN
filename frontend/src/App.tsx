@@ -29,6 +29,7 @@ import SearchBlocks from "./Pages/Blocks/SearchBlocks";
 import CreatorStudio from "./Pages/Blocks/CreatorStudio";
 import MyBlocks from "./Pages/Blocks/MyBlocks";
 import CreateBlock from "./Pages/Blocks/CreateBlock";
+import EditBlock from "./Pages/Blocks/EditBlock";
 
 function App() {
 	const { isLoading, user } = React.useContext(UserContext);
@@ -104,6 +105,7 @@ function App() {
 						<Route path="/creatorStudio" element={<CreatorStudio />} />
 						<Route path="/myBlocks" element={<MyBlocks />} />
 						<Route path="/create" element={<CreateBlock />} />
+						<Route path="/edit/:id" element={<EditBlock />} />
 						{/* 404 Not Found */}
 						<Route path="*" element={<NotFoundPage />} />
 					</Routes>
