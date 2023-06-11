@@ -178,15 +178,25 @@ const CreateBlockComponent = () => {
 						</Button>
 					</Box>
 
-					<TextField
-						label="Title"
-						variant="outlined"
-						fullWidth
-						name="title"
-						value={formData.title}
-						onChange={handleInputChange}
-						margin="normal"
-					/>
+					<Box sx={{ position: "relative" }}>
+						<TextField
+							label="Title"
+							variant="outlined"
+							fullWidth
+							name="title"
+							value={formData.title}
+							onChange={handleInputChange}
+							margin="normal"
+							inputProps={{ maxLength: 75 }}
+						/>
+						<Typography
+							variant="caption"
+							align="right"
+							sx={{ position: "absolute", bottom: 5, right: 5 }}
+						>
+							{formData.title.length}/{75}
+						</Typography>
+					</Box>
 					<TextField
 						label="Price"
 						variant="outlined"

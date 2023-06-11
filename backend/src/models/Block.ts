@@ -1,4 +1,5 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
+import validator from "validator";
 
 enum BlockTag {
 	Biography = "biography",
@@ -57,6 +58,10 @@ const BlockSchema: Schema<Block> = new mongoose.Schema<Block>(
 		title: {
 			type: String,
 			required: [true, "Please provide a title"],
+			validate: {
+				validator: (title: string) => validator.isLength(title, { max: 75 }),
+				message: "Location must be at most 75 characters",
+			  },
 		},
 		tags: {
 			type: [

@@ -44,11 +44,7 @@ const UserSettingsEdit = () => {
       [name]: value,
     }));
 
-    if (name === "location") {
-      setLocationCount(value.length);
-    } else if (name === "aboutMe") {
-      setAboutMeCount(value.length);
-    }
+    
   };
 
   const handleSave = () => {
