@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -20,8 +20,8 @@ import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import BookIcon from "@mui/icons-material/Book";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import SettingsIcon from '@mui/icons-material/Settings';
-import ConstructionIcon from '@mui/icons-material/Construction';
+import SettingsIcon from "@mui/icons-material/Settings";
+import ConstructionIcon from "@mui/icons-material/Construction";
 import logo from "../../../assets/logo.png";
 import { ActiveNavbarContext } from "../../../Contexts/activeNavbarContext";
 import { useNavigate } from "react-router-dom";
@@ -43,6 +43,23 @@ const FramingRightTopBand = (props: Props) => {
 	const [anchorEl, setAnchorEl] = React.useState<
 		(EventTarget & HTMLDivElement) | null
 	>(null);
+
+	let [selectedTag, setSelectedTag] = useState("All");
+	let [searchQuery, setSearchQuery] = useState("");
+
+	const handleSearchBarSubmit = () => {
+		let searchReq = {
+			tag: selectedTag,
+			query: searchQuery,
+		};
+		console.log(searchReq);
+	};
+
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === "Enter") {
+			handleSearchBarSubmit();
+		}
+	};
 
 	const handleAvatarClick = (
 		event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -105,6 +122,9 @@ const FramingRightTopBand = (props: Props) => {
 							borderTopRightRadius: 0,
 							borderBottomRightRadius: 0,
 						}}
+						onChange={(e) => {
+							setSelectedTag(e.target.value);
+						}}
 					>
 						{tags.map((tag) => (
 							<MenuItem key={tag} value={tag}>
@@ -120,11 +140,17 @@ const FramingRightTopBand = (props: Props) => {
 						sx={{ width: { sm: "20em", lg: "30em" } }}
 						InputProps={{
 							endAdornment: (
-								<IconButton type="submit" aria-label="search">
+								<IconButton
+									type="submit"
+									aria-label="search"
+									onClick={handleSearchBarSubmit}
+								>
 									<SearchIcon />
 								</IconButton>
 							),
 						}}
+						onChange={(e) => setSearchQuery(e.target.value)}
+						onKeyDown={handleKeyDown}
 					/>
 				</Paper>
 
@@ -150,17 +176,23 @@ const FramingRightTopBand = (props: Props) => {
 						open={Boolean(anchorEl)}
 						onClose={handleMenuClose}
 					>
-						<MenuItem onClick={() => {
-							handleMenuClose()
-							navigate("/creatorStudio")
-						}}>
+						<MenuItem
+							onClick={() => {
+								handleMenuClose();
+								navigate("/creatorStudio");
+							}}
+						>
 							<ConstructionIcon sx={{ marginRight: 1 }} />
 							<Typography>Creator Studio</Typography>
 						</MenuItem>
-						<MenuItem onClick={() => {
-							handleMenuClose()
-							navigate("/settings")
-						}}>							<SettingsIcon sx={{ marginRight: 1 }} />
+						<MenuItem
+							onClick={() => {
+								handleMenuClose();
+								navigate("/settings");
+							}}
+						>
+							{" "}
+							<SettingsIcon sx={{ marginRight: 1 }} />
 							<Typography>Settings</Typography>
 						</MenuItem>
 					</Menu>{" "}
@@ -199,11 +231,12 @@ const FramingRightTopBand = (props: Props) => {
 						/>
 					</ListItem>
 					<ListItem
-						sx={{ padding: { xs: "1.0em 1.5em" },
-						opacity:activeNavSection === "home" ? 1:0.5, 
-					 background:activeNavSection === "home" ? "#e3e3e3":"inherit",
-					
-					}}
+						sx={{
+							padding: { xs: "1.0em 1.5em" },
+							opacity: activeNavSection === "home" ? 1 : 0.5,
+							background:
+								activeNavSection === "home" ? "#e3e3e3" : "inherit",
+						}}
 						onClick={() => {
 							navigate("/");
 							setActiveNavSection("home");
@@ -213,8 +246,12 @@ const FramingRightTopBand = (props: Props) => {
 						<Typography sx={{ marginLeft: 1 }}>Home</Typography>
 					</ListItem>
 					<ListItem
-						sx={{ padding: { xs: "1.0em 1.5em" },opacity:activeNavSection === "search" ? 1:0.5, 
-						background:activeNavSection === "search" ? "#e3e3e3":"inherit", }}
+						sx={{
+							padding: { xs: "1.0em 1.5em" },
+							opacity: activeNavSection === "search" ? 1 : 0.5,
+							background:
+								activeNavSection === "search" ? "#e3e3e3" : "inherit",
+						}}
 						onClick={() => {
 							navigate("/search");
 							setActiveNavSection("search");
@@ -224,8 +261,12 @@ const FramingRightTopBand = (props: Props) => {
 						<Typography sx={{ marginLeft: 1 }}>Search</Typography>
 					</ListItem>
 					<ListItem
-						sx={{ padding: { xs: "1.0em 1.5em" },opacity:activeNavSection === "shelf" ? 1:0.5, 
-						background:activeNavSection === "shelf" ? "#e3e3e3":"inherit", }}
+						sx={{
+							padding: { xs: "1.0em 1.5em" },
+							opacity: activeNavSection === "shelf" ? 1 : 0.5,
+							background:
+								activeNavSection === "shelf" ? "#e3e3e3" : "inherit",
+						}}
 						onClick={() => {
 							navigate("/shelf");
 							setActiveNavSection("shelf");
@@ -235,8 +276,14 @@ const FramingRightTopBand = (props: Props) => {
 						<Typography sx={{ marginLeft: 1 }}>My Shelf</Typography>
 					</ListItem>
 					<ListItem
-						sx={{ padding: { xs: "1.0em 1.5em" },opacity:activeNavSection === "favorites" ? 1:0.5, 
-						background:activeNavSection === "favorites" ? "#e3e3e3":"inherit", }}
+						sx={{
+							padding: { xs: "1.0em 1.5em" },
+							opacity: activeNavSection === "favorites" ? 1 : 0.5,
+							background:
+								activeNavSection === "favorites"
+									? "#e3e3e3"
+									: "inherit",
+						}}
 						onClick={() => {
 							navigate("/favorites");
 							setActiveNavSection("favorites");
