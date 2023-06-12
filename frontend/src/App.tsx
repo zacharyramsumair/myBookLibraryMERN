@@ -1,5 +1,5 @@
 import "normalize.css";
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./App.css";
 import {
@@ -30,6 +30,7 @@ import CreatorStudio from "./Pages/Blocks/CreatorStudio";
 import MyBlocks from "./Pages/Blocks/MyBlocks";
 import CreateBlock from "./Pages/Blocks/CreateBlock";
 import EditBlock from "./Pages/Blocks/EditBlock";
+import UserProfile from "./Pages/Auth/UserProfile";
 
 function App() {
 	const { isLoading, user } = React.useContext(UserContext);
@@ -82,13 +83,6 @@ function App() {
 							element={<ResetPasswordPage />}
 						/>
 
-
-						<Route
-							path="settings"
-							element={
-								 <UserSettingsPage /> 
-							}
-						/>
 						{/* <Route
 							path="settings"
 							element={
@@ -106,6 +100,8 @@ function App() {
 						<Route path="/myBlocks" element={<MyBlocks />} />
 						<Route path="/create" element={<CreateBlock />} />
 						<Route path="/edit/:id" element={<EditBlock />} />
+						<Route path="settings" element={<UserSettingsPage />} />
+						<Route path="profile/:id" element={<UserProfile />} />
 						{/* 404 Not Found */}
 						<Route path="*" element={<NotFoundPage />} />
 					</Routes>

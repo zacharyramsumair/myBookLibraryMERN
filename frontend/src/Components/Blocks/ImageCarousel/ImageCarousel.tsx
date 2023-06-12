@@ -10,6 +10,7 @@ type Props = {
 	fullRow: boolean;
 	headerText: string;
 	align: string;
+	hideDots?:boolean;
 };
 
 const ImageCarousel = (props: Props) => {
@@ -42,7 +43,7 @@ const ImageCarousel = (props: Props) => {
 	}
 
 	const settings = {
-		dots: true,
+		dots: props.hideDots ? false :true ,
 		infinite: true,
 		arrows: true,
 		speed: 100,
