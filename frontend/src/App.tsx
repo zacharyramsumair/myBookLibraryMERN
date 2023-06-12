@@ -92,7 +92,7 @@ function App() {
 
 						{/* Blocks and main app area */}
 						<Route path="/" element={<Dashboard />} />
-						<Route path="/single" element={<ReadSingleBlock />} />
+						<Route path="/block/:id" element={<ReadSingleBlock />} />
 						<Route path="/Shelf" element={<MyShelf />} />
 						<Route path="/favorites" element={<MyFavorites />} />
 						<Route path="/search" element={<SearchBlocks />} />

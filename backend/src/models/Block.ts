@@ -18,7 +18,7 @@ enum BlockTag {
 	Romance = "romance",
 	Science = "science",
 	ScienceFiction = "sciencefiction",
-	SelfHelp = "self help",
+	SelfHelp = "selfhelp",
 	Thriller = "thriller",
 	YoungAdult = "youngadult",
 }

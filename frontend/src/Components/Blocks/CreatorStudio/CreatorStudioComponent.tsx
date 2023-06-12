@@ -50,7 +50,7 @@ const DashboardComponent = (props: Props) => {
             cursor:"pointer"
           }}
 
-          onClick={() =>navigate("/newBlock") }
+          onClick={() =>navigate("/create") }
 
         >
           <Typography variant="h4">Create a New Block</Typography>

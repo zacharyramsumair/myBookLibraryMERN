@@ -39,14 +39,14 @@ const LoginForm: React.FC = () => {
 
 	useEffect(() => {
 		if (user) {
-			navigate("/home");
+			navigate("/");
 		}
 
 		if (isSuccess) {
 			// setUser(data);
 			fetchUser()
 			// Cookies.set("user", JSON.stringify(data), { secure: true, sameSite: "strict" });
-			navigate("/home");
+			navigate("/");
 		}
 	}, [isSuccess]);
 

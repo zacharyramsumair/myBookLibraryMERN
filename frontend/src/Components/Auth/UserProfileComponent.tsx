@@ -11,6 +11,7 @@ import {
     Link,
   } from "@mui/material";
 import ImageCarousel from '../Blocks/ImageCarousel/ImageCarousel';
+import { Favorite } from '@mui/icons-material';
 type Props = {}
 
 const UserProfileComponent = (props: Props) => (
@@ -48,9 +49,7 @@ const UserProfileComponent = (props: Props) => (
             <Typography variant="subtitle1" gutterBottom>
               Age: 25 {/* Replace with the actual age */}
             </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              Gender: Male {/* Replace with the actual gender */}
-            </Typography>
+           
             <Typography variant="subtitle1" gutterBottom>
               Location: New York {/* Replace with the actual location */}
             </Typography>
@@ -62,10 +61,7 @@ const UserProfileComponent = (props: Props) => (
               Joined: January 1, 1990 {/* Replace with the actual date */}
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
-              Last Active: March 23, 2023 {/* Replace with the actual date */}
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              Favourite Genres: Romance + Fantasy {/* Replace with the real genres */}
+              Favorite  Genres: Romance + Fantasy {/* Replace with the real genres */}
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
               Website:{" "}
@@ -90,8 +86,8 @@ const UserProfileComponent = (props: Props) => (
         </Grid>
       </Grid>
       <Box>
-        <ImageCarousel hideDots={true} fullRow={true} headerText="User's Blocks" align="left" />
-        <ImageCarousel hideDots={true} fullRow={true} headerText="User's Favorites" align="left" />
+        <ImageCarousel  fullRow={true} headerText="User's Blocks" align="left" />
+        <ImageCarousel  fullRow={true} headerText="User's Favorites" align="left" />
       </Box>
         </Box>
 

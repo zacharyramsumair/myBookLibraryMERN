@@ -4,6 +4,7 @@ import Block from "../models/Block";
 import { IBlock } from "../interfaces";
 import User from "../models/User";
 import mongoose from "mongoose";
+import quotes from "../utils/quotes";
 
 // @desc    Get all blocks
 // @route   GET /
@@ -602,6 +603,55 @@ const getHomePage = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json(homePageData);
 };
 
+//   @desc    Get home page information
+//   @route   GET /dashboard
+//   @access  Public
+const getDashboard = async (req: Request, res: Response) => {
+	const currentDate = new Date().toISOString().split("T")[0]; // Get the current date
+	const quoteIndex = currentDate.length % (quotes.length - 1); // Calculate the index based on the date
+	const quote = quotes[quoteIndex]; // Access the quote at the calculated index
+  
+	const newArrivals = await Block.find().sort({ createdAt: -1 }).limit(15).select("title tier imageUrl"); // Get the last 15 blocks added, only include title, tier, and imageUrl fields
+  
+	let recommendedBlocks = [];
+  
+	if (req.user) {
+	  // User is logged in
+	  const currentUser = await User.findById(req.user);
+  
+	  if (currentUser) {
+		// Get the user's top 5 favorite tags
+		const favoriteTags = currentUser.favoriteTags
+		  .sort((a, b) => b.count - a.count)
+		  .slice(0, 5)
+		  .map((tag) => tag.tagName);
+  
+		// Get 30 random blocks with a rating > 3 and matching the user's favorite tags
+		recommendedBlocks = await Block.aggregate([
+		  { $match: { rating: { $gte: 0 }, tags: { $in: favoriteTags } } },
+		  { $sample: { size: 30 } },
+		  { $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
+		]);
+	  }
+	} else {
+	  // User is not logged in
+	  // Get 30 random blocks with a rating > 3
+	  recommendedBlocks = await Block.aggregate([
+		{ $match: { rating: { $gte: 0 } } },
+		{ $sample: { size: 30 } },
+		{ $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
+	  ]);
+	}
+  
+	res.status(StatusCodes.OK).json({
+	  quote,
+	  newArrivals,
+	  recommendedBlocks,
+	});
+  };
+  
+  
+
 // // @desc    Create a new comment on a block
 // // @route   POST /api/v1/blocks/:blockId/comments
 // // @access  Private
@@ -714,4 +764,5 @@ export default {
 	getMyBlocks,
 	getUserShelfBlocks,
 	getHomePage,
+	getDashboard
 };

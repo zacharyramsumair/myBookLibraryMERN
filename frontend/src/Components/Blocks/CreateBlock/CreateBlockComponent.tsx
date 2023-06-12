@@ -4,15 +4,20 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BlockFraming from "../BlockFraming/BlockFraming";
 import allTags from "../allTags";
+import { useCreateBlock } from "../../../Hooks/Blocks/useCreateBlock";
 
 const CreateBlockComponent = () => {
+
+
+	let {createBlock, error, data, isError, isLoading, isSuccess} = useCreateBlock()
+
 	const [formData, setFormData] = useState({
 		title: "",
 		price: 0,
 		tier: "free",
-		content: "",
+		text: "",
 		tags: [] as string[],
-		image:
+		imageUrl:
 			"https://png.pngtree.com/png-vector/20191027/ourmid/pngtree-book-cover-template-vector-realistic-illustration-isolated-on-gray-background-empty-png-image_1893997.jpg",
 	});
 
@@ -61,7 +66,7 @@ const CreateBlockComponent = () => {
 			if (isValid) {
 				setFormData((prevData) => ({
 					...prevData,
-					image: imageModalValue,
+					imageUrl: imageModalValue,
 				}));
 
 				handleModalClose();
@@ -123,16 +128,28 @@ const CreateBlockComponent = () => {
 			formData.tier = "free";
 		}
 
-		if (formData.content.trim() === "") {
-			toast.error("Please enter some content.");
+		if (formData.text.trim() === "") {
+			toast.error("Please enter some text.");
 			return;
 		}
 
+		// formData.tags = formData.tags.map((string) => string.replace(/\s/g, "").toLowerCase());
+
+
 		// Form submission logic
-		console.log(formData);
+		console.log({...formData, tags:formData.tags.map((string) => string.replace(/\s/g, "").toLowerCase()) });
+		createBlock({
+			title:formData.title,
+			text:formData.text,
+			tags:formData.tags.map((string) => string.replace(/\s/g, "").toLowerCase()),
+			imageUrl:formData.imageUrl,
+			price:formData.price,
+			tier:formData.tier,
+		})
+
 	};
 
-	const tagElements = allTags.map((tag, index) => (
+	const tagElements = allTags.slice(1).map((tag, index) => (
 		<Button
 			variant="contained"
 			color={formData.tags.includes(tag) ? "secondary" : "primary"}
@@ -153,7 +170,7 @@ const CreateBlockComponent = () => {
 							display: "flex",
 							flexDirection: "column",
 							alignItems: "center",
-							justifyContent: "center",
+							justifyText: "center",
 							textAlign: "center",
 							paddingY: 3,
 							width: "100%",
@@ -162,7 +179,7 @@ const CreateBlockComponent = () => {
 					>
 						<Box>
 							<img
-								src={formData.image}
+								src={formData.imageUrl}
 								alt=""
 								style={{ width: "8em", height: "10em" }}
 							/>
@@ -208,13 +225,13 @@ const CreateBlockComponent = () => {
 						margin="normal"
 					/>
 					<TextField
-						label="Content"
+						label="Text"
 						variant="outlined"
 						fullWidth
 						multiline
 						// rows={1}
-						name="content"
-						value={formData.content}
+						name="text"
+						value={formData.text}
 						onChange={handleInputChange}
 						margin="normal"
 					/>

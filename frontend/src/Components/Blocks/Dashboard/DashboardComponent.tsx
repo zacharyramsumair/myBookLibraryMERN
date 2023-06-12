@@ -1,12 +1,35 @@
 import React from "react";
 import BlockFraming from "../BlockFraming/BlockFraming";
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import QuoteofTheDay from "./QuoteofTheDay";
 import ImageCarousel from "../ImageCarousel/ImageCarousel";
+import { useGetDashboard } from "../../../Hooks/Blocks/useGetDashboard";
 
 type Props = {};
 
 const DashboardComponent = (props: Props) => {
+	let { data, error, isLoading, isError } = useGetDashboard();
+	// console.log(data)
+
+	if (isLoading) {
+		return (
+			<BlockFraming hideSearch={false}>
+				<Box sx={{ paddingX: 4 }}>
+					<Box
+						sx={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							minHeight: 200,
+						}}
+					>
+						<CircularProgress />
+					</Box>
+				</Box>
+			</BlockFraming>
+		);
+	}
+
 	return (
 		<BlockFraming hideSearch={false}>
 			<Box sx={{ paddingX: 4 }}>
@@ -19,13 +42,27 @@ const DashboardComponent = (props: Props) => {
 						alignItems: "center",
 					}}
 				>
-					<QuoteofTheDay />
-					<ImageCarousel fullRow={false} headerText="New Arrivals" align="center" />
+					<QuoteofTheDay
+						quote={data.quote.quote}
+						source={data.quote.source}
+					/>
+					<ImageCarousel
+						fullRow={false}
+						headerText="New Arrivals"
+						align="center"
+						listOfImages={data.newArrivals}
+					/>
 				</Box>
 
 				{/* Recommended for you */}
 				<Box>
-				<ImageCarousel fullRow={true} headerText="Recommended for You" align="left" />
+					<ImageCarousel
+						fullRow={true}
+						headerText="Recommended for You"
+						align="left"
+						listOfImages={data.recommendedBlocks}
+
+					/>
 				</Box>
 			</Box>
 		</BlockFraming>

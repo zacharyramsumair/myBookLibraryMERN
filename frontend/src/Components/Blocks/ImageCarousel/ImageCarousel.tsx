@@ -6,11 +6,21 @@ import Slider from "react-slick";
 import { Box, Theme, Typography, useMediaQuery } from "@mui/material";
 import data from "../sampleBlocks";
 
+export interface IBlockForImageCarousel{
+	imageUrl:string,
+	title:string,
+	_id:string,
+	tier:"free" | "paid",
+	rating ?:number,
+	views ?:number,
+}
+
 type Props = {
 	fullRow: boolean;
 	headerText: string;
 	align: string;
-	hideDots?:boolean;
+	listOfImages:IBlockForImageCarousel[]
+	// hideDots?:boolean;
 };
 
 const ImageCarousel = (props: Props) => {
@@ -43,7 +53,8 @@ const ImageCarousel = (props: Props) => {
 	}
 
 	const settings = {
-		dots: props.hideDots ? false :true ,
+		dots: false ,
+		// dots: props.hideDots ? false :true ,
 		infinite: true,
 		arrows: true,
 		speed: 100,
@@ -70,8 +81,9 @@ const ImageCarousel = (props: Props) => {
 					{props.headerText}
 				</Typography>
 				<Slider ref={slider} {...settings}>
-					{data.slice(0, 10)?.map((item, index) => (
-						<OurCard item={item} key={index} />
+					{props.listOfImages.map((item, index) => (
+					// {data.slice(0, 10)?.map((item, index) => (
+						<OurCard item={item} key={item._id} />
 					))}
 				</Slider>
 			</Box>

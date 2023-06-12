@@ -18,7 +18,7 @@ export default [
 	"Romance",
 	"Science",
 	"Science Fiction",
-	"SelfHelp",
+	"Self Help",
 	"Thriller",
 	"Young Adult",
 ];

@@ -7,10 +7,11 @@ const router = express.Router();
 
 router.get("/", blockController.getAllBlocks);
 router.get("/buy/:id",authenticateUser, blockController.buyBlock);
-router.get("/:id", blockController.getBlockById);
+router.get("/block/:id", blockController.getBlockById);
 router.post("/", authenticateUser, blockController.createBlock);
-router.put("/:id", authenticateUser, blockController.updateBlock);
-router.delete("/:id", authenticateUser, blockController.deleteBlock);
+router.get("/dashboard", blockController.getDashboard);
+router.put("/block/:id", authenticateUser, blockController.updateBlock);
+router.delete("/block/:id", authenticateUser, blockController.deleteBlock);
 router.get("/search", blockController.searchBlocks);
 router.post("/:id/rate", authenticateUser, blockController.rateBlock);
 router.post("/:id/favorite", authenticateUser, blockController.favoriteBlock);
