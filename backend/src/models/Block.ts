@@ -8,7 +8,7 @@ enum BlockTag {
 	Classics = "classics",
 	Fantasy = "fantasy",
 	Fiction = "fiction",
-	HistoricalFiction = "historicalFiction",
+	HistoricalFiction = "historicalfiction",
 	History = "history",
 	Horror = "horror",
 	Memoir = "memoir",
@@ -17,10 +17,10 @@ enum BlockTag {
 	Poetry = "poetry",
 	Romance = "romance",
 	Science = "science",
-	ScienceFiction = "scienceFiction",
+	ScienceFiction = "sciencefiction",
 	SelfHelp = "self help",
 	Thriller = "thriller",
-	YoungAdult = "youngAdult",
+	YoungAdult = "youngadult",
 }
 
 interface reply {

@@ -1,3 +1,24 @@
+import { all } from "axios";
+
 export default [
-    "Romance", "Comedy,","action","music","maths","science","history", "self help"
-]
+	"All",
+	"Biography",
+	"Business",
+	"Children",
+	"Classics",
+	"Fantasy",
+	"Fiction",
+	"Historical Fiction",
+	"History",
+	"Horror",
+	"Memoir",
+	"Mystery",
+	"Nonfiction",
+	"Poetry",
+	"Romance",
+	"Science",
+	"Science Fiction",
+	"SelfHelp",
+	"Thriller",
+	"Young Adult",
+];

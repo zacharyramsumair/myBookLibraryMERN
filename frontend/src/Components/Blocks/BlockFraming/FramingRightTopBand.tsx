@@ -25,8 +25,8 @@ import ConstructionIcon from "@mui/icons-material/Construction";
 import logo from "../../../assets/logo.png";
 import { ActiveNavbarContext } from "../../../Contexts/activeNavbarContext";
 import { useNavigate } from "react-router-dom";
-
-export const tags = ["All", "nonfiction", "romance", "action"];
+import tags from "../allTags"
+// export const tags = ["All", "nonfiction", "romance", "action"];
 
 type Props = {
 	hideSearch: boolean;
@@ -113,14 +113,16 @@ const FramingRightTopBand = (props: Props) => {
 					}}
 				>
 					<TextField
+						className={Framing.tagSelectBox}
 						select
 						variant="outlined"
 						size="small"
-						defaultValue="All"
+						defaultValue={tags[0]}
 						sx={{
 							borderRadius: 1,
 							borderTopRightRadius: 0,
 							borderBottomRightRadius: 0,
+							width:"fit-content"
 						}}
 						onChange={(e) => {
 							setSelectedTag(e.target.value);

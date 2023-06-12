@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { tags } from "../BlockFraming/FramingRightTopBand";
+import tags  from "../allTags";
 import SearchIcon from "@mui/icons-material/Search";
 
 type Props = {};
@@ -48,7 +48,7 @@ const SearchBar = (props: Props) => {
           borderRadius: 1,
           borderTopRightRadius: 0,
           borderBottomRightRadius: 0,
-          minWidth: "fit-content",
+          maxWidth: {xs:"6em", sm:"fit-content"},
         }}
         onChange={(e) => {
           setSelectedTag(e.target.value);
