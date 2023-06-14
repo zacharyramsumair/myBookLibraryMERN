@@ -10,6 +10,8 @@ import { AxiosError } from "axios";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { usePostFavorite } from "../../../Hooks/Blocks/usePostFavorite";
+import Rating from "@mui/material/Rating";
+import { useAddRating } from "../../../Hooks/Blocks/useAddRating";
 
 type Props = {
 	// book: {
@@ -32,6 +34,10 @@ const ReadSingleBlockComponent = (props: Props) => {
 	const [errorToastShown, setErrorToastShown] = useState(false);
 	const [boughtToastShown, setBoughtToastShown] = useState(false);
 	const [isFavorite, setIsFavorite] = useState(false);
+	// const [ratingValue, setRatingValue] = useState<number>(3.87);
+	const [currentUserRatingValue, setCurrentUserRatingValue] = useState<number>(
+		0
+	);
 
 	let {
 		LoadingSingleBlock,
@@ -58,6 +64,15 @@ const ReadSingleBlockComponent = (props: Props) => {
 		isSuccessPostFavorite,
 	} = usePostFavorite();
 
+	let {
+		addRating,
+		errorAddRating,
+		AddRatingData,
+		isErrorAddRating,
+		isLoadingAddRating,
+		isSuccessAddRating,
+	} = useAddRating();
+
 	useEffect(() => {
 		if (errorBuyBlock && !errorToastShown) {
 			const errorMessage = (errorBuyBlock as any)?.response?.data?.message;
@@ -80,9 +95,12 @@ const ReadSingleBlockComponent = (props: Props) => {
 		}
 	}, [isSuccessBuyBlock, refetch, boughtToastShown]);
 
+
+	console.log(SingleBlockData)
 	useEffect(() => {
 		if (SingleBlockData) {
 			setIsFavorite(SingleBlockData.isFavorite);
+			setCurrentUserRatingValue(SingleBlockData.myRating.rating);
 		}
 	}, [SingleBlockData]);
 
@@ -122,6 +140,16 @@ const ReadSingleBlockComponent = (props: Props) => {
 			</BlockFraming>
 		);
 	}
+
+	const handleRatingChange = (
+		event: React.SyntheticEvent<Element, Event>,
+		value: number | null
+	) => {
+		if (value !== null) {
+			setCurrentUserRatingValue(value);
+			addRating({id:blockId, rating:value})
+		}
+	};
 
 	console.log(isFavorite);
 	console.log(SingleBlockData.isFavorite);
@@ -168,9 +196,17 @@ const ReadSingleBlockComponent = (props: Props) => {
 						<Typography variant="h5" sx={{ mb: 1 }}>
 							{title}
 						</Typography>
-						<Typography variant="body1" sx={{ mb: 1 }}>
-							Rating: {rating}
-						</Typography>
+						<Box sx={{ mb: 1, display: "flex", alignItems: "center" }}>
+							<Rating
+								name="rating"
+								value={rating}
+								// onChange={handleRatingChange}
+								precision={0.5}
+							/>
+							<Typography variant="body1" sx={{ ml: 1 }}>
+								({rating.toFixed(2)})
+							</Typography>
+						</Box>
 						<Typography variant="body1" sx={{ mb: 1 }}>
 							Author:{" "}
 							<Typography
@@ -237,6 +273,30 @@ const ReadSingleBlockComponent = (props: Props) => {
 						</Box>
 					)}
 				</Box>
+
+				{fullBlock && (
+					<Box
+						sx={{
+							width: "100%",
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							flexDirection: "column",
+							marginY: 5,
+						}}
+					>
+						<Typography>What do you think?</Typography>
+						<Box>
+							<Rating
+								name="rating"
+								value={currentUserRatingValue}
+								onChange={handleRatingChange}
+								precision={0.5}
+							/>
+							<Typography>Rate this Block</Typography>{" "}
+						</Box>
+					</Box>
+				)}
 			</Box>
 		</BlockFraming>
 	);

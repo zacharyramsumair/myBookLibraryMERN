@@ -5,6 +5,7 @@ import { IBlock } from "../interfaces";
 import User from "../models/User";
 import mongoose from "mongoose";
 import quotes from "../utils/quotes";
+import { createReadStream } from "fs";
 
 // @desc    Get all blocks
 // @route   GET /
@@ -132,7 +133,10 @@ const getBlockById = async (req: Request, res: Response) => {
 	block.views += 1;
 	await block.save();
 
-	let isFavorite = currentUser?.favorites.includes(block._id)
+	let isFavorite = currentUser?.favorites.includes(block._id);
+	let myRating = currentUser?.userRatings.find(
+		(rating) => rating.blockInfo.toString() == id
+	);
 
 	if (block.tier === "paid") {
 		if (!currentUser) {
@@ -140,20 +144,20 @@ const getBlockById = async (req: Request, res: Response) => {
 			block.text = limitedText;
 			return res
 				.status(StatusCodes.OK)
-				.json({ ...block.toJSON(), fullBlock: false, isFavorite});
+				.json({ ...block.toJSON(), fullBlock: false, isFavorite, myRating });
 		} else if (
 			currentUser.blocksBought.includes(block._id) ||
 			currentUser.myBlocks.includes(block._id)
 		) {
 			return res
 				.status(StatusCodes.OK)
-				.json({ ...block.toJSON(), fullBlock: true, isFavorite });
+				.json({ ...block.toJSON(), fullBlock: true, isFavorite,myRating });
 		} else {
 			const limitedText = block.text.slice(0, 500); // Get the first 500 characters of the block text
 			block.text = limitedText;
 			return res
 				.status(StatusCodes.OK)
-				.json({ ...block.toJSON(), fullBlock: false, isFavorite });
+				.json({ ...block.toJSON(), fullBlock: false, isFavorite,myRating });
 		}
 	}
 
@@ -393,6 +397,7 @@ const rateBlock = async (req: Request, res: Response) => {
 	currentUser.userRatings.unshift({ blockInfo: block._id, rating });
 
 	await block.save();
+	await currentUser.save();
 	res.status(StatusCodes.OK).json(block);
 };
 

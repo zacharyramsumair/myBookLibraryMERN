@@ -82,8 +82,12 @@ const BlockSchema: Schema<Block> = new mongoose.Schema<Block>(
 		},
 		rating: {
 			type: Number,
-			default: 0,
-		},
+			default: 0, // Set default value as null
+			validate: {
+			  validator: (rating: number) => rating === null || (rating >= 0 && rating <= 5), // Validate the range of rating values
+			  message: "Rating must be a number between 0 and 5 or null",
+			},
+		  },
 		imageUrl: {
 			type: String,
 			default:
