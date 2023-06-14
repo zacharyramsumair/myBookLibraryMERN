@@ -16,7 +16,6 @@ import { useNavigate } from "react-router-dom";
 import ErrorWithResponse from "../../interfaces/ErrorWithReponse";
 // import Cookies from "js-cookie";
 
-
 const schema = z.object({
 	email: z.string().email(),
 	password: z.string().min(6),
@@ -34,7 +33,7 @@ const LoginForm: React.FC = () => {
 		isSuccess,
 	} = useLoginUser();
 
-	let { user, setUser, fetchUser} = useContext(UserContext);
+	let { user, setUser, fetchUser } = useContext(UserContext);
 	let navigate = useNavigate();
 
 	useEffect(() => {
@@ -44,16 +43,12 @@ const LoginForm: React.FC = () => {
 
 		if (isSuccess) {
 			// setUser(data);
-			fetchUser()
+			fetchUser();
 			// Cookies.set("user", JSON.stringify(data), { secure: true, sameSite: "strict" });
 			navigate("/");
 		}
 	}, [isSuccess]);
 
-
-
-
-	
 	const {
 		handleSubmit,
 		control,
@@ -94,72 +89,90 @@ const LoginForm: React.FC = () => {
 			)}
 
 			{!isLoading && (
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<Typography variant="h4" align="center" gutterBottom>
-						Login
-					</Typography>
-
-					{isError && (
-						<Typography
-							variant="body2"
-							align="center"
-							sx={{ color: "#ff3333" }}
-							gutterBottom
-						>
-							{error
-								? (error as ErrorWithResponse).response?.data?.message
-								: "An Error Occurred"}
+				<>
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<Typography variant="h4" align="center" gutterBottom>
+							Login
 						</Typography>
-					)}
 
-					<Box marginBottom={2}>
-						<Typography>Email</Typography>
-						<Controller
-							name="email"
-							control={control}
-							defaultValue=""
-							render={({ field }) => (
-								<TextField
-									{...field}
-									variant="outlined"
-									fullWidth
-									margin="normal"
-									error={!!errors.email}
-									helperText={errors.email?.message}
-								/>
-							)}
-						/>
+						{isError && (
+							<Typography
+								variant="body2"
+								align="center"
+								sx={{ color: "#ff3333" }}
+								gutterBottom
+							>
+								{error
+									? (error as ErrorWithResponse).response?.data
+											?.message
+									: "An Error Occurred"}
+							</Typography>
+						)}
+
+						<Box marginBottom={2}>
+							<Typography>Email</Typography>
+							<Controller
+								name="email"
+								control={control}
+								defaultValue=""
+								render={({ field }) => (
+									<TextField
+										{...field}
+										variant="outlined"
+										fullWidth
+										margin="normal"
+										error={!!errors.email}
+										helperText={errors.email?.message}
+									/>
+								)}
+							/>
+						</Box>
+
+						<Box marginBottom={2}>
+							<Typography>Password</Typography>
+							<Controller
+								name="password"
+								control={control}
+								defaultValue=""
+								render={({ field }) => (
+									<TextField
+										{...field}
+										variant="outlined"
+										fullWidth
+										type="password"
+										margin="normal"
+										error={!!errors.password}
+										helperText={errors.password?.message}
+									/>
+								)}
+							/>
+						</Box>
+
+						<Button
+							type="submit"
+							variant="contained"
+							color="primary"
+							fullWidth
+						>
+							Login
+						</Button>
+					</form>
+
+					<Box sx={{ marginTop: 3 }}>
+						<Typography variant="body2">
+							{" "}
+							Don't have an account?{" "}
+							<Typography
+								onClick={() => navigate("/register")}
+								variant="body2"
+								component={"span"}
+								sx={{ color: "#3366CC", cursor:"pointer" }}
+							>
+							Register here.
+							</Typography>{" "}
+						</Typography>
 					</Box>
-
-					<Box marginBottom={2}>
-						<Typography>Password</Typography>
-						<Controller
-							name="password"
-							control={control}
-							defaultValue=""
-							render={({ field }) => (
-								<TextField
-									{...field}
-									variant="outlined"
-									fullWidth
-									type="password"
-									margin="normal"
-									error={!!errors.password}
-									helperText={errors.password?.message}
-								/>
-							)}
-						/>
-					</Box>
-
-					<Button
-						type="submit"
-						variant="contained"
-						color="primary"
-						fullWidth
-					>
-						Login
-					</Button>
-				</form>
+				</>
 			)}
 		</Container>
 	);

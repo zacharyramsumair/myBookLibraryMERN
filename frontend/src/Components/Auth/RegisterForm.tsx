@@ -98,6 +98,7 @@ const RegisterForm: React.FC = () => {
 			)}
 
 			{!isSuccess && !isLoading && (
+				<>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Typography variant="h4" align="center" gutterBottom>
 						Register
@@ -203,6 +204,21 @@ const RegisterForm: React.FC = () => {
 						Register
 					</Button>
 				</form>
+				<Box sx={{ marginTop: 3 }}>
+						<Typography variant="body2">
+							
+							Already have an account?{" "}
+							<Typography
+								onClick={() => navigate("/login")}
+								variant="body2"
+								component={"span"}
+								sx={{ color: "#3366CC", cursor:"pointer" }}
+							>
+								Login here.
+							</Typography>
+						</Typography>
+					</Box>
+				</>
 			)}
 
 			{isSuccess && !isLoading && (
