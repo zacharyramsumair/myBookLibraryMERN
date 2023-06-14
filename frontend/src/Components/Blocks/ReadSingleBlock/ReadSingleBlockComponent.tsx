@@ -12,6 +12,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { usePostFavorite } from "../../../Hooks/Blocks/usePostFavorite";
 import Rating from "@mui/material/Rating";
 import { useAddRating } from "../../../Hooks/Blocks/useAddRating";
+import gemImage from "../,,/../../../assets/gem.png";
 
 type Props = {
 	// book: {
@@ -95,12 +96,13 @@ const ReadSingleBlockComponent = (props: Props) => {
 		}
 	}, [isSuccessBuyBlock, refetch, boughtToastShown]);
 
-
-	console.log(SingleBlockData)
+	console.log(SingleBlockData);
 	useEffect(() => {
 		if (SingleBlockData) {
 			setIsFavorite(SingleBlockData.isFavorite);
-			setCurrentUserRatingValue(SingleBlockData.myRating.rating);
+			if (SingleBlockData?.myRating?.rating) {
+				setCurrentUserRatingValue(SingleBlockData.myRating.rating);
+			}
 		}
 	}, [SingleBlockData]);
 
@@ -147,7 +149,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 	) => {
 		if (value !== null) {
 			setCurrentUserRatingValue(value);
-			addRating({id:blockId, rating:value})
+			addRating({ id: blockId, rating: value });
 		}
 	};
 
@@ -239,7 +241,17 @@ const ReadSingleBlockComponent = (props: Props) => {
 									buyBlock(blockId);
 								}}
 							>
-								Buy
+								<img
+									src={gemImage}
+									alt=""
+									style={{
+										width: "20px",
+										height: "20px",
+										marginRight: "5px",
+										pointerEvents: "none", // Disable pointer events on this item
+									}}
+								/>
+								{price}{" "}
 							</Button>
 						)}
 						<Button variant="outlined" onClick={toggleFavorite}>
