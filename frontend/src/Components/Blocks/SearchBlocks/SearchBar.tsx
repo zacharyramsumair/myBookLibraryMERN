@@ -55,9 +55,9 @@ const SearchBar = (props: Props) => {
         }}
       >
         {tags.map((tag) => (
-          <MenuItem key={tag} value={tag}>
-            {tag}
-          </MenuItem>
+          <MenuItem key={tag.id} value={tag.backendName}>
+          {tag.display}
+        </MenuItem>
         ))}
       </TextField>
 

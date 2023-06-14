@@ -55,12 +55,12 @@ const FramingRightTopBand = (props: Props) => {
 		(EventTarget & HTMLDivElement) | null
 	>(null);
 
-	let [selectedTag, setSelectedTag] = useState("All");
+	let [selectedTag, setSelectedTag] = useState(0);
 	let [searchQuery, setSearchQuery] = useState("");
 
 	const handleSearchBarSubmit = () => {
 		let searchReq = {
-			tag: selectedTag,
+			tag: tags[selectedTag].backendName,
 			query: searchQuery,
 		};
 		console.log(searchReq);
@@ -128,20 +128,20 @@ const FramingRightTopBand = (props: Props) => {
 						select
 						variant="outlined"
 						size="small"
-						defaultValue={tags[0]}
+						defaultValue={0}
 						sx={{
 							borderRadius: 1,
 							borderTopRightRadius: 0,
 							borderBottomRightRadius: 0,
 							width: "fit-content",
 						}}
-						onChange={(e) => {
-							setSelectedTag(e.target.value);
-						}}
+						onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+							setSelectedTag(parseInt(e.target.value)); // Convert the value to a number
+						  }}
 					>
 						{tags.map((tag) => (
-							<MenuItem key={tag} value={tag}>
-								{tag}
+							<MenuItem key={tag.id} value={tag.id}>
+								{tag.display}
 							</MenuItem>
 						))}
 					</TextField>

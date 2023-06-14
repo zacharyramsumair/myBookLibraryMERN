@@ -142,22 +142,28 @@ const getBlockById = async (req: Request, res: Response) => {
 		if (!currentUser) {
 			const limitedText = block.text.slice(0, 500); // Get the first 500 characters of the block text
 			block.text = limitedText;
-			return res
-				.status(StatusCodes.OK)
-				.json({ ...block.toJSON(), fullBlock: false, isFavorite, myRating });
+			return res.status(StatusCodes.OK).json({
+				...block.toJSON(),
+				fullBlock: false,
+				isFavorite,
+				myRating,
+			});
 		} else if (
 			currentUser.blocksBought.includes(block._id) ||
 			currentUser.myBlocks.includes(block._id)
 		) {
 			return res
 				.status(StatusCodes.OK)
-				.json({ ...block.toJSON(), fullBlock: true, isFavorite,myRating });
+				.json({ ...block.toJSON(), fullBlock: true, isFavorite, myRating });
 		} else {
 			const limitedText = block.text.slice(0, 500); // Get the first 500 characters of the block text
 			block.text = limitedText;
-			return res
-				.status(StatusCodes.OK)
-				.json({ ...block.toJSON(), fullBlock: false, isFavorite,myRating });
+			return res.status(StatusCodes.OK).json({
+				...block.toJSON(),
+				fullBlock: false,
+				isFavorite,
+				myRating,
+			});
 		}
 	}
 
@@ -184,11 +190,24 @@ const createBlock = async (req: Request, res: Response) => {
 		throw new Error("Not authorized");
 	}
 
+	//checks for paid blocks
 	if (price != 0) {
+		if (price < 0 || !Number.isInteger(price)) {
+			res.status(StatusCodes.BAD_REQUEST);
+			throw new Error("Price must be an integer greater than or equal to 0");
+		}
+
 		let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
 		if (currentUser.noOfGems < paidBlockCost && currentUser.role != "admin") {
 			res.status(StatusCodes.EXPECTATION_FAILED);
 			throw new Error("Not enough gems.");
+		}
+
+		if (text.length < 500) {
+			res.status(StatusCodes.EXPECTATION_FAILED);
+			throw new Error(
+				"Paid Blocks must be a minimum of 500 characters long"
+			);
 		}
 	}
 
@@ -258,12 +277,32 @@ const updateBlock = async (req: Request, res: Response) => {
 		throw new Error("Not authorized");
 	}
 
+	if (price != 0) {
+		if (price < 0 || !Number.isInteger(price)) {
+			res.status(StatusCodes.BAD_REQUEST);
+			throw new Error("Price must be an integer greater than or equal to 0");
+		}
+
+		// let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
+		// if (currentUser.noOfGems < paidBlockCost && currentUser.role != "admin") {
+		// 	res.status(StatusCodes.EXPECTATION_FAILED);
+		// 	throw new Error("Not enough gems.");
+		// }
+
+		if (text.length < 500) {
+			res.status(StatusCodes.EXPECTATION_FAILED);
+			throw new Error(
+				"Paid Blocks must be a minimum of 500 characters long"
+			);
+		}
+	}
+
 	block.title = title;
 	block.tags = tags;
 	block.imageUrl = imageUrl;
 	block.text = text;
 	block.price = price;
-	block.tier = tier;
+	block.tier = price == 0 ? "free" : "paid";
 
 	await block.save();
 	res.status(StatusCodes.OK).json(block);

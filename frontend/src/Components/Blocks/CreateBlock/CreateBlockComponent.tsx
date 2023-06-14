@@ -6,9 +6,14 @@ import allTags from "../allTags";
 import { useCreateBlock } from "../../../Hooks/Blocks/useCreateBlock";
 
 const CreateBlockComponent = () => {
-
-
-	let {createBlock, error, data, isError, isLoading, isSuccess} = useCreateBlock()
+	let {
+		createBlock,
+		error,
+		data,
+		isError,
+		isLoading,
+		isSuccess,
+	} = useCreateBlock();
 
 	const [formData, setFormData] = useState({
 		title: "",
@@ -115,14 +120,25 @@ const CreateBlockComponent = () => {
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
+		formData.price = Number(formData.price)
+
 		// Validation logic
 		if (formData.title.trim() === "") {
 			toast.error("Please enter a title.");
 			return;
 		}
 
+		if(formData.price < 0 || !Number.isInteger(formData.price)){
+			toast.error("Price must be an integer greater than or equal to 0");
+				return;
+		}
+
 		if (formData.price > 0) {
 			formData.tier = "paid";
+			if (formData.text.length < 500) {
+				toast.error("Paid Blocks must be a minimum of 500 characters long");
+				return;
+			}
 		} else {
 			formData.tier = "free";
 		}
@@ -134,29 +150,32 @@ const CreateBlockComponent = () => {
 
 		// formData.tags = formData.tags.map((string) => string.replace(/\s/g, "").toLowerCase());
 
-
 		// Form submission logic
-		console.log({...formData, tags:formData.tags.map((string) => string.replace(/\s/g, "").toLowerCase()) });
+		console.log({
+			...formData,
+			// tags: formData.tags.map((string) =>
+			// 	string.replace(/\s/g, "").toLowerCase()
+			// ),
+		});
 		createBlock({
-			title:formData.title,
-			text:formData.text,
-			tags:formData.tags.map((string) => string.replace(/\s/g, "").toLowerCase()),
-			imageUrl:formData.imageUrl,
-			price:formData.price,
-			tier:formData.tier,
-		})
-
+			title: formData.title,
+			text: formData.text,
+			tags: formData.tags,
+			imageUrl: formData.imageUrl,
+			price: formData.price,
+			tier: formData.tier,
+		});
 	};
 
 	const tagElements = allTags.slice(1).map((tag, index) => (
 		<Button
 			variant="contained"
-			color={formData.tags.includes(tag) ? "secondary" : "primary"}
-			onClick={() => handleTagClick(tag)}
+			color={formData.tags.includes(tag.backendName) ? "secondary" : "primary"}
+			onClick={() => handleTagClick(tag.backendName)}
 			sx={{ margin: 0.5 }}
 			key={index}
 		>
-			{tag}
+			{tag.display}
 		</Button>
 	));
 	return (
@@ -222,6 +241,8 @@ const CreateBlockComponent = () => {
 						value={formData.price}
 						onChange={handleInputChange}
 						margin="normal"
+						// inputProps={{ min: 0 }}
+
 					/>
 					<TextField
 						label="Text"

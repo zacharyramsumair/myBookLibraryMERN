@@ -1,28 +1,80 @@
-import React, { ChangeEvent, useState } from "react";
-import { Box, Typography, TextField, Button } from "@mui/material";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { Box, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BlockFraming from "../BlockFraming/BlockFraming";
 import allTags from "../allTags";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Modal from "@mui/material/Modal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useUpdateBlock } from "../../../Hooks/Blocks/useUpdateBlock";
+import { useGetSingleBlock } from "../../../Hooks/Blocks/useGetSingleBlock";
+import { useGetBlockForUpdating } from "../../../Hooks/Blocks/useGetBlockForUpdating";
 
 const EditBlockComponent = () => {
+	let navigate = useNavigate();
+	let blockId = "";
+	let { id } = useParams();
+	if (id) {
+		blockId = id;
+	}
+
 	const [formData, setFormData] = useState({
-		title: "title of a thousand men",
+		title: "",
 		price: 0,
 		tier: "free",
-		content: "the best thinng ever is just about htere",
-		tags: ["action", "music", "maths"] as string[],
-		image:
+		text: "",
+		tags: [] as string[],
+		imageUrl:
 			"https://png.pngtree.com/png-vector/20191027/ourmid/pngtree-book-cover-template-vector-realistic-illustration-isolated-on-gray-background-empty-png-image_1893997.jpg",
 	});
 
-	let navigate = useNavigate();
+	// let navigate = useNavigate();
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [imageModalValue, setImageModalValue] = useState("");
+	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+
+	let { LoadingBlockForUpdating, ErrorBlockForUpdating, BlockForUpdatingData, refetch } = useGetBlockForUpdating(blockId)
+
+	let {
+		updateBlock,
+		errorUpdateBlock,
+		UpdateBlockData,
+		isErrorUpdateBlock,
+		isLoadingUpdateBlock,
+		isSuccessUpdateBlock,
+	} = useUpdateBlock();
+
+	useEffect(() => {
+		if (BlockForUpdatingData) {
+			console.log(BlockForUpdatingData)
+			setFormData({
+				title: BlockForUpdatingData.title,
+				price: BlockForUpdatingData.price,
+				tier: BlockForUpdatingData.tier,
+				text: BlockForUpdatingData.text,
+				tags: BlockForUpdatingData.tags,
+				imageUrl: BlockForUpdatingData.imageUrl,
+			});
+			// if (BlockForUpdatingData?.myRating?.rating) {
+			// 	setCurrentUserRatingValue(BlockForUpdatingData.myRating.rating);
+			// }
+		}
+	}, [BlockForUpdatingData]);
+
+
+	//alert errors
+	useEffect(()=>{
+		if(errorUpdateBlock){
+			console.log(errorUpdateBlock)
+		}
+		if(ErrorBlockForUpdating){
+			console.log(ErrorBlockForUpdating)
+		}
+
+	},[errorUpdateBlock, ErrorBlockForUpdating])
 
 	const handleModalOpen = () => {
 		setModalOpen(true);
@@ -35,32 +87,39 @@ const EditBlockComponent = () => {
 
 	const isValidImageUrl = async (url: string): Promise<boolean> => {
 		const img = new Image();
-	  
-		const loadImage = (): Promise<boolean> =>
-		  new Promise((resolve) => {
-			img.onload = () => resolve(img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0);
-			img.onerror = () => resolve(false);
-			img.src = url;
-		  });
-	  
-		return await loadImage();
-	  };
-	
-	const handleImageModalValueChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setImageModalValue(event.target.value);
-	  };
 
+		const loadImage = (): Promise<boolean> =>
+			new Promise((resolve) => {
+				img.onload = () =>
+					resolve(
+						img.complete &&
+							img.naturalWidth !== 0 &&
+							img.naturalHeight !== 0
+					);
+				img.onerror = () => resolve(false);
+				img.src = url;
+			});
+
+		return await loadImage();
+	};
+
+	const handleImageModalValueChange = (
+		event: ChangeEvent<HTMLInputElement>
+	) => {
+		setImageModalValue(event.target.value);
+	};
 
 	const handleImageUpload = async () => {
 		try {
 			// const isValid = await imageUrlValidator(inputValue);
-			console.log(imageModalValue)
+			console.log(imageModalValue);
 			const isValid = await isValidImageUrl(imageModalValue);
 
 			if (isValid) {
 				setFormData((prevData) => ({
 					...prevData,
-					image: imageModalValue,
+					imageUrl: imageModalValue,
+					// imageUrl: imageModalValue,
 				}));
 
 				handleModalClose();
@@ -74,9 +133,6 @@ const EditBlockComponent = () => {
 			console.error("Error validating image URL", error);
 		}
 	};
-
-
-	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
 	const handleInputChange = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -113,25 +169,37 @@ const EditBlockComponent = () => {
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
+		formData.price = Number(formData.price);
+
 		// Validation logic
 		if (formData.title.trim() === "") {
 			toast.error("Please enter a title.");
 			return;
 		}
 
+		if (formData.price < 0 || !Number.isInteger(formData.price)) {
+			toast.error("Price must be an integer greater than or equal to 0");
+			return;
+		}
+
 		if (formData.price > 0) {
 			formData.tier = "paid";
+			if (formData.text.length < 500) {
+				toast.error("Paid Blocks must be a minimum of 500 characters long");
+				return;
+			}
 		} else {
 			formData.tier = "free";
 		}
 
-		if (formData.content.trim() === "") {
+		if (formData.text.trim() === "") {
 			toast.error("Please enter some content.");
 			return;
 		}
 
 		// Form submission logic
 		console.log(formData);
+		updateBlock({ id: blockId, blockInfo: { ...formData } });
 	};
 
 	const handleDeleteClick = () => {
@@ -148,15 +216,34 @@ const EditBlockComponent = () => {
 		setDeleteModalOpen(false);
 	};
 
-	const tagElements = allTags.map((tag, index) => (
+	if (LoadingBlockForUpdating || isLoadingUpdateBlock) {
+		return (
+			<BlockFraming hideSearch={false}>
+				<Box sx={{ paddingX: 4 }}>
+					<Box
+						sx={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							minHeight: 200,
+						}}
+					>
+						<CircularProgress />
+					</Box>
+				</Box>
+			</BlockFraming>
+		);
+	}
+
+	const tagElements = allTags.slice(1).map((tag, index) => (
 		<Button
 			variant="contained"
-			color={formData.tags.includes(tag) ? "secondary" : "primary"}
-			onClick={() => handleTagClick(tag)}
+			color={formData.tags.includes(tag.backendName) ? "secondary" : "primary"}
+			onClick={() => handleTagClick(tag.backendName)}
 			sx={{ margin: 0.5 }}
 			key={index}
 		>
-			{tag}
+			{tag.display}
 		</Button>
 	));
 
@@ -191,7 +278,7 @@ const EditBlockComponent = () => {
 					>
 						<Box>
 							<img
-								src={formData.image}
+								src={formData.imageUrl}
 								alt=""
 								style={{ width: "8em", height: "10em" }}
 							/>
@@ -236,13 +323,13 @@ const EditBlockComponent = () => {
 						margin="normal"
 					/>
 					<TextField
-						label="Content"
+						label="Text"
 						variant="outlined"
 						fullWidth
 						multiline
 						// rows={1}
-						name="content"
-						value={formData.content}
+						name="text"
+						value={formData.text}
 						onChange={handleInputChange}
 						margin="normal"
 					/>
