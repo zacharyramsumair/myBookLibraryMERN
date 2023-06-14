@@ -86,8 +86,8 @@ const UserProfileComponent = (props: Props) => (
         </Grid>
       </Grid>
       <Box>
-        <ImageCarousel  fullRow={true} headerText="User's Blocks" align="left" />
-        <ImageCarousel  fullRow={true} headerText="User's Favorites" align="left" />
+        {/* <ImageCarousel  fullRow={true} headerText="User's Blocks" align="left" /> */}
+        {/* <ImageCarousel  fullRow={true} headerText="User's Favorites" align="left" /> */}
       </Box>
         </Box>
 

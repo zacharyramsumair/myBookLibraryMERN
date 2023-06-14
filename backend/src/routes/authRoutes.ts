@@ -7,11 +7,13 @@ export interface CustomRequest extends Request {
     user: string
   }
 
+router.use(authenticateUser)
+
 router.post('/',authController.registerUser)
 router.put('/verify-email', authController.verifyEmail)
 router.post('/login', authController.loginUser)
-router.get('/showCurrentUser',authenticateUser, authController.showCurrentUser)
-router.delete('/logout',authenticateUser, authController.logout);
+router.get('/showCurrentUser', authController.showCurrentUser)
+router.delete('/logout', authController.logout);
 router.post('/forgot-password', authController.forgotPassword)
 router.put('/reset-password', authController.resetPassword)
 router.get('/profile/:id', authController.getProfilePage)

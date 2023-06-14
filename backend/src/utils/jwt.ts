@@ -5,17 +5,15 @@ import { Types } from "mongoose";
 
 interface AttachCookiesToResponseArgs {
 	res: Response;
-	user: IJWTUser;
+	user: Types.ObjectId;
 	refreshToken: string;
 }
 
 interface IJWTUserTokens {
-	user: {
-		userId: Types.ObjectId;
+	user:  Types.ObjectId;
 		// name: string;
 		// role: "admin" | "user";
 		// tier: "free" | "standard" | "premium";
-	};
 	refreshToken?: string;
 }
 
@@ -25,7 +23,7 @@ interface CreateJWTArgs {
 
 interface TokenData {
 	name: string;
-	userId: string;
+	user: string;
 	role: "admin" | "user";
 	tier: "free" | "standard" | "premium";
 	iat: Date;
@@ -54,6 +52,8 @@ export const attachCookiesToResponse = ({
 	refreshToken,
 }: AttachCookiesToResponseArgs) => {
 
+	// console.log("user :", user )
+	// console.log("user :", typeof user )
 	const accessTokenJWT = createJWT({ payload: { user } });
 	const refreshTokenJWT = createJWT({ payload: { user, refreshToken } });
 
@@ -63,21 +63,35 @@ export const attachCookiesToResponse = ({
 		httpOnly: true,
 		secure: process.env.NODE_ENV === "production",
 		signed: true,
-    // 60 minutes, 1000 milliseconds = 1 second
-    // 1second * 60 = 1 min 
-    // 1 min * 10
 		maxAge: 1000 *60 *10,
-		// maxAge: 1000 * 60 * 10,
 	});
 
 	res.cookie("refreshToken", refreshTokenJWT, {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === "production",
 		signed: true,
-    // 30days
 		expires: new Date(Date.now() + oneDay *30),
 	});
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//not being used
 
 // This is to attach a single cookie to the response
 // export const attachCookiesToResponse = ({ res, user }: AttachCookiesToResponseArgs) => {

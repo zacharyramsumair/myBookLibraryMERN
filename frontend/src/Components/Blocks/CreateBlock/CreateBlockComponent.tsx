@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import { Box, Typography, TextField, Button, Modal } from "@mui/material";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import BlockFraming from "../BlockFraming/BlockFraming";
 import allTags from "../allTags";
 import { useCreateBlock } from "../../../Hooks/Blocks/useCreateBlock";

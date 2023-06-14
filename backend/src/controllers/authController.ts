@@ -65,7 +65,6 @@ const registerUser = async (req: Request, res: Response) => {
 	});
 };
 
-
 // @desc    Verify a user's email
 // @route   PUT /verify-email
 // @access  Public
@@ -151,7 +150,7 @@ const loginUser = async (req: Request, res: Response) => {
 
 	const tokenUser: IJWTUser = {
 		name: user.name,
-		userId: user._id,
+		user: user._id,
 		role: user.role,
 		tier: user.tier,
 	};
@@ -191,7 +190,13 @@ const loginUser = async (req: Request, res: Response) => {
 // @route   GET /showCurrentUser
 // @access  Private
 const showCurrentUser = async (req: Request, res: Response) => {
-	// res.json(req.user)
+	// console.log("showcurrent", req.user)
+
+	const currentUser = await User.findById(req.user);
+	if (!currentUser) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
+	}
 
 	const user = await User.findOne({ _id: req.user });
 	if (!user) {
@@ -200,7 +205,15 @@ const showCurrentUser = async (req: Request, res: Response) => {
 	}
 
 	const { name, email, _id: id, role, tier, profilePic, noOfGems } = user;
-	res.status(StatusCodes.OK).json({ name, email, id, role, tier,profilePic,noOfGems });
+	res.status(StatusCodes.OK).json({
+		name,
+		email,
+		id,
+		role,
+		tier,
+		profilePic,
+		noOfGems,
+	});
 	// res.status(StatusCodes.OK).json({ user });
 };
 
@@ -208,6 +221,11 @@ const showCurrentUser = async (req: Request, res: Response) => {
 // @route   DELETE /logout
 // @access  Private
 const logout = async (req: Request, res: Response) => {
+	const currentUser = await User.findById(req.user);
+	if (!currentUser) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
+	}
 	await Token.findOneAndDelete({ user: req.user });
 
 	res.cookie("accessToken", "logout", {

@@ -93,11 +93,11 @@ const start = async () => {
 		// 	res.json({csrfToken:req.csrfToken()})
 		// })
 
-		// Use the blockRouter for the '/api/v1/blocks' route
-		app.use("/api/v1/blocks", blockRouter);
-
+		
 		// Use the authRouter for the '/api/v1/auth' route
 		app.use("/api/v1/auth", authRouter);
+		// Use the blockRouter for the '/api/v1/blocks' route
+		app.use("/api/v1/blocks", blockRouter);
 
 		app.use(errorHandler);
 		app.listen(port, () =>

@@ -100,8 +100,8 @@ function App() {
 						<Route path="/myBlocks" element={<MyBlocks />} />
 						<Route path="/create" element={<CreateBlock />} />
 						<Route path="/edit/:id" element={<EditBlock />} />
-						<Route path="settings" element={<UserSettingsPage />} />
-						<Route path="profile/:id" element={<UserProfile />} />
+						<Route path="/settings" element={<UserSettingsPage />} />
+						<Route path="/profile/:id" element={<UserProfile />} />
 						{/* 404 Not Found */}
 						<Route path="*" element={<NotFoundPage />} />
 					</Routes>

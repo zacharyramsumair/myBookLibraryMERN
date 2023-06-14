@@ -5,6 +5,8 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
+import gemImage from "../../../assets/gem.png";
+
 import {
 	Box,
 	IconButton,
@@ -22,6 +24,9 @@ import BookIcon from "@mui/icons-material/Book";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ConstructionIcon from "@mui/icons-material/Construction";
+import AddIcon from "@mui/icons-material/Add";
+// import GemIcon from "@mui/icons-material/Gem";
+import GemIcon from "./GemIcon";
 import logo from "../../../assets/logo.png";
 import { ActiveNavbarContext } from "../../../Contexts/activeNavbarContext";
 import { useNavigate } from "react-router-dom";
@@ -189,6 +194,47 @@ const FramingRightTopBand = (props: Props) => {
 						open={Boolean(anchorEl)}
 						onClose={handleMenuClose}
 					>
+						<MenuItem
+							sx={{
+								display: "flex",
+								alignItems: "center",
+								backgroundColor: "rgba(144,238,144,0.7)",
+								cursor:"default",
+								// pointerEvents: "none", // Disable pointer events on this item
+								"&:hover": {
+									backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on hover
+								},
+								"&:focus": {
+									backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on focus
+									outline: "none", // Remove the focus outline
+								},
+							}}
+							tabIndex={-1} // Exclude from the tab order
+						>
+							{/* <GemIcon sx={{ marginRight: 1, color: "gold" }} /> */}
+							<img
+								src={gemImage}
+								alt=""
+								style={{
+									width: "30px",
+									height: "30px",
+									marginRight: "5px",
+									pointerEvents: "none", // Disable pointer events on this item
+								}}
+							/>
+							<Typography
+								sx={{
+									pointerEvents: "none", // Disable pointer events on this item
+								}}
+							>
+								{5} GEMS
+							</Typography>
+							<AddIcon
+								sx={{ marginLeft: "auto", cursor: "pointer" }}
+								onClick={() => navigate("/store")}
+							/>
+						</MenuItem>
+
 						<MenuItem
 							onClick={() => {
 								handleMenuClose();

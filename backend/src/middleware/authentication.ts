@@ -9,7 +9,7 @@ function isJwtPayload(obj: any): obj is JwtPayload {
 		obj &&
 		typeof obj === "object" &&
 		// "name" in obj &&
-		"userId" in obj 
+		"userId" in obj
 		// "userId" in obj &&
 		// "role" in obj &&
 		// "tier" in obj
@@ -25,40 +25,46 @@ export const authenticateUser = async (
 
 	try {
 		if (accessToken) {
-		  const payload = isTokenValid(accessToken);
-		  req.user = payload.user;
-		  return next();
+			const payload = isTokenValid(accessToken);
+			req.user = payload.user;
+			return next();
 		}
 
-		//refresh token 
+		//refresh token
 		const payload = isTokenValid(refreshToken);
-	
+
 		const existingToken = await Token.findOne({
-		  user: payload.user,
-		  refreshToken: payload.refreshToken,
+			user: payload.user,
+			refreshToken: payload.refreshToken,
 		});
-	
+
 		if (!existingToken || !existingToken?.isValid) {
-		res.status(StatusCodes.UNAUTHORIZED)
-		  throw new Error('Authentication Invalid');
+			res.status(StatusCodes.UNAUTHORIZED);
+			throw new Error("Authentication Invalid");
 		}
-	
+
 		attachCookiesToResponse({
-		  res,
-		  user: payload.user,
-		  refreshToken: existingToken.refreshToken,
+			res,
+			user: payload.user,
+			refreshToken: existingToken.refreshToken,
 		});
-	
+
 		req.user = payload.user;
 		next();
-	  } catch (error) {
-		res.status(StatusCodes.UNAUTHORIZED)
-		throw new Error('Authentication Invalid');	  }
+	} catch (error) {
+
+		// res.status(StatusCodes.UNAUTHORIZED);
+		// throw new Error("Authentication Invalid");
+
+		// not throwing an error since we have some routes that would be both public and private and we need req.user for that
+		// to get around this, we will check for currentUser if the user needs to be logged in to perform an action
+		next();
+	}
 
 	// try {
-		
+
 	// } catch (error) {
-		
+
 	// }
 	// if (!token) {
 	// 	res.status(StatusCodes.UNAUTHORIZED);
@@ -69,14 +75,13 @@ export const authenticateUser = async (
 	// 	const TokenData = isTokenValid(token);
 
 	// 	if (!isJwtPayload(TokenData)) {
-    //         res.status(StatusCodes.UNAUTHORIZED);
+	//         res.status(StatusCodes.UNAUTHORIZED);
 	// 		throw new Error("Invalid token");
 	// 	}
 
 	// 	const { name, userId, role, tier } = TokenData;
 	// 	req.user = { userId };
 	// 	// req.user = { name, userId, role, tier };
-
 
 	// 	next();
 	// } catch (error) {

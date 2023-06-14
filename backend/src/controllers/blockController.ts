@@ -22,6 +22,7 @@ const getAllBlocks = async (req: Request, res: Response) => {
 // @access  Private
 const buyBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
+
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
 		res.status(StatusCodes.UNAUTHORIZED);
@@ -47,7 +48,7 @@ const buyBlock = async (req: Request, res: Response) => {
 	}
 
 	if (currentUser.blocksBought.includes(block._id)) {
-		res.status(StatusCodes.BAD_REQUEST);
+		res.status(StatusCodes.CONFLICT);
 		throw new Error("Block has already been purchased");
 	}
 
@@ -87,18 +88,14 @@ const buyBlock = async (req: Request, res: Response) => {
 };
 
 // @desc    Get a specific block by ID
-// @route   GET /:id
+// @route   GET /block/:id
 // @access  Public
 const getBlockById = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	const currentUser = await User.findById(req.user);
-	if (!currentUser) {
-		res.status(StatusCodes.UNAUTHORIZED);
-		throw new Error("Not authorized");
-	}
 
-	const block = await Block.findById(id);
+	const block = await Block.findById(id).populate("createdBy", "name email");
 	if (!block) {
 		res.status(StatusCodes.NOT_FOUND);
 		throw new Error("Block not found");
@@ -106,42 +103,63 @@ const getBlockById = async (req: Request, res: Response) => {
 
 	//update favorite tags, take this and put this when put shelf and fav
 
-	block.tags.forEach((tagName) => {
-		const tagIndex = currentUser.favoriteTags.findIndex(
-			(tag) => tag.tagName === tagName
-		);
+	if (currentUser) {
+		block.tags.forEach((tagName) => {
+			const tagIndex = currentUser.favoriteTags.findIndex(
+				(tag) => tag.tagName === tagName
+			);
 
-		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite and for creating a Block with this tag
+			//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite and for creating a Block with this tag
 
-		if (tagIndex !== -1) {
-			// Tag already exists, update the count
-			currentUser.favoriteTags[tagIndex].count += 1;
-		} else {
-			// Tag does not exist, add it to the array
-			currentUser.favoriteTags.push({ tagName, count: 1 });
-		}
-	});
+			if (tagIndex !== -1) {
+				// Tag already exists, update the count
+				currentUser.favoriteTags[tagIndex].count += 1;
+			} else {
+				// Tag does not exist, add it to the array
+				currentUser.favoriteTags.push({ tagName, count: 1 });
+			}
+		});
 
-	// Move block._id to the top of the array
-	currentUser.userShelf = [
-		block._id,
-		...currentUser.userShelf.filter((itemId) => itemId !== block._id),
-	];
+		// Move block._id to the top of the array
+		currentUser.userShelf = [
+			block._id,
+			...currentUser.userShelf.filter((itemId) => itemId !== block._id),
+		];
 
-	await currentUser.save();
+		await currentUser.save();
+	}
 
 	block.views += 1;
 	await block.save();
 
+	let isFavorite = currentUser?.favorites.includes(block._id)
+
 	if (block.tier === "paid") {
-		if (!currentUser.blocksBought.includes(block._id)) {
-			const limitedText = block.text.slice(0, 100); // Get the first 100 characters of the block text
-			const blockData = { ...block.toJSON(), text: limitedText };
-			return res.status(StatusCodes.UNAUTHORIZED).json(blockData);
+		if (!currentUser) {
+			const limitedText = block.text.slice(0, 500); // Get the first 500 characters of the block text
+			block.text = limitedText;
+			return res
+				.status(StatusCodes.OK)
+				.json({ ...block.toJSON(), fullBlock: false, isFavorite});
+		} else if (
+			currentUser.blocksBought.includes(block._id) ||
+			currentUser.myBlocks.includes(block._id)
+		) {
+			return res
+				.status(StatusCodes.OK)
+				.json({ ...block.toJSON(), fullBlock: true, isFavorite });
+		} else {
+			const limitedText = block.text.slice(0, 500); // Get the first 500 characters of the block text
+			block.text = limitedText;
+			return res
+				.status(StatusCodes.OK)
+				.json({ ...block.toJSON(), fullBlock: false, isFavorite });
 		}
 	}
 
-	return res.status(StatusCodes.OK).json(block);
+	return res
+		.status(StatusCodes.OK)
+		.json({ ...block.toJSON(), fullBlock: true });
 };
 
 // @desc    Create a block
@@ -164,7 +182,7 @@ const createBlock = async (req: Request, res: Response) => {
 
 	if (price != 0) {
 		let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
-		if ( currentUser.noOfGems < paidBlockCost && currentUser.role !="admin") {
+		if (currentUser.noOfGems < paidBlockCost && currentUser.role != "admin") {
 			res.status(StatusCodes.EXPECTATION_FAILED);
 			throw new Error("Not enough gems.");
 		}
@@ -230,8 +248,8 @@ const updateBlock = async (req: Request, res: Response) => {
 	}
 
 	// Check if the current user is the creator of the block
-	if (!block.createdBy.equals(req.user) && currentUser.role !="admin") {
-		console.log("this piece");
+	if (!block.createdBy.equals(req.user) && currentUser.role != "admin") {
+		// console.log("this piece");
 		res.status(StatusCodes.UNAUTHORIZED);
 		throw new Error("Not authorized");
 	}
@@ -266,7 +284,7 @@ const deleteBlock = async (req: Request, res: Response) => {
 	}
 
 	// Check if the current user is the creator of the block
-	if (!block.createdBy.equals(req.user) && currentUser.role !="admin") {
+	if (!block.createdBy.equals(req.user) && currentUser.role != "admin") {
 		res.status(StatusCodes.UNAUTHORIZED);
 		throw new Error("Not authorized");
 	}
@@ -397,27 +415,30 @@ const favoriteBlock = async (req: Request, res: Response) => {
 		throw new Error("Not authorized");
 	}
 
-	currentUser.favorites.push(block._id);
+	const favoriteIndex = currentUser.favorites.indexOf(block._id);
+	if (favoriteIndex !== -1) {
+		// Block already exists in favorites, remove it
+		currentUser.favorites.splice(favoriteIndex, 1);
+	} else {
+		// Add the block to the user's favorites
+		currentUser.favorites.unshift(block._id);
+		block.tags.forEach((tagName) => {
+			const tagIndex = currentUser.favoriteTags.findIndex(
+				(tag) => tag.tagName === tagName
+			);
 
+			//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite and for creating a Block with this tag
+
+			if (tagIndex !== -1) {
+				// Tag already exists, update the count
+				currentUser.favoriteTags[tagIndex].count += 10;
+			} else {
+				// Tag does not exist, add it to the array
+				currentUser.favoriteTags.push({ tagName, count: 10 });
+			}
+		});
+	}
 	//update favorite tags, take this and put this when put shelf and fav
-
-	block.tags.forEach((tagName) => {
-		const tagIndex = currentUser.favoriteTags.findIndex(
-			(tag) => tag.tagName === tagName
-		);
-
-		//increment by 5 since its a purchase, 1 for view, 3 for add to bookshelf and 10 for favorite and for creating a Block with this tag
-
-		if (tagIndex !== -1) {
-			// Tag already exists, update the count
-			currentUser.favoriteTags[tagIndex].count += 10;
-		} else {
-			// Tag does not exist, add it to the array
-			currentUser.favoriteTags.push({ tagName, count: 10 });
-		}
-	});
-
-	await currentUser.save();
 
 	await currentUser.save();
 
@@ -491,6 +512,12 @@ const getBlocksByTag = async (req: Request, res: Response) => {
 // @route   GET /my-blocks?page=<page_number>&limit=<limit_per_page>&sortBy=<sort_field>&sortOrder=<asc_or_desc>
 // @access  Private
 const getMyBlocks = async (req: Request, res: Response) => {
+	const currentUser = await User.findById(req.user);
+	if (!currentUser) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
+	}
+
 	const userId = req.user; // Assuming the current user ID is available in the req.user property
 	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters
 	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
@@ -533,7 +560,6 @@ const getMyBlocks = async (req: Request, res: Response) => {
 const getUserShelfBlocks = async (req: Request, res: Response) => {
 	// Retrieve the current user
 	const currentUser = await User.findById(req.user);
-
 	if (!currentUser) {
 		res.status(StatusCodes.UNAUTHORIZED);
 		throw new Error("Not authorized");
@@ -607,50 +633,54 @@ const getHomePage = async (req: Request, res: Response) => {
 //   @route   GET /dashboard
 //   @access  Public
 const getDashboard = async (req: Request, res: Response) => {
+	// console.log("req.user", req.user)
+	// console.log("req.user", req.signedCookies)
+
 	const currentDate = new Date().toISOString().split("T")[0]; // Get the current date
 	const quoteIndex = currentDate.length % (quotes.length - 1); // Calculate the index based on the date
 	const quote = quotes[quoteIndex]; // Access the quote at the calculated index
-  
-	const newArrivals = await Block.find().sort({ createdAt: -1 }).limit(15).select("title tier imageUrl"); // Get the last 15 blocks added, only include title, tier, and imageUrl fields
-  
+
+	const newArrivals = await Block.find()
+		.sort({ createdAt: -1 })
+		.limit(15)
+		.select("title tier imageUrl"); // Get the last 15 blocks added, only include title, tier, and imageUrl fields
+
 	let recommendedBlocks = [];
-  
+
 	if (req.user) {
-	  // User is logged in
-	  const currentUser = await User.findById(req.user);
-  
-	  if (currentUser) {
-		// Get the user's top 5 favorite tags
-		const favoriteTags = currentUser.favoriteTags
-		  .sort((a, b) => b.count - a.count)
-		  .slice(0, 5)
-		  .map((tag) => tag.tagName);
-  
-		// Get 30 random blocks with a rating > 3 and matching the user's favorite tags
-		recommendedBlocks = await Block.aggregate([
-		  { $match: { rating: { $gte: 0 }, tags: { $in: favoriteTags } } },
-		  { $sample: { size: 30 } },
-		  { $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
-		]);
-	  }
+		// User is logged in
+		const currentUser = await User.findById(req.user);
+
+		if (currentUser) {
+			// Get the user's top 5 favorite tags
+			const favoriteTags = currentUser.favoriteTags
+				.sort((a, b) => b.count - a.count)
+				.slice(0, 5)
+				.map((tag) => tag.tagName);
+
+			// Get 30 random blocks with a rating > 3 and matching the user's favorite tags
+			recommendedBlocks = await Block.aggregate([
+				{ $match: { rating: { $gte: 0 }, tags: { $in: favoriteTags } } },
+				{ $sample: { size: 30 } },
+				{ $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
+			]);
+		}
 	} else {
-	  // User is not logged in
-	  // Get 30 random blocks with a rating > 3
-	  recommendedBlocks = await Block.aggregate([
-		{ $match: { rating: { $gte: 0 } } },
-		{ $sample: { size: 30 } },
-		{ $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
-	  ]);
+		// User is not logged in
+		// Get 30 random blocks with a rating > 3
+		recommendedBlocks = await Block.aggregate([
+			{ $match: { rating: { $gte: 0 } } },
+			{ $sample: { size: 30 } },
+			{ $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
+		]);
 	}
-  
+
 	res.status(StatusCodes.OK).json({
-	  quote,
-	  newArrivals,
-	  recommendedBlocks,
+		quote,
+		newArrivals,
+		recommendedBlocks,
 	});
-  };
-  
-  
+};
 
 // // @desc    Create a new comment on a block
 // // @route   POST /api/v1/blocks/:blockId/comments
@@ -764,5 +794,5 @@ export default {
 	getMyBlocks,
 	getUserShelfBlocks,
 	getHomePage,
-	getDashboard
+	getDashboard,
 };
