@@ -1,5 +1,11 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Box, Typography, TextField, Button, CircularProgress } from "@mui/material";
+import {
+	Box,
+	Typography,
+	TextField,
+	Button,
+	CircularProgress,
+} from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BlockFraming from "../BlockFraming/BlockFraming";
@@ -10,6 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useUpdateBlock } from "../../../Hooks/Blocks/useUpdateBlock";
 import { useGetSingleBlock } from "../../../Hooks/Blocks/useGetSingleBlock";
 import { useGetBlockForUpdating } from "../../../Hooks/Blocks/useGetBlockForUpdating";
+import { useDeleteBlock } from "../../../Hooks/Blocks/useDeleteBlock";
 
 const EditBlockComponent = () => {
 	let navigate = useNavigate();
@@ -35,8 +42,12 @@ const EditBlockComponent = () => {
 	const [imageModalValue, setImageModalValue] = useState("");
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
-
-	let { LoadingBlockForUpdating, ErrorBlockForUpdating, BlockForUpdatingData, refetch } = useGetBlockForUpdating(blockId)
+	let {
+		LoadingBlockForUpdating,
+		ErrorBlockForUpdating,
+		BlockForUpdatingData,
+		refetch,
+	} = useGetBlockForUpdating(blockId);
 
 	let {
 		updateBlock,
@@ -47,9 +58,11 @@ const EditBlockComponent = () => {
 		isSuccessUpdateBlock,
 	} = useUpdateBlock();
 
+	let { deleteBlock, errorDeleteBlock, DeleteBlockData, isErrorDeleteBlock, isLoadingDeleteBlock, isSuccessDeleteBlock } = useDeleteBlock()
+
 	useEffect(() => {
 		if (BlockForUpdatingData) {
-			console.log(BlockForUpdatingData)
+			console.log(BlockForUpdatingData);
 			setFormData({
 				title: BlockForUpdatingData.title,
 				price: BlockForUpdatingData.price,
@@ -64,17 +77,15 @@ const EditBlockComponent = () => {
 		}
 	}, [BlockForUpdatingData]);
 
-
 	//alert errors
-	useEffect(()=>{
-		if(errorUpdateBlock){
-			console.log(errorUpdateBlock)
+	useEffect(() => {
+		if (errorUpdateBlock) {
+			console.log(errorUpdateBlock);
 		}
-		if(ErrorBlockForUpdating){
-			console.log(ErrorBlockForUpdating)
+		if (ErrorBlockForUpdating) {
+			console.log(ErrorBlockForUpdating);
 		}
-
-	},[errorUpdateBlock, ErrorBlockForUpdating])
+	}, [errorUpdateBlock, ErrorBlockForUpdating]);
 
 	const handleModalOpen = () => {
 		setModalOpen(true);
@@ -208,7 +219,9 @@ const EditBlockComponent = () => {
 
 	const handleDeleteConfirm = () => {
 		console.log("Block deleted");
+		deleteBlock(blockId)
 		setDeleteModalOpen(false);
+		navigate("/creatorStudio")
 		// Redirect logic goes here
 	};
 
@@ -238,7 +251,9 @@ const EditBlockComponent = () => {
 	const tagElements = allTags.slice(1).map((tag, index) => (
 		<Button
 			variant="contained"
-			color={formData.tags.includes(tag.backendName) ? "secondary" : "primary"}
+			color={
+				formData.tags.includes(tag.backendName) ? "secondary" : "primary"
+			}
 			onClick={() => handleTagClick(tag.backendName)}
 			sx={{ margin: 0.5 }}
 			key={index}
