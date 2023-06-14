@@ -23,14 +23,14 @@ enum BlockTag {
 	YoungAdult = "youngadult",
 }
 
-interface reply {
-	replyTo: {
-		creator: mongoose.Types.ObjectId;
-		text: String;
-	};
-	content: String;
-	createdBy: mongoose.Types.ObjectId;
-}
+// interface reply {
+// 	replyTo: {
+// 		creator: mongoose.Types.ObjectId;
+// 		text: String;
+// 	};
+// 	content: String;
+// 	createdBy: mongoose.Types.ObjectId;
+// }
 
 // interface Comment {
 // 	content: String;
@@ -50,6 +50,7 @@ interface Block extends Document {
 	views: number;
 	price: number;
 	createdBy: mongoose.Types.ObjectId;
+	favoriteCount:number;
 	// comments: Comment[];
 }
 
@@ -113,6 +114,10 @@ const BlockSchema: Schema<Block> = new mongoose.Schema<Block>(
 		createdBy: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
+		},
+		favoriteCount: {
+			type: Number,
+			default: 0,
 		},
 		// comments: {
 		// 	type: [

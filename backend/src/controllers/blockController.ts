@@ -463,9 +463,12 @@ const favoriteBlock = async (req: Request, res: Response) => {
 	if (favoriteIndex !== -1) {
 		// Block already exists in favorites, remove it
 		currentUser.favorites.splice(favoriteIndex, 1);
+		block.favoriteCount -= 1
 	} else {
 		// Add the block to the user's favorites
 		currentUser.favorites.unshift(block._id);
+		block.favoriteCount += 1
+
 		block.tags.forEach((tagName) => {
 			const tagIndex = currentUser.favoriteTags.findIndex(
 				(tag) => tag.tagName === tagName
