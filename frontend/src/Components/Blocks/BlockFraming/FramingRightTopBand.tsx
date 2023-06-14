@@ -135,9 +135,13 @@ const FramingRightTopBand = (props: Props) => {
 							borderBottomRightRadius: 0,
 							width: "fit-content",
 						}}
-						onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+						onChange={(
+							e: React.ChangeEvent<
+								HTMLInputElement | HTMLTextAreaElement
+							>
+						) => {
 							setSelectedTag(parseInt(e.target.value)); // Convert the value to a number
-						  }}
+						}}
 					>
 						{tags.map((tag) => (
 							<MenuItem key={tag.id} value={tag.id}>
@@ -194,65 +198,71 @@ const FramingRightTopBand = (props: Props) => {
 						open={Boolean(anchorEl)}
 						onClose={handleMenuClose}
 					>
-						<MenuItem
-							sx={{
-								display: "flex",
-								alignItems: "center",
-								backgroundColor: "rgba(144,238,144,0.7)",
-								cursor:"default",
-								// pointerEvents: "none", // Disable pointer events on this item
-								"&:hover": {
-									backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on hover
-								},
-								"&:focus": {
-									backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on focus
-									outline: "none", // Remove the focus outline
-								},
-							}}
-							tabIndex={-1} // Exclude from the tab order
-						>
-							{/* <GemIcon sx={{ marginRight: 1, color: "gold" }} /> */}
-							<img
-								src={gemImage}
-								alt=""
-								style={{
-									width: "30px",
-									height: "30px",
-									marginRight: "5px",
-									pointerEvents: "none", // Disable pointer events on this item
-								}}
-							/>
-							<Typography
-								sx={{
-									pointerEvents: "none", // Disable pointer events on this item
-								}}
-							>
-								{5} GEMS
-							</Typography>
-							<AddIcon
-								sx={{ marginLeft: "auto", cursor: "pointer" }}
-								onClick={() => navigate("/store")}
-							/>
-						</MenuItem>
+						{user && (
+							<>
+								<MenuItem
+									sx={{
+										display: "flex",
+										alignItems: "center",
+										backgroundColor: "rgba(144,238,144,0.7)",
+										cursor: "default",
+										// pointerEvents: "none", // Disable pointer events on this item
+										"&:hover": {
+											backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on hover
+										},
+										"&:focus": {
+											backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on focus
+											outline: "none", // Remove the focus outline
+										},
+									}}
+									tabIndex={-1} // Exclude from the tab order
+								>
+									{/* <GemIcon sx={{ marginRight: 1, color: "gold" }} /> */}
+									<img
+										src={gemImage}
+										alt=""
+										style={{
+											width: "30px",
+											height: "30px",
+											marginRight: "5px",
+											pointerEvents: "none", // Disable pointer events on this item
+										}}
+									/>
+									<Typography
+										sx={{
+											pointerEvents: "none", // Disable pointer events on this item
+										}}
+									>
+										{user.noOfGems} GEMS
+									</Typography>
+									<AddIcon
+										sx={{ marginLeft: "auto", cursor: "pointer" }}
+										onClick={() => navigate("/store")}
+									/>
+								</MenuItem>
 
-						<MenuItem
-							onClick={() => {
-								handleMenuClose();
-								navigate("/creatorStudio");
-							}}
-						>
-							<ConstructionIcon sx={{ marginRight: 1 }} />
-							<Typography>Creator Studio</Typography>
-						</MenuItem>
-						<MenuItem
-							onClick={() => {
-								handleMenuClose();
-								navigate("/settings");
-							}}
-						>
-							<SettingsIcon sx={{ marginRight: 1 }} />
-							<Typography>Settings</Typography>
-						</MenuItem>
+								<MenuItem
+									onClick={() => {
+										handleMenuClose();
+										navigate("/creatorStudio");
+									}}
+								>
+									<ConstructionIcon sx={{ marginRight: 1 }} />
+									<Typography>Creator Studio</Typography>
+								</MenuItem>
+
+								<MenuItem
+									onClick={() => {
+										handleMenuClose();
+										navigate("/settings");
+									}}
+								>
+									<SettingsIcon sx={{ marginRight: 1 }} />
+									<Typography>Settings</Typography>
+								</MenuItem>
+							</>
+						)}
+
 						{user ? (
 							<MenuItem
 								onClick={() => {
