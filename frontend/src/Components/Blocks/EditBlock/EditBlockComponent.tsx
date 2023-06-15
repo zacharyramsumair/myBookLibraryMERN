@@ -18,6 +18,7 @@ import { useGetSingleBlock } from "../../../Hooks/Blocks/useGetSingleBlock";
 import { useGetBlockForUpdating } from "../../../Hooks/Blocks/useGetBlockForUpdating";
 import { useDeleteBlock } from "../../../Hooks/Blocks/useDeleteBlock";
 import { BlurCircular } from "@mui/icons-material";
+import { UserContext } from "../../../Contexts/UserContext";
 
 const EditBlockComponent = () => {
 	let navigate = useNavigate();
@@ -26,6 +27,8 @@ const EditBlockComponent = () => {
 	if (id) {
 		blockId = id;
 	}
+
+	const { user, setUser } = React.useContext(UserContext);
 
 	const [formData, setFormData] = useState({
 		title: "",
@@ -70,15 +73,26 @@ const EditBlockComponent = () => {
 
 	useEffect(() => {
 		if (BlockForUpdatingData) {
-			console.log(BlockForUpdatingData);
-			setFormData({
-				title: BlockForUpdatingData.title,
-				price: BlockForUpdatingData.price,
-				tier: BlockForUpdatingData.tier,
-				text: BlockForUpdatingData.text,
-				tags: BlockForUpdatingData.tags,
-				imageUrl: BlockForUpdatingData.imageUrl,
-			});
+			if (!user) {
+				navigate(`/block/${blockId}`);
+				toast.error("You do not have access to edit this block", {
+					position: toast.POSITION.TOP_CENTER,
+				});
+			} else if (user.id != BlockForUpdatingData.createdBy._id) {
+				navigate(`/block/${blockId}`);
+				toast.error("You do not have access to edit this block", {
+					position: toast.POSITION.TOP_CENTER,
+				});
+			} else {
+				setFormData({
+					title: BlockForUpdatingData.title,
+					price: BlockForUpdatingData.price,
+					tier: BlockForUpdatingData.tier,
+					text: BlockForUpdatingData.text,
+					tags: BlockForUpdatingData.tags,
+					imageUrl: BlockForUpdatingData.imageUrl,
+				});
+			}
 		}
 	}, [BlockForUpdatingData]);
 
