@@ -1,19 +1,15 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Box, Typography, TextField, Button, Modal } from "@mui/material";
 import { toast } from "react-toastify";
 import BlockFraming from "../BlockFraming/BlockFraming";
 import allTags from "../allTags";
 import { useCreateBlock } from "../../../Hooks/Blocks/useCreateBlock";
+import { useNavigate } from "react-router-dom";
 
 const CreateBlockComponent = () => {
-	let {
-		createBlock,
-		error,
-		data,
-		isError,
-		isLoading,
-		isSuccess,
-	} = useCreateBlock();
+
+	let navigate = useNavigate()
+
 
 	const [formData, setFormData] = useState({
 		title: "",
@@ -27,6 +23,24 @@ const CreateBlockComponent = () => {
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [imageModalValue, setImageModalValue] = useState("");
+
+	let {
+		createBlock,
+		error,
+		data,
+		isError,
+		isLoading,
+		isSuccess,
+	} = useCreateBlock();
+
+
+	useEffect(()=>{
+		if(data){
+			// console.log(data)
+			navigate(`/block/${data._id}`)
+		}
+
+	}, [isSuccess])
 
 	const handleModalOpen = () => {
 		setModalOpen(true);

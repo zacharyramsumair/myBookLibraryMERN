@@ -198,9 +198,8 @@ const FramingRightTopBand = (props: Props) => {
 						open={Boolean(anchorEl)}
 						onClose={handleMenuClose}
 					>
-						{user && (
-							<>
-								<MenuItem
+						
+								{user && <MenuItem
 									sx={{
 										display: "flex",
 										alignItems: "center",
@@ -239,9 +238,9 @@ const FramingRightTopBand = (props: Props) => {
 										sx={{ marginLeft: "auto", cursor: "pointer" }}
 										onClick={() => navigate("/store")}
 									/>
-								</MenuItem>
+								</MenuItem>}
 
-								<MenuItem
+								{user && <MenuItem
 									onClick={() => {
 										handleMenuClose();
 										navigate("/creatorStudio");
@@ -249,9 +248,9 @@ const FramingRightTopBand = (props: Props) => {
 								>
 									<ConstructionIcon sx={{ marginRight: 1 }} />
 									<Typography>Creator Studio</Typography>
-								</MenuItem>
+								</MenuItem>}
 
-								<MenuItem
+								{user && <MenuItem
 									onClick={() => {
 										handleMenuClose();
 										navigate("/settings");
@@ -259,9 +258,8 @@ const FramingRightTopBand = (props: Props) => {
 								>
 									<SettingsIcon sx={{ marginRight: 1 }} />
 									<Typography>Settings</Typography>
-								</MenuItem>
-							</>
-						)}
+								</MenuItem>}
+						
 
 						{user ? (
 							<MenuItem

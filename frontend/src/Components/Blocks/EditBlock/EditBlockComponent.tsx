@@ -17,6 +17,7 @@ import { useUpdateBlock } from "../../../Hooks/Blocks/useUpdateBlock";
 import { useGetSingleBlock } from "../../../Hooks/Blocks/useGetSingleBlock";
 import { useGetBlockForUpdating } from "../../../Hooks/Blocks/useGetBlockForUpdating";
 import { useDeleteBlock } from "../../../Hooks/Blocks/useDeleteBlock";
+import { BlurCircular } from "@mui/icons-material";
 
 const EditBlockComponent = () => {
 	let navigate = useNavigate();
@@ -58,7 +59,14 @@ const EditBlockComponent = () => {
 		isSuccessUpdateBlock,
 	} = useUpdateBlock();
 
-	let { deleteBlock, errorDeleteBlock, DeleteBlockData, isErrorDeleteBlock, isLoadingDeleteBlock, isSuccessDeleteBlock } = useDeleteBlock()
+	let {
+		deleteBlock,
+		errorDeleteBlock,
+		DeleteBlockData,
+		isErrorDeleteBlock,
+		isLoadingDeleteBlock,
+		isSuccessDeleteBlock,
+	} = useDeleteBlock();
 
 	useEffect(() => {
 		if (BlockForUpdatingData) {
@@ -71,9 +79,6 @@ const EditBlockComponent = () => {
 				tags: BlockForUpdatingData.tags,
 				imageUrl: BlockForUpdatingData.imageUrl,
 			});
-			// if (BlockForUpdatingData?.myRating?.rating) {
-			// 	setCurrentUserRatingValue(BlockForUpdatingData.myRating.rating);
-			// }
 		}
 	}, [BlockForUpdatingData]);
 
@@ -86,6 +91,12 @@ const EditBlockComponent = () => {
 			console.log(ErrorBlockForUpdating);
 		}
 	}, [errorUpdateBlock, ErrorBlockForUpdating]);
+
+	useEffect(() => {
+		if (isSuccessUpdateBlock) {
+			navigate(`/block/${UpdateBlockData._id}`);
+		}
+	}, [isSuccessUpdateBlock]);
 
 	const handleModalOpen = () => {
 		setModalOpen(true);
@@ -219,9 +230,9 @@ const EditBlockComponent = () => {
 
 	const handleDeleteConfirm = () => {
 		console.log("Block deleted");
-		deleteBlock(blockId)
+		deleteBlock(blockId);
 		setDeleteModalOpen(false);
-		navigate("/creatorStudio")
+		navigate("/myBlocks");
 		// Redirect logic goes here
 	};
 
