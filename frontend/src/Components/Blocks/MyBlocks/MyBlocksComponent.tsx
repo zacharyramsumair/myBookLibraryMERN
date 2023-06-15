@@ -1,38 +1,77 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BlockFraming from "../BlockFraming/BlockFraming";
-import { Box, Button, Typography, Grid, Paper, IconButton } from "@mui/material";
+import {
+	Box,
+	Button,
+	Typography,
+	Grid,
+	Paper,
+	IconButton,
+	CircularProgress,
+} from "@mui/material";
 import PaginationButtons from "../PaginationButtons/PaginationButtons";
 import OurCard from "../ImageCarousel/OurCard";
 import data from "../sampleBlocks";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
-
+import { UserContext } from "../../../Contexts/UserContext";
 
 type Props = {};
 
 const MyBlocksComponent = (props: Props) => {
+	const { user, setUser } = React.useContext(UserContext);
 
-	let navigate  = useNavigate()
+	let navigate = useNavigate();
+
+
 	const cardElements = data.map((item) => {
 		return (
-		  <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
-			<Paper elevation={4}>
-			  <Box sx={{ position: "relative" }}>
-				<OurCard item={item} key={item.id} />
-				<IconButton
-				  sx={{ position: "absolute", top: 0, right: 0 }}
-				  onClick={() => navigate(`/edit/${item.id}`)}
-				>
-					<Paper sx={{padding:1}}>
-
-				  <EditIcon />
-					</Paper>
-				</IconButton>
-			  </Box>
-			</Paper>
-		  </Grid>
+			<Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
+				<Paper elevation={4}>
+					<Box sx={{ position: "relative" }}>
+						<OurCard item={item} key={item.id} />
+						<IconButton
+							sx={{ position: "absolute", top: 0, right: 0 }}
+							onClick={() => navigate(`/edit/${item.id}`)}
+						>
+							<Paper sx={{ padding: 1 }}>
+								<EditIcon />
+							</Paper>
+						</IconButton>
+					</Box>
+				</Paper>
+			</Grid>
 		);
-	  });
+	});
+
+	if (!user) {
+		<BlockFraming hideSearch={true}>
+			<Box sx={{ padding: 4 }}>
+				<Typography variant="h4">You must be logged in</Typography>
+
+				{/* <PaginationButtons /> */}
+			</Box>
+		</BlockFraming>;
+	}
+
+	// if (isLoading) {
+	// 	return (
+	// 		<BlockFraming hideSearch={false}>
+	// 			<Box sx={{ paddingX: 4 }}>
+	// 				<Box
+	// 					sx={{
+	// 						display: "flex",
+	// 						justifyContent: "center",
+	// 						alignItems: "center",
+	// 						minHeight: 200,
+	// 					}}
+	// 				>
+	// 					<CircularProgress />
+	// 				</Box>
+	// 			</Box>
+	// 		</BlockFraming>
+	// 	);
+	// }
 
 	return (
 		<BlockFraming hideSearch={true}>

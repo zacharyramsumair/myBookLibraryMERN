@@ -37,10 +37,10 @@ const buyBlock = async (req: Request, res: Response) => {
 	}
 
 	//addBlock to the top of userShelf
-	if (!currentUser.userShelf.includes(block._id)) {
-		// Add block._id to the beginning of the array
-		currentUser.userShelf.unshift(block._id);
-	}
+	// if (!currentUser.userShelf.includes(block._id)) {
+	// 	// Add block._id to the beginning of the array
+	// 	currentUser.userShelf.unshift(block._id);
+	// }
 
 	if (block.tier == "free") {
 		return res.status(StatusCodes.OK).json({
@@ -105,6 +105,18 @@ const getBlockById = async (req: Request, res: Response) => {
 	//update favorite tags, take this and put this when put shelf and fav
 
 	if (currentUser) {
+		const blockIdString = block._id.toString();
+
+		// Filter out block._id from currentUser.userShelf
+		const updatedUserShelf = currentUser.userShelf.filter(
+			(itemId) => itemId.toString() !== blockIdString
+		);
+
+		// Add block._id at the beginning of the array
+		updatedUserShelf.unshift(block._id);
+
+		currentUser.userShelf = updatedUserShelf;
+
 		block.tags.forEach((tagName) => {
 			const tagIndex = currentUser.favoriteTags.findIndex(
 				(tag) => tag.tagName === tagName
@@ -121,14 +133,10 @@ const getBlockById = async (req: Request, res: Response) => {
 			}
 		});
 
-		// Move block._id to the top of the array
-		currentUser.userShelf = [
-			block._id,
-			...currentUser.userShelf.filter((itemId) => itemId !== block._id),
-		];
-
 		await currentUser.save();
 	}
+
+	console.log(currentUser?.userShelf);
 
 	block.views += 1;
 	await block.save();
@@ -169,7 +177,7 @@ const getBlockById = async (req: Request, res: Response) => {
 
 	return res
 		.status(StatusCodes.OK)
-		.json({ ...block.toJSON(), fullBlock: true });
+		.json({ ...block.toJSON(), fullBlock: true, isFavorite, myRating });
 };
 
 // @desc    Create a block
@@ -463,11 +471,11 @@ const favoriteBlock = async (req: Request, res: Response) => {
 	if (favoriteIndex !== -1) {
 		// Block already exists in favorites, remove it
 		currentUser.favorites.splice(favoriteIndex, 1);
-		block.favoriteCount -= 1
+		block.favoriteCount -= 1;
 	} else {
 		// Add the block to the user's favorites
 		currentUser.favorites.unshift(block._id);
-		block.favoriteCount += 1
+		block.favoriteCount += 1;
 
 		block.tags.forEach((tagName) => {
 			const tagIndex = currentUser.favoriteTags.findIndex(
@@ -613,21 +621,36 @@ const getUserShelfBlocks = async (req: Request, res: Response) => {
 	}
 
 	// Retrieve the blocks in the UserShelf
-	const blockIds = currentUser.userShelf;
+	// const blockIds = currentUser.userShelf;
+	const blockIds = currentUser.userShelf.filter((id) => !currentUser.myBlocks.includes(id));
+
+
+
+	console.log(blockIds);
 	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters
 	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
 	const skip = (page - 1) * limit; // Calculate the number of documents to skip
 
-	const blocks = await Block.find({ _id: { $in: blockIds } })
+	const blocks = await Block.find({
+		_id: { $in: blockIds },
+	})
 		.select("title tags price tier imageUrl createdBy")
 		.populate("createdBy", "name email") // Populate createdBy field with name and email
-		.skip(skip)
-		.limit(limit);
+		.exec(); // Execute the query to get the blocks
 
-	const totalBlocks = blockIds.length;
-	const totalPages = Math.ceil(totalBlocks / limit);
+	// Sort the blocks based on the order of blockIds
+	const sortedBlocks = blockIds.map((id) =>
+		blocks.find((block) => block._id.toString() === id.toString())
+	);
 
-	res.status(StatusCodes.OK).json({ currentPage: page, totalPages, blocks });
+	const paginatedBlocks = sortedBlocks.slice(skip, skip + limit); // Get the blocks for the current page
+	const totalPages = Math.ceil(sortedBlocks.length / limit);
+
+	res.status(StatusCodes.OK).json({
+		currentPage: page,
+		totalPages,
+		blocks: paginatedBlocks,
+	});
 };
 
 //   @desc    Get home page information
@@ -728,103 +751,6 @@ const getDashboard = async (req: Request, res: Response) => {
 		recommendedBlocks,
 	});
 };
-
-// // @desc    Create a new comment on a block
-// // @route   POST /api/v1/blocks/:blockId/comments
-// // @access  Private
-// const createComment = async (req: Request, res: Response) => {
-// 	const { blockId } = req.params;
-// 	const { content } = req.body;
-
-// 		const block = await Block.findById(blockId);
-
-// 		if (!block) {
-// 			res.status(StatusCodes.NOT_FOUND);
-// 			throw new Error("Block not found");
-// 		}
-
-// 		const newComment = {
-// 			content,
-// 			createdBy: new mongoose.Types.ObjectId(req.user),
-// 			replies:[]
-// 		}
-
-// 		block.comments.push(newComment);
-// 		await block.save();
-
-// 		res.status(StatusCodes.CREATED).json({ comment: newComment });
-
-// };
-
-// // @desc    Update a comment on a block
-// // @route   PUT /api/v1/blocks/:blockId/comments/:commentId
-// // @access  Private
-// const updateComment = async (req: Request, res: Response) => {
-// 	const { blockId, commentId } = req.params;
-// 	const { content } = req.body;
-
-// 		const block = await Block.findById(blockId);
-
-// 		if (!block) {
-// 			res.status(StatusCodes.NOT_FOUND);
-// 			throw new Error("Block not found");
-// 		}
-
-// 		const comment = block.comments.id(commentId);
-
-// 		if (!comment) {
-// 			res.status(StatusCodes.NOT_FOUND);
-// 			throw new Error("Comment not found");
-// 		}
-
-// 		if (comment.userId.toString() !== userId) {
-// 			res.status(StatusCodes.UNAUTHORIZED);
-// 			throw new Error("You are not authorized to update this comment");
-// 		}
-
-// 		comment.content = content;
-// 		await block.save();
-
-// 		res.status(StatusCodes.OK).json({ comment });
-
-// };
-
-// // @desc    Delete a comment from a block
-// // @route   DELETE /api/v1/blocks/:blockId/comments/:commentId
-// // @access  Private
-// const deleteComment = async (req: Request, res: Response) => {
-// 	const { blockId, commentId } = req.params;
-// 	const { userId } = req.user;
-
-// 	try {
-// 		const block = await Block.findById(blockId);
-
-// 		if (!block) {
-// 			res.status(StatusCodes.NOT_FOUND);
-// 			throw new Error("Block not found");
-// 		}
-
-// 		const comment = block.comments.id(commentId);
-
-// 		if (!comment) {
-// 			res.status(StatusCodes.NOT_FOUND);
-// 			throw new Error("Comment not found");
-// 		}
-
-// 		if (comment.userId.toString() !== userId) {
-// 			res.status(StatusCodes.UNAUTHORIZED);
-// 			throw new Error("You are not authorized to delete this comment");
-// 		}
-
-// 		comment.remove();
-// 		await block.save();
-
-// 		res.status(StatusCodes.OK).json({ message: "Comment deleted" });
-// 	} catch (error) {
-// 		res.status(StatusCodes.INTERNAL_SERVER_ERROR);
-// 		throw new Error("Failed to delete comment");
-// 	}
-// };
 
 export default {
 	getAllBlocks,

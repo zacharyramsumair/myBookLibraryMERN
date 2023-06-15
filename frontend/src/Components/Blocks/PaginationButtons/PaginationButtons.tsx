@@ -1,27 +1,35 @@
 import { Box, Button, Typography } from "@mui/material";
-import React, { useState } from 'react'
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-type Props = {}
+type Props = {
+	totalPages: number,
+	page: number,
+};
 
 const PaginationButtons = (props: Props) => {
-    const [currentPage, setCurrentPage] = useState(1);
-	const totalPages = 10;
+	let navigate = useNavigate();
+
+	const [currentPage, setCurrentPage] = useState(props.page);
 
 	const handlePreviousPage = () => {
 		if (currentPage > 1) {
 			setCurrentPage((prevPage) => prevPage - 1);
+			navigate(`/shelf?page=${currentPage -1}`);
 		}
 	};
 
 	const handleNextPage = () => {
-		if (currentPage < totalPages) {
+		if (currentPage < props.totalPages) {
 			setCurrentPage((prevPage) => prevPage + 1);
+			navigate(`/shelf?page=${currentPage +1}`);
 		}
 	};
 
 	const handleGoToPage = (page: number) => {
-		if (page >= 1 && page <= totalPages) {
+		if (page >= 1 && page <= props.totalPages) {
 			setCurrentPage(page);
+			navigate(`/shelf?page=${page}`);
 		}
 	};
 
@@ -29,8 +37,12 @@ const PaginationButtons = (props: Props) => {
 		const pageNumbersToShow = 2;
 		const pageNumbers = [];
 
-		for (let i = currentPage - pageNumbersToShow; i <= currentPage + pageNumbersToShow; i++) {
-			if (i >= 1 && i <= totalPages) {
+		for (
+			let i = currentPage - pageNumbersToShow;
+			i <= currentPage + pageNumbersToShow;
+			i++
+		) {
+			if (i >= 1 && i <= props.totalPages) {
 				pageNumbers.push(i);
 			}
 		}
@@ -47,28 +59,35 @@ const PaginationButtons = (props: Props) => {
 			</Button>
 		));
 	};
-  return (
-    <>
-    {/* Pagination Controls */}
-    <Box sx={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
-					<Button variant="contained" disabled={currentPage === 1} onClick={handlePreviousPage}>
-						Previous
-					</Button>
-					<Typography variant="body1" sx={{ marginX: 2 }}>
-						Page {currentPage}
-					</Typography>
-					<Button variant="contained" disabled={currentPage === totalPages} onClick={handleNextPage}>
-						Next
-					</Button>
-				</Box>
+	return (
+		<>
+			{/* Pagination Controls */}
+			<Box sx={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
+				<Button
+					variant="contained"
+					disabled={currentPage === 1}
+					onClick={handlePreviousPage}
+				>
+					Previous
+				</Button>
+				<Typography variant="body1" sx={{ marginX: 2 }}>
+					Page {currentPage}
+				</Typography>
+				<Button
+					variant="contained"
+					disabled={currentPage === props.totalPages}
+					onClick={handleNextPage}
+				>
+					Next
+				</Button>
+			</Box>
 
-				{/* Page Numbers */}
-				<Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
-					{renderPageNumbers()}
-				</Box>
-    </>
-  )
+			{/* Page Numbers */}
+			<Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+				{renderPageNumbers()}
+			</Box>
+		</>
+	);
+};
 
-}
-
-export default PaginationButtons
+export default PaginationButtons;

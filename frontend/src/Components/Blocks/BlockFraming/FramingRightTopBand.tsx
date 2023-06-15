@@ -358,7 +358,7 @@ const FramingRightTopBand = (props: Props) => {
 								activeNavSection === "shelf" ? "#e3e3e3" : "inherit",
 						}}
 						onClick={() => {
-							navigate("/shelf");
+							navigate("/shelf?page=1");
 							setActiveNavSection("shelf");
 						}}
 					>

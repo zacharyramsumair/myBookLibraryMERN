@@ -92,7 +92,7 @@ const FramingLeft = (props: Props) => {
 
 					}}
 					onClick={() => {
-						navigate("/shelf");
+						navigate("/shelf?page=1");
 						setActiveNavSection("shelf");
 					}}
 				>
