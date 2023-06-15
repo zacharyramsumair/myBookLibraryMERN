@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import PaginationButtons from "../PaginationButtons/PaginationButtons";
 import OurCard from "../ImageCarousel/OurCard";
-import data from "../sampleBlocks";
+// import data from "../sampleBlocks";
 import { UserContext } from "../../../Contexts/UserContext";
 import { useGetUserShelf } from "../../../Hooks/Blocks/useGetUserShelf";
 import { useLocation } from "react-router-dom";

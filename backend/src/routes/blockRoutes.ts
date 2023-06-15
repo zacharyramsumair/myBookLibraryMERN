@@ -18,7 +18,7 @@ router.delete("/block/:id", blockController.deleteBlock);
 router.get("/search", blockController.searchBlocks);
 router.post("/rate/:id", blockController.rateBlock);
 router.post("/favorite/:id", blockController.favoriteBlock);
-router.get("/favorite", blockController.getFavoriteBlocks);
+router.get("/favorites", blockController.getFavoriteBlocks);
 router.get("/tags/:tag", blockController.getBlocksByTag);
 router.get("/my-blocks", blockController.getMyBlocks);
 router.get("/user-shelf", blockController.getUserShelfBlocks);

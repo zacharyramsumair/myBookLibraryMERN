@@ -109,7 +109,7 @@ const FramingLeft = (props: Props) => {
 
 					}}
 					onClick={() => {
-						navigate("/favorites");
+						navigate("/favorites?page=1");
 						setActiveNavSection("favorites");
 					}}
 				>

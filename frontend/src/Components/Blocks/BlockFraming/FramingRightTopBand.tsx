@@ -375,7 +375,7 @@ const FramingRightTopBand = (props: Props) => {
 									: "inherit",
 						}}
 						onClick={() => {
-							navigate("/favorites");
+							navigate("/favorites?page=1");
 							setActiveNavSection("favorites");
 						}}
 					>

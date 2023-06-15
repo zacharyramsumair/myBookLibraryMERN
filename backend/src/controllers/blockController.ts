@@ -517,24 +517,27 @@ const getFavoriteBlocks = async (req: Request, res: Response) => {
 	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
 	const skip = (page - 1) * limit; // Calculate the number of documents to skip
 
-	const favoriteBlocks = await Block.find(
-		{ _id: { $in: favoriteBlockIds } },
-		"title tags price tier imageUrl createdBy"
-	)
-		.populate("createdBy", "name email")
-		.skip(skip)
-		.limit(limit);
-
-	const totalBlocks = await Block.countDocuments({
+	const favoriteBlocks = await Block.find({
 		_id: { $in: favoriteBlockIds },
-	});
+	})
+		.select("title tags price tier imageUrl createdBy")
+		.populate("createdBy", "name email") // Populate createdBy field with name and email
+		.exec(); // Execute the query to get the blocks
 
-	const totalPages = Math.ceil(totalBlocks / limit);
+	// Sort the blocks based on the order of blockIds
+	const sortedBlocks = favoriteBlockIds.map((id) =>
+	favoriteBlocks.find((block) => block._id.toString() === id.toString())
+	);
+
+	const paginatedBlocks = sortedBlocks.slice(skip, skip + limit); // Get the blocks for the current page
+	const totalPages = Math.ceil(sortedBlocks.length / limit);
+
+
 
 	res.status(StatusCodes.OK).json({
 		currentPage: page,
 		totalPages,
-		blocks: favoriteBlocks,
+		blocks: paginatedBlocks,
 	});
 };
 
