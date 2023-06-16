@@ -219,8 +219,13 @@ const createBlock = async (req: Request, res: Response) => {
 		}
 	}
 
+	// when putting our info allow rating, rating count, rating total, views and favorite count
 	const block = await Block.create({
-		...req.body,
+		title,
+		tags,
+		imageUrl,
+		text,
+		price,
 		tier: price == 0 ? "free" : "paid",
 		createdBy: req.user,
 	});
@@ -345,14 +350,15 @@ const deleteBlock = async (req: Request, res: Response) => {
 };
 
 // @desc    Search blocks by title and sort by rating or views with pagination
-// @route   GET /search?title=<title>&sort=<ratingDesc|ratingAsc|viewsDesc|viewsAsc>&page=<pageNumber>&limit=<pageSize>
+// @route   POST /search?title=<title>&sort=<ratingDesc|ratingAsc|viewsDesc|viewsAsc>&page=<pageNumber>&limit=<pageSize>
 // @access  Public
 const searchBlocks = async (req: Request, res: Response) => {
 	// Extract query parameters
-	const { title, sort, page, limit } = req.query;
+	const { title, tag, sort, page, limit } = req.query;
 
 	if (
 		typeof title !== "string" ||
+		typeof tag !== "string" ||
 		typeof sort !== "string" ||
 		typeof page !== "string" ||
 		typeof limit !== "string"
@@ -361,26 +367,57 @@ const searchBlocks = async (req: Request, res: Response) => {
 		throw new Error("Invalid query parameters");
 	}
 
+
+	if(title =="noSearch" && tag=="noSearch"){
+		return res.status(StatusCodes.OK).json({
+			blocks:[],
+			page: 0,
+			totalPages:0,
+			totalItems:0,
+		});
+	}
 	// Parse page number and page size from query parameters
 	const pageNumber = parseInt(page) || 1;
 	const pageSize = parseInt(limit) || 10;
 
 	// Build search query
-	const searchQuery = {
-		title: { $regex: title, $options: "i" },
-	};
+	const searchQuery: any = {};
+
+	// Add tag filter to the search query if provided
+	if (tag != "all") {
+		searchQuery.tags = { $in: [tag] };
+	}
+
+	console.log(title)
+	console.log(tag)
+	console.log(sort)
+	// console.log(sort)
+	// Check if title is provided and not empty
+	if (title.trim() !== "") {
+		console.log("here 1")
+		searchQuery.title = { $regex: title, $options: "i" };
+	}
+
+	// Add tag filter to the search query if provided
+	if (tag != "all") {
+		searchQuery.tags = { $in: [tag] };
+	}
 
 	// Start with the base query to find blocks matching the search query
 	let query = Block.find(
 		searchQuery,
-		"title tags price tier imageUrl createdBy"
+		"title tags price tier imageUrl createdBy tier views favoriteCount rating"
 	).populate("createdBy", "name email");
 
 	// Apply sorting based on the 'sort' parameter
-	if (sort.startsWith("rating")) {
-		query = query.sort({ rating: sort === "ratingDesc" ? -1 : 1 });
-	} else if (sort.startsWith("views")) {
-		query = query.sort({ views: sort === "viewsDesc" ? -1 : 1 });
+	if (sort === "ratingDesc") {
+		query = query.sort({ rating: -1, views: -1 });
+	} else if (sort === "ratingAsc") {
+		query = query.sort({ rating: 1, views: -1 });
+	} else if (sort === "viewsDesc") {
+		query = query.sort({ views: -1, rating: -1 });
+	} else if (sort === "viewsAsc") {
+		query = query.sort({ views: 1, rating: -1 });
 	}
 
 	// Count total items matching the search query
@@ -526,13 +563,11 @@ const getFavoriteBlocks = async (req: Request, res: Response) => {
 
 	// Sort the blocks based on the order of blockIds
 	const sortedBlocks = favoriteBlockIds.map((id) =>
-	favoriteBlocks.find((block) => block._id.toString() === id.toString())
+		favoriteBlocks.find((block) => block._id.toString() === id.toString())
 	);
 
 	const paginatedBlocks = sortedBlocks.slice(skip, skip + limit); // Get the blocks for the current page
 	const totalPages = Math.ceil(sortedBlocks.length / limit);
-
-
 
 	res.status(StatusCodes.OK).json({
 		currentPage: page,
@@ -625,9 +660,9 @@ const getUserShelfBlocks = async (req: Request, res: Response) => {
 
 	// Retrieve the blocks in the UserShelf
 	// const blockIds = currentUser.userShelf;
-	const blockIds = currentUser.userShelf.filter((id) => !currentUser.myBlocks.includes(id));
-
-
+	const blockIds = currentUser.userShelf.filter(
+		(id) => !currentUser.myBlocks.includes(id)
+	);
 
 	console.log(blockIds);
 	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters

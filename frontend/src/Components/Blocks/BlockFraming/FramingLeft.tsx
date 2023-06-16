@@ -75,7 +75,7 @@ const FramingLeft = (props: Props) => {
 
 					}}
 					onClick={() => {
-						navigate("/search");
+						navigate("/search?page=1");
 						setActiveNavSection("search");
 					}}
 				>

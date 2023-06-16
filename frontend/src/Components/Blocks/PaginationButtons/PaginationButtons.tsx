@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 type Props = {
 	totalPages: number,
 	page: number,
+	route:string
 };
 
 const PaginationButtons = (props: Props) => {
@@ -15,21 +16,21 @@ const PaginationButtons = (props: Props) => {
 	const handlePreviousPage = () => {
 		if (currentPage > 1) {
 			setCurrentPage((prevPage) => prevPage - 1);
-			navigate(`/shelf?page=${currentPage -1}`);
+			navigate(`/${props.route}?page=${currentPage -1}`);
 		}
 	};
 
 	const handleNextPage = () => {
 		if (currentPage < props.totalPages) {
 			setCurrentPage((prevPage) => prevPage + 1);
-			navigate(`/shelf?page=${currentPage +1}`);
+			navigate(`/${props.route}?page=${currentPage +1}`);
 		}
 	};
 
 	const handleGoToPage = (page: number) => {
 		if (page >= 1 && page <= props.totalPages) {
 			setCurrentPage(page);
-			navigate(`/shelf?page=${page}`);
+			navigate(`/${props.route}?page=${page}`);
 		}
 	};
 

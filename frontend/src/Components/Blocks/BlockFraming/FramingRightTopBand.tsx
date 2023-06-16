@@ -33,6 +33,7 @@ import { useNavigate } from "react-router-dom";
 import tags from "../allTags";
 import { UserContext } from "../../../Contexts/UserContext";
 import { useLogout } from "../../../Hooks/Auth/useLogoutUser";
+import { usePostSearch } from "../../../Hooks/Blocks/usePostSearch";
 // export const tags = ["All", "nonfiction", "romance", "action"];
 
 type Props = {
@@ -40,7 +41,7 @@ type Props = {
 };
 
 const FramingRightTopBand = (props: Props) => {
-	let { activeNavSection, setActiveNavSection } = useContext(
+	let { activeNavSection, setActiveNavSection,setGlobalSearchParameters  } = useContext(
 		ActiveNavbarContext
 	);
 
@@ -58,12 +59,29 @@ const FramingRightTopBand = (props: Props) => {
 	let [selectedTag, setSelectedTag] = useState(0);
 	let [searchQuery, setSearchQuery] = useState("");
 
+	// let {
+	// 	postSearch,
+	// 	errorPostSearch,
+	// 	PostSearchData,
+	// 	isErrorPostSearch,
+	// 	isLoadingPostSearch,
+	// 	isSuccessPostSearch,
+	// } = usePostSearch();
+
 	const handleSearchBarSubmit = () => {
-		let searchReq = {
+		let searchParameters = {
 			tag: tags[selectedTag].backendName,
-			query: searchQuery,
+			title: searchQuery,
+			page: "1",
+			limit: "10",
+			sort: "ratingDesc",
 		};
-		console.log(searchReq);
+		console.log(searchParameters);
+		setGlobalSearchParameters(searchParameters)
+		navigate("/search?page=1");
+		// setTimeout(() => {
+		// 	postSearch(searchParameters);
+		// }, 100);
 	};
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -198,68 +216,72 @@ const FramingRightTopBand = (props: Props) => {
 						open={Boolean(anchorEl)}
 						onClose={handleMenuClose}
 					>
-						
-								{user && <MenuItem
+						{user && (
+							<MenuItem
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									backgroundColor: "rgba(144,238,144,0.7)",
+									cursor: "default",
+									// pointerEvents: "none", // Disable pointer events on this item
+									"&:hover": {
+										backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on hover
+									},
+									"&:focus": {
+										backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on focus
+										outline: "none", // Remove the focus outline
+									},
+								}}
+								tabIndex={-1} // Exclude from the tab order
+							>
+								{/* <GemIcon sx={{ marginRight: 1, color: "gold" }} /> */}
+								<img
+									src={gemImage}
+									alt=""
+									style={{
+										width: "30px",
+										height: "30px",
+										marginRight: "5px",
+										pointerEvents: "none", // Disable pointer events on this item
+									}}
+								/>
+								<Typography
 									sx={{
-										display: "flex",
-										alignItems: "center",
-										backgroundColor: "rgba(144,238,144,0.7)",
-										cursor: "default",
-										// pointerEvents: "none", // Disable pointer events on this item
-										"&:hover": {
-											backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on hover
-										},
-										"&:focus": {
-											backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on focus
-											outline: "none", // Remove the focus outline
-										},
+										pointerEvents: "none", // Disable pointer events on this item
 									}}
-									tabIndex={-1} // Exclude from the tab order
 								>
-									{/* <GemIcon sx={{ marginRight: 1, color: "gold" }} /> */}
-									<img
-										src={gemImage}
-										alt=""
-										style={{
-											width: "30px",
-											height: "30px",
-											marginRight: "5px",
-											pointerEvents: "none", // Disable pointer events on this item
-										}}
-									/>
-									<Typography
-										sx={{
-											pointerEvents: "none", // Disable pointer events on this item
-										}}
-									>
-										{user.noOfGems} GEMS
-									</Typography>
-									<AddIcon
-										sx={{ marginLeft: "auto", cursor: "pointer" }}
-										onClick={() => navigate("/store")}
-									/>
-								</MenuItem>}
+									{user.noOfGems} GEMS
+								</Typography>
+								<AddIcon
+									sx={{ marginLeft: "auto", cursor: "pointer" }}
+									onClick={() => navigate("/store")}
+								/>
+							</MenuItem>
+						)}
 
-								{user && <MenuItem
-									onClick={() => {
-										handleMenuClose();
-										navigate("/creatorStudio");
-									}}
-								>
-									<ConstructionIcon sx={{ marginRight: 1 }} />
-									<Typography>Creator Studio</Typography>
-								</MenuItem>}
+						{user && (
+							<MenuItem
+								onClick={() => {
+									handleMenuClose();
+									navigate("/creatorStudio");
+								}}
+							>
+								<ConstructionIcon sx={{ marginRight: 1 }} />
+								<Typography>Creator Studio</Typography>
+							</MenuItem>
+						)}
 
-								{user && <MenuItem
-									onClick={() => {
-										handleMenuClose();
-										navigate("/settings");
-									}}
-								>
-									<SettingsIcon sx={{ marginRight: 1 }} />
-									<Typography>Settings</Typography>
-								</MenuItem>}
-						
+						{user && (
+							<MenuItem
+								onClick={() => {
+									handleMenuClose();
+									navigate("/settings");
+								}}
+							>
+								<SettingsIcon sx={{ marginRight: 1 }} />
+								<Typography>Settings</Typography>
+							</MenuItem>
+						)}
 
 						{user ? (
 							<MenuItem
@@ -343,7 +365,7 @@ const FramingRightTopBand = (props: Props) => {
 								activeNavSection === "search" ? "#e3e3e3" : "inherit",
 						}}
 						onClick={() => {
-							navigate("/search");
+							navigate("/search?page=1");
 							setActiveNavSection("search");
 						}}
 					>

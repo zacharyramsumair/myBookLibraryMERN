@@ -97,6 +97,7 @@ const MyFavoritesComponent = (props: Props) => {
 				<PaginationButtons
 					totalPages={totalPages}
 					page={Number(page)}
+					route="favorites"
 				/>
 			</Box>
 		</BlockFraming>

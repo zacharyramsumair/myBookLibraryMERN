@@ -9,23 +9,40 @@ import {
 } from "@mui/material";
 import { Favorite, Visibility } from "@mui/icons-material";
 import SearchStyle from "./Search.module.css";
+import allTags from "../allTags";
+import { Link } from "react-router-dom";
 
 type SearchCardProps = {
-	book: {
+	item: {
+		_id: string;
 		image: string;
 		title: string;
 		author: string;
+		authorId?: string;
 		rating: number;
 		tags: string[];
 		views: number;
 		favorites: number;
+		tier: string;
 	};
 };
 
-const SearchCard = ({ book }: SearchCardProps) => {
+const SearchCard = ({ item }: SearchCardProps) => {
 	const isSmallScreen = useMediaQuery((theme: Theme) =>
 		theme.breakpoints.down("md")
 	);
+	const isMediumScreen = useMediaQuery((theme: Theme) =>
+		theme.breakpoints.down("lg")
+	);
+	const isLargeScreen = useMediaQuery((theme: Theme) =>
+		theme.breakpoints.down("xl")
+	);
+
+	const getTagDisplayName = (backendName: string) => {
+		const displayTag = allTags.find((tag) => tag.backendName === backendName);
+		return displayTag ? displayTag.display : "";
+	};
+
 	return (
 		<Paper sx={{ paddingY: 2, margin: 2 }}>
 			<Box
@@ -37,7 +54,7 @@ const SearchCard = ({ book }: SearchCardProps) => {
 					isSmallScreen ? SearchStyle.gridAreaSm : SearchStyle.gridAreaMd
 				}
 			>
-				{/* Column 1: Book Image, Title, Author */}
+				{/* Column 1: Item Image, Title, Author */}
 				<Box
 					sx={{
 						display: "grid",
@@ -53,8 +70,8 @@ const SearchCard = ({ book }: SearchCardProps) => {
 						}}
 					>
 						<img
-							src={book.image}
-							alt={book.title}
+							src={item.image}
+							alt={item.title}
 							style={{ width: "6em", height: "8em" }}
 						/>
 					</Box>
@@ -63,7 +80,8 @@ const SearchCard = ({ book }: SearchCardProps) => {
 				<Box
 					sx={{
 						display: "grid",
-						gridArea: "basicBookInfo",
+						gridArea: "basicBlockInfo",
+						
 					}}
 				>
 					<Box
@@ -74,8 +92,8 @@ const SearchCard = ({ book }: SearchCardProps) => {
 							justifyContent: "center",
 						}}
 					>
-						<Typography variant="h6">{book.title}</Typography>
-						<Typography variant="body1">{book.author}</Typography>
+						<Typography variant="body1">{item.title}</Typography>
+						<Typography variant="body1">{item.author.substring(0,75)} {item.author.length>75 ? "..." : ""}</Typography>
 					</Box>
 				</Box>
 
@@ -94,7 +112,7 @@ const SearchCard = ({ book }: SearchCardProps) => {
 							justifyContent: "center",
 						}}
 					>
-						<Typography variant="body2">Rating: {book.rating}</Typography>
+						<Typography variant="body2">Rating: {item.rating.toFixed(2)}</Typography>
 					</Box>
 				</Box>
 
@@ -103,6 +121,7 @@ const SearchCard = ({ book }: SearchCardProps) => {
 					sx={{
 						display: "grid",
 						gridArea: "tags",
+						width: {xs:"100%", md: "10em"}
 					}}
 				>
 					<Typography
@@ -116,10 +135,17 @@ const SearchCard = ({ book }: SearchCardProps) => {
 							justifyContent: "center",
 						}}
 					>
-						{book.tags.map((tag) => (
-							<Button key={tag} variant="outlined" size="small">
-								{tag}
-							</Button>
+						{item.tags.map((tag, index) => (
+							// <Button key={tag} variant="outlined" size="small" sx={{fontSize:"0.8rem"}}>
+							// 	{getTagDisplayName(tag)}
+							// </Button>
+							<Box key={index} component={"span"} sx={{paddingX:"1px"}}>
+									<Link style={{ color: "#5A5A5A" }} to="#">
+									{/* <Link style={{ color: "#5A5A5A" }} to={`/${tag}`}> */}
+										{getTagDisplayName(tag)}
+									</Link>
+									{item.tags.indexOf(tag) !== item.tags.length - 1 && ","}
+								</Box>
 						))}
 					</Typography>
 				</Box>
@@ -142,7 +168,7 @@ const SearchCard = ({ book }: SearchCardProps) => {
 						<Box sx={{ display: "flex", alignItems: "center" }}>
 							<Visibility fontSize="small" />
 							<Typography variant="body2" sx={{ marginLeft: 1 }}>
-								{book.views}
+								{item.views}
 							</Typography>
 						</Box>
 						<Box
@@ -154,7 +180,7 @@ const SearchCard = ({ book }: SearchCardProps) => {
 						>
 							<Favorite fontSize="small" />
 							<Typography variant="body2" sx={{ marginLeft: 1 }}>
-								{book.favorites}
+								{item.favorites}
 							</Typography>
 						</Box>
 					</Box>

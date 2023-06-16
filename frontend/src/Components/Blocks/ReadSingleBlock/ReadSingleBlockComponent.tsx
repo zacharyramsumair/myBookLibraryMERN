@@ -13,6 +13,7 @@ import { usePostFavorite } from "../../../Hooks/Blocks/usePostFavorite";
 import Rating from "@mui/material/Rating";
 import { useAddRating } from "../../../Hooks/Blocks/useAddRating";
 import gemImage from "../,,/../../../assets/gem.png";
+import allTags from "../allTags";
 
 type Props = {
 	// book: {
@@ -106,22 +107,10 @@ const ReadSingleBlockComponent = (props: Props) => {
 		}
 	}, [SingleBlockData]);
 
-	const capitalizeFirstLetter = (str: string): string => {
-		return str.charAt(0).toUpperCase() + str.slice(1);
-	};
 
-	const transformTag = (tag: string) => {
-		if (tag === "youngadult") {
-			return "Young Adult";
-		} else if (tag === "historicalfiction") {
-			return "Historical Fiction";
-		} else if (tag === "sciencefiction") {
-			return "Science Fiction";
-		} else if (tag === "selfhelp") {
-			return "Self Help";
-		} else {
-			return capitalizeFirstLetter(tag);
-		}
+	const getTagDisplayName = (backendName: string) => {
+		const displayTag = allTags.find((tag) => tag.backendName === backendName);
+		return displayTag ? displayTag.display : "";
 	};
 
 	if (LoadingSingleBlock || isLoadingBuyBlock) {
@@ -153,9 +142,9 @@ const ReadSingleBlockComponent = (props: Props) => {
 		}
 	};
 
-	console.log(isFavorite);
-	console.log(SingleBlockData.isFavorite);
-	const transformedTags = SingleBlockData.tags.map(transformTag);
+	// console.log(isFavorite);
+	// console.log(SingleBlockData.isFavorite);
+	// const transformedTags = SingleBlockData.tags.map(transformTag);
 
 	const toggleFavorite = () => {
 		setIsFavorite((prev) => !prev);
@@ -222,13 +211,14 @@ const ReadSingleBlockComponent = (props: Props) => {
 							</Typography>
 						</Typography>
 						<Typography variant="body1" sx={{ mb: 1 }}>
-							Tags:
-							{transformedTags.map((tag: string, index: number) => (
+							Tags:{" "}
+							{tags.map((tag: string, index: number) => (
 								<Box key={index} component={"span"}>
-									<Link style={{ color: "#5A5A5A" }} to={`/${tag}`}>
-										{tag}
+									<Link style={{ color: "#5A5A5A" }} to="#">
+									{/* <Link style={{ color: "#5A5A5A" }} to={`/${tag}`}> */}
+										{getTagDisplayName(tag)}
 									</Link>
-									{index !== transformedTags.length - 1 && ", "}
+									{tags.indexOf(tag) !== tags.length - 1 && ", "}
 								</Box>
 							))}
 						</Typography>

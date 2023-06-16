@@ -97,7 +97,7 @@ const MyShelfComponent = (props: Props) => {
 					{cardElements}
 				</Grid>
 
-				<PaginationButtons totalPages={totalPages} page={Number(page)} />
+				<PaginationButtons totalPages={totalPages} page={Number(page)} route="shelf" />
 			</Box>
 		</BlockFraming>
 	);
