@@ -15,6 +15,7 @@ import data from "../sampleBlocks";
 import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import { UserContext } from "../../../Contexts/UserContext";
+import MyBlocksCard from "./MyBlocksCard";
 
 type Props = {};
 
@@ -24,25 +25,25 @@ const MyBlocksComponent = (props: Props) => {
 	let navigate = useNavigate();
 
 
-	const cardElements = data.map((item) => {
-		return (
-			<Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
-				<Paper elevation={4}>
-					<Box sx={{ position: "relative" }}>
-						<OurCard item={item} key={item.id} />
-						<IconButton
-							sx={{ position: "absolute", top: 0, right: 0 }}
-							onClick={() => navigate(`/edit/${item.id}`)}
-						>
-							<Paper sx={{ padding: 1 }}>
-								<EditIcon />
-							</Paper>
-						</IconButton>
-					</Box>
-				</Paper>
-			</Grid>
-		);
-	});
+	// const cardElements = data.map((item) => {
+	// 	return (
+	// 		<Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
+	// 			<Paper elevation={4}>
+	// 				<Box sx={{ position: "relative" }}>
+	// 					<OurCard item={item} key={item.id} />
+	// 					<IconButton
+	// 						sx={{ position: "absolute", top: 0, right: 0 }}
+	// 						onClick={() => navigate(`/edit/${item.id}`)}
+	// 					>
+	// 						<Paper sx={{ padding: 1 }}>
+	// 							<EditIcon />
+	// 						</Paper>
+	// 					</IconButton>
+	// 				</Box>
+	// 			</Paper>
+	// 		</Grid>
+	// 	);
+	// });
 
 	if (!user) {
 		<BlockFraming hideSearch={true}>
@@ -79,10 +80,11 @@ const MyBlocksComponent = (props: Props) => {
 				<Typography variant="h4">My Blocks</Typography>
 
 				<Grid container spacing={2} sx={{ marginTop: 2 }}>
-					{cardElements}
+					{/* {cardElements} */}
+					<MyBlocksCard/>
 				</Grid>
 
-				<PaginationButtons />
+				{/* <PaginationButtons /> */}
 			</Box>
 		</BlockFraming>
 	);

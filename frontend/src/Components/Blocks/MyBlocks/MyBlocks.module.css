@@ -1,0 +1,25 @@
+
+.gridAreaMd{
+    grid-template-areas: 
+    "image basicBlockInfo rating stats edit" ;
+}
+
+
+/* .gridAreaSm{
+    grid-template-areas: 
+    "image image image"
+    "basicBlockInfo basicBlockInfo basicBlockInfo"
+    "tags tags tags"
+    "rating stats stats";
+    gap: 1em;
+} */
+
+.gridAreaSm{
+    grid-template-areas: 
+    "image image image"
+    "basicBlockInfo basicBlockInfo basicBlockInfo"
+    "rating rating rating"
+    "stats stats stats"
+    "edit edit edit";
+    gap: 1em;
+}

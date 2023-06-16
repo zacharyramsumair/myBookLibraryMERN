@@ -367,13 +367,12 @@ const searchBlocks = async (req: Request, res: Response) => {
 		throw new Error("Invalid query parameters");
 	}
 
-
-	if(title =="noSearch" && tag=="noSearch"){
+	if (title == "noSearch" && tag == "noSearch") {
 		return res.status(StatusCodes.OK).json({
-			blocks:[],
+			blocks: [],
 			page: 0,
-			totalPages:0,
-			totalItems:0,
+			totalPages: 0,
+			totalItems: 0,
 		});
 	}
 	// Parse page number and page size from query parameters
@@ -388,13 +387,13 @@ const searchBlocks = async (req: Request, res: Response) => {
 		searchQuery.tags = { $in: [tag] };
 	}
 
-	console.log(title)
-	console.log(tag)
-	console.log(sort)
+	console.log(title);
+	console.log(tag);
+	console.log(sort);
 	// console.log(sort)
 	// Check if title is provided and not empty
 	if (title.trim() !== "") {
-		console.log("here 1")
+		console.log("here 1");
 		searchQuery.title = { $regex: title, $options: "i" };
 	}
 
@@ -634,8 +633,9 @@ const getMyBlocks = async (req: Request, res: Response) => {
 
 	const blocks = await Block.find(
 		{ createdBy: userId },
-		"title tags price tier imageUrl createdBy"
+		"title tags price tier imageUrl createdBy views, favoriteCount rating"
 	)
+		.populate("createdBy", "name email")
 		.sort(sortOptions)
 		.skip(skip)
 		.limit(limit);
