@@ -10,22 +10,25 @@ import {
 import { Favorite, Visibility } from "@mui/icons-material";
 import Styles from "./MyBlocks.module.css";
 import allTags from "../allTags";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 
 type Props = {
-	// item: {
-	// 	_id: string;
-	// 	image: string;
-	// 	title: string;
-	// 	author: string;
-	// 	authorId?: string;
-	// 	rating: number;
-	// 	tags: string[];
-	// 	views: number;
-	// 	favorites: number;
-	// 	tier: string;
-	// };
+	item: {
+		_id: string;
+		image: string;
+		title: string;
+		author: string;
+		authorId?: string;
+		rating: number;
+		tags: string[];
+		views: number;
+		favorites: number;
+		tier: string;
+		updatedAt: string;
+		createdAt: string;
+	};
+	key: string;
 };
 
 const MyBlocksCard = (props: Props) => {
@@ -38,6 +41,8 @@ const MyBlocksCard = (props: Props) => {
 	const isLargeScreen = useMediaQuery((theme: Theme) =>
 		theme.breakpoints.down("xl")
 	);
+
+	let navigate = useNavigate();
 
 	const getTagDisplayName = (backendName: string) => {
 		const displayTag = allTags.find((tag) => tag.backendName === backendName);
@@ -68,9 +73,9 @@ const MyBlocksCard = (props: Props) => {
 						}}
 					>
 						<img
-							src="https://png.pngtree.com/png-vector/20191027/ourmid/pngtree-book-cover-template-vector-realistic-illustration-isolated-on-gray-background-empty-png-image_1893997.jpg"
-							// src={item.image}
-							// alt={item.title}
+							// src="https://png.pngtree.com/png-vector/20191027/ourmid/pngtree-book-cover-template-vector-realistic-illustration-isolated-on-gray-background-empty-png-image_1893997.jpg"
+							src={props.item.image}
+							alt={props.item.title}
 							style={{ width: "6em", height: "8em" }}
 						/>
 					</Box>
@@ -90,9 +95,8 @@ const MyBlocksCard = (props: Props) => {
 							justifyContent: "center",
 						}}
 					>
-						<Typography variant="body1">title of book</Typography>
-						{/* <Typography variant="body1">{item.title}</Typography> */}
-
+						{/* <Typography variant="body1">title of book</Typography> */}
+						<Typography variant="body1">{props.item.title}</Typography>
 					</Box>
 				</Box>
 
@@ -112,8 +116,8 @@ const MyBlocksCard = (props: Props) => {
 						}}
 					>
 						<Typography variant="body2">
-							Rating: 3.56
-							{/* Rating: {item.rating.toFixed(2)} */}
+							{/* Rating: 3.56 */}
+							Rating: {props.item.rating.toFixed(2)}
 						</Typography>
 					</Box>
 				</Box>
@@ -136,8 +140,8 @@ const MyBlocksCard = (props: Props) => {
 						<Box sx={{ display: "flex", alignItems: "center" }}>
 							<Visibility fontSize="small" />
 							<Typography variant="body2" sx={{ marginLeft: 1 }}>
-								100
-								{/* {item.views} */}
+								{/* 100 */}
+								{props.item.views}
 							</Typography>
 						</Box>
 						<Box
@@ -149,8 +153,8 @@ const MyBlocksCard = (props: Props) => {
 						>
 							<Favorite fontSize="small" />
 							<Typography variant="body2" sx={{ marginLeft: 1 }}>
-								65
-								{/* {item.favorites} */}
+								{/* 65 */}
+								{props.item.favorites}
 							</Typography>
 						</Box>
 					</Box>
@@ -165,11 +169,34 @@ const MyBlocksCard = (props: Props) => {
 						placeItems: "center",
 					}}
 				>
-					<Button variant="contained">
+					<Button
+						variant="contained"
+						onClick={() => navigate(`/edit/${props.item._id}`)}
+					>
 						{" "}
 						<EditIcon sx={{ marginRight: 1 }} />
 						Edit{" "}
 					</Button>
+					{/* <Typography variant="subtitle2">
+						Last Updated:{" "}
+						{new Date(props.item.updatedAt).toLocaleString("en-TT", {
+							timeZone: "America/Port_of_Spain",
+							hour12: true,
+						})}
+					</Typography> */}
+
+					<Typography variant="subtitle2" sx={{ fontSize: "0.7rem", marginTop:3 }}>
+						Last Update:{" "}
+						{new Date(props.item.updatedAt).toLocaleDateString("en-TT", {
+							timeZone: "America/Port_of_Spain",
+						})}{" "}
+						{new Date(props.item.updatedAt).toLocaleTimeString("en-TT", {
+							timeZone: "America/Port_of_Spain",
+							hour12: true,
+							hour: "numeric",
+							minute: "numeric",
+						})}
+					</Typography>
 				</Box>
 			</Box>
 		</Paper>

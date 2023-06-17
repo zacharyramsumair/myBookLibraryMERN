@@ -8,7 +8,7 @@ import quotes from "../utils/quotes";
 import { createReadStream } from "fs";
 
 // @desc    Get all blocks
-// @route   GET /
+// @route   POST /
 // @access  Public
 const getAllBlocks = async (req: Request, res: Response) => {
 	const blocks = await Block.find(
@@ -626,14 +626,14 @@ const getMyBlocks = async (req: Request, res: Response) => {
 		sortOptions = { views: sortOrder === "asc" ? 1 : -1 };
 	} else {
 		// Sort by creation date (default)
-		sortOptions = { createdDate: sortOrder === "asc" ? 1 : -1 };
+		sortOptions = { createdAt: sortOrder === "asc" ? 1 : -1 };
 	}
 
 	const skip = (page - 1) * limit; // Calculate the number of documents to skip
 
 	const blocks = await Block.find(
 		{ createdBy: userId },
-		"title tags price tier imageUrl createdBy views, favoriteCount rating"
+		"title tags price tier imageUrl createdBy views favoriteCount rating createdAt updatedAt"
 	)
 		.populate("createdBy", "name email")
 		.sort(sortOptions)
