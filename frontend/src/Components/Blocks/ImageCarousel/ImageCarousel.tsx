@@ -33,22 +33,22 @@ const ImageCarousel = (props: Props) => {
 		theme.breakpoints.down("sm")
 	);
 
-	let numberOfSlidesToShow: number = 3;
+	let numberOfSlidesToShow: number = props.listOfImages.length < 2 ? props.listOfImages.length : 2;
 	if (props.fullRow) {
 		if (isExtraSmallScreen) {
-			numberOfSlidesToShow = 2;
+			numberOfSlidesToShow = props.listOfImages.length < 2 ? props.listOfImages.length : 2;;
 		} else if (isSmallScreen) {
-			numberOfSlidesToShow = 4;
+			numberOfSlidesToShow = props.listOfImages.length < 4 ? props.listOfImages.length : 4;
 		} else {
-			numberOfSlidesToShow = 4;
+			numberOfSlidesToShow = props.listOfImages.length < 4 ? props.listOfImages.length : 4;
 		}
 	} else {
 		if (isExtraSmallScreen) {
 			numberOfSlidesToShow = 1;
 		} else if (isSmallScreen) {
-			numberOfSlidesToShow = 2;
+			numberOfSlidesToShow = props.listOfImages.length < 2 ? props.listOfImages.length : 2;
 		} else {
-			numberOfSlidesToShow = 3;
+			numberOfSlidesToShow = props.listOfImages.length < 3 ? props.listOfImages.length : 3;
 		}
 	}
 
