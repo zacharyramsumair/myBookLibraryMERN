@@ -313,6 +313,66 @@ const resetPassword = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json({ msg: "Password Reset" });
 };
 
+// @desc    Edit user settings page
+// @route   PUT /profile
+// @access  Private
+const editProfile = async (req: Request, res: Response) => {
+	const {
+		name,
+		birthday,
+		location,
+		aboutMe,
+		website,
+		showFavoriteTags,
+		showFavorites,
+		profilePic,
+	} = req.body;
+
+	const currentUser = await User.findById(req.user);
+	if (!currentUser) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
+	}
+
+	console.log(currentUser.birthday);
+	console.log(birthday);
+	currentUser.name = name;
+	currentUser.birthday = birthday;
+	currentUser.location = location;
+	currentUser.aboutMe = aboutMe;
+	currentUser.website = website;
+	currentUser.showFavoriteTags = showFavoriteTags;
+	currentUser.showFavorites = showFavorites;
+	currentUser.profilePic = profilePic;
+
+	await currentUser.save();
+
+	return res.json(currentUser);
+};
+
+// @desc    Get profile info to populate edit page
+// @route   GET /userprofile
+// @access  private
+const getMyProfilePageForEditing = async (req: Request, res: Response) => {
+	const currentUser = await User.findById(req.user);
+	if (!currentUser) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
+	}
+
+	// res.json({msg:"your really should see this"})
+	res.json({
+		name: currentUser.name ,
+		birthday: currentUser.birthday ,
+		location: currentUser.location,
+		aboutMe: currentUser.aboutMe,
+		website: currentUser.website,
+		showFavoriteTags: currentUser.showFavoriteTags,
+		showFavorites: currentUser.showFavorites,
+		profilePic: currentUser.profilePic,
+	});
+};
+
 // @desc    Get user profile page
 // @route   GET /profile/:id
 // @access  Public
@@ -322,7 +382,7 @@ const getProfilePage = async (req: Request, res: Response) => {
 	const user = await User.findById(id)
 		.populate("favorites", "title image tags")
 		.populate({
-			path: "userRatings.block",
+			path: "userRatings",
 			select: "title image tags",
 		})
 		.populate("myBlocks", "title image tags")
@@ -447,6 +507,8 @@ export default {
 	logout,
 	forgotPassword,
 	resetPassword,
+	editProfile,
+	getMyProfilePageForEditing,
 	getProfilePage,
 	getFavoriteBlocks,
 	getRatedBlocks,

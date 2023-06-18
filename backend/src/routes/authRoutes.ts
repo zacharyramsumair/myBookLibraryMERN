@@ -16,6 +16,8 @@ router.get('/showCurrentUser', authController.showCurrentUser)
 router.delete('/logout', authController.logout);
 router.post('/forgot-password', authController.forgotPassword)
 router.put('/reset-password', authController.resetPassword)
+router.put('/profile', authController.editProfile)
+router.get('/userprofile', authController.getMyProfilePageForEditing)
 router.get('/profile/:id', authController.getProfilePage)
 router.get('/profile/favorite-blocks', authController.getFavoriteBlocks)
 router.get('/profile/rated-blocks', authController.getRatedBlocks)

@@ -17,7 +17,7 @@ const UserSettingsPage = (props: Props) => {
 	}, []);
 
 	let { user } = useContext(UserContext);
-	console.log(user);
+	// console.log(user);
 
 	return (
 		<BasePageDesign>
