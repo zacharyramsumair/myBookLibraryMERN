@@ -31,6 +31,7 @@ import MyBlocks from "./Pages/Blocks/MyBlocks";
 import CreateBlock from "./Pages/Blocks/CreateBlock";
 import EditBlock from "./Pages/Blocks/EditBlock";
 import UserProfile from "./Pages/Auth/UserProfile";
+import Store from "./Pages/Store/Store";
 
 function App() {
 	const { isLoading, user } = React.useContext(UserContext);
@@ -102,6 +103,10 @@ function App() {
 						<Route path="/edit/:id" element={<EditBlock />} />
 						<Route path="/settings" element={<UserSettingsPage />} />
 						<Route path="/profile/:id" element={<UserProfile />} />
+
+						{/* store */}
+						<Route path="/store" element={<Store/>} />
+
 						{/* 404 Not Found */}
 						<Route path="*" element={<NotFoundPage />} />
 					</Routes>
