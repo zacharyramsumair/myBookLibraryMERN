@@ -19,6 +19,7 @@ import errorHandler from "./middleware/errorHandler";
 import connectDB from "./db/connect";
 import authRouter from "./routes/authRoutes";
 import blockRouter from "./routes/blockRoutes";
+import stripeRouter from "./routes/stripeRoutes";
 import csrf from "csurf";
 import crypto from "crypto";
 
@@ -98,6 +99,7 @@ const start = async () => {
 		app.use("/api/v1/auth", authRouter);
 		// Use the blockRouter for the '/api/v1/blocks' route
 		app.use("/api/v1/blocks", blockRouter);
+		app.use("/api/v1/stripe", stripeRouter);
 
 		app.use(errorHandler);
 		app.listen(port, () =>

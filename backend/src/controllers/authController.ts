@@ -10,6 +10,7 @@ import { xssOptions } from "../app";
 import { filterXSS } from "xss";
 import sendResetPasswordEmail from "../utils/sendResetPasswordEmail";
 import createHash from "../utils/createHash";
+import { stripe } from "../utils/stripe";
 
 //base url '/api/v1/auth'
 
@@ -44,12 +45,23 @@ const registerUser = async (req: Request, res: Response) => {
 		user.verificationToken = verificationToken;
 		await user.save();
 	} else {
+		const customer = await stripe.customers.create(
+			{
+			  email,
+			},
+			{
+			  apiKey: process.env.STRIPE_SECRET_KEY,
+			}
+		  );
+
+
 		// Create a new user with the provided email
 		await User.create({
 			name,
 			email,
 			password,
 			verificationToken,
+			stripeCustomerId: customer.id,
 		});
 	}
 

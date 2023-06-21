@@ -19,8 +19,13 @@ import {
 import React from "react";
 import PricingDetails from "../../assets/PricingDetails";
 import { Link } from "react-router-dom";
+import { UseMutateFunction } from "@tanstack/react-query";
+import { IProductInfo } from "../../Hooks/Stripe/useCreateStripeSession";
 
-type Props = {};
+type Props = {
+	products: any[];
+	createStripeSession:UseMutateFunction<any, unknown, IProductInfo, unknown>
+};
 
 const PricingComponent = (props: Props) => {
 	const isSmallScreen = useMediaQuery((theme: Theme) =>
@@ -112,7 +117,7 @@ const PricingComponent = (props: Props) => {
 					"0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
 				// marginX: 3,
 				// marginY: isSmallScreen ? 10 : 15,
-				marginY:2
+				marginY: 2,
 			}}
 		>
 			{/* <Typography variant="h4" align="center">
@@ -240,7 +245,8 @@ const PricingComponent = (props: Props) => {
 										textAlign: "center",
 									}}
 								>
-									Standard Tier
+									{/* Standard Tier */}
+									{props.products[3].nickname}
 								</Typography>
 							</Box>
 							<Typography
@@ -266,7 +272,7 @@ const PricingComponent = (props: Props) => {
 									variant="h4"
 									// sx={{ textAlign: "center", mb: "1em" }}
 								>
-									$9.99
+									{/* $9.99 */}${props.products[3].unit_amount / 100}
 								</Typography>
 								<Typography variant="h6">/month</Typography>
 							</Box>
@@ -287,6 +293,15 @@ const PricingComponent = (props: Props) => {
 											fontWeight: "700",
 											width: "100%",
 										}}
+										onClick={() =>
+											props.createStripeSession({
+												priceId: props.products[3].id,
+												mode:
+													props.products[3].recurring == null
+														? "payment"
+														: "subscription",
+											})
+										}
 									>
 										Get started
 									</Button>
@@ -326,7 +341,8 @@ const PricingComponent = (props: Props) => {
 										textAlign: "center",
 									}}
 								>
-									Premium Tier
+									{/* Premium Tier */}
+									{props.products[4].nickname}
 								</Typography>
 							</Box>
 							<Typography
@@ -353,7 +369,7 @@ const PricingComponent = (props: Props) => {
 									variant="h4"
 									// sx={{ textAlign: "center", mb: "1em" }}
 								>
-									$19.99
+									{/* $19.99 */}${props.products[4].unit_amount / 100}
 								</Typography>
 								<Typography variant="h6">/month</Typography>
 							</Box>
@@ -374,6 +390,15 @@ const PricingComponent = (props: Props) => {
 											fontWeight: "700",
 											width: "100%",
 										}}
+										onClick={() =>
+											props.createStripeSession({
+												priceId: props.products[4].id,
+												mode:
+													props.products[4].recurring == null
+														? "payment"
+														: "subscription",
+											})
+										}
 									>
 										Get started
 									</Button>
