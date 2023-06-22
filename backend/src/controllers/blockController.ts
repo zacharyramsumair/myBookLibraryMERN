@@ -6,6 +6,7 @@ import User from "../models/User";
 import mongoose from "mongoose";
 import quotes from "../utils/quotes";
 import { createReadStream } from "fs";
+import { reconstructFieldPath } from "express-validator/src/field-selection";
 
 // @desc    Get all blocks
 // @route   POST /
@@ -772,6 +773,14 @@ const getDashboard = async (req: Request, res: Response) => {
 				{ $sample: { size: 30 } },
 				{ $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
 			]);
+
+			if (recommendedBlocks.length < 5) {
+				recommendedBlocks = await Block.aggregate([
+					{ $match: { rating: { $gte: 0 } } },
+					{ $sample: { size: 30 } },
+					{ $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
+				]);
+			}
 		}
 	} else {
 		// User is not logged in
