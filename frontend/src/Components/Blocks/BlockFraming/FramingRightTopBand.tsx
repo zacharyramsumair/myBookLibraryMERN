@@ -235,6 +235,48 @@ const FramingRightTopBand = (props: Props) => {
 								tabIndex={-1} // Exclude from the tab order
 							>
 								{/* <GemIcon sx={{ marginRight: 1, color: "gold" }} /> */}
+								{/* <img
+									src={gemImage}
+									alt=""
+									style={{
+										width: "30px",
+										height: "30px",
+										marginRight: "5px",
+										pointerEvents: "none", // Disable pointer events on this item
+									}}
+								/> */}
+								<Typography
+									sx={{
+										pointerEvents: "none", // Disable pointer events on this item
+									}}
+								>
+									{user.tier} Tier
+								</Typography>
+								{/* <AddIcon
+									sx={{ marginLeft: "auto", cursor: "pointer" }}
+									onClick={() => navigate("/store")}
+								/> */}
+							</MenuItem>
+						)}
+						{user && (
+							<MenuItem
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									backgroundColor: "rgba(144,238,144,0.7)",
+									cursor: "default",
+									// pointerEvents: "none", // Disable pointer events on this item
+									"&:hover": {
+										backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on hover
+									},
+									"&:focus": {
+										backgroundColor: "rgba(144,238,144,0.7)", // Keep the same background color on focus
+										outline: "none", // Remove the focus outline
+									},
+								}}
+								tabIndex={-1} // Exclude from the tab order
+							>
+								{/* <GemIcon sx={{ marginRight: 1, color: "gold" }} /> */}
 								<img
 									src={gemImage}
 									alt=""

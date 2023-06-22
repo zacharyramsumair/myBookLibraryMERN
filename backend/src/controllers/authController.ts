@@ -11,7 +11,13 @@ import { filterXSS } from "xss";
 import sendResetPasswordEmail from "../utils/sendResetPasswordEmail";
 import createHash from "../utils/createHash";
 import { stripe } from "../utils/stripe";
-import { startOfMonth } from "date-fns";
+import {
+	addDays,
+	differenceInMinutes,
+	startOfDay,
+	startOfMinute,
+	startOfMonth,
+} from "date-fns";
 
 //base url '/api/v1/auth'
 
@@ -198,12 +204,64 @@ const loginUser = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
+// const showCurrentUser = async (req: Request, res: Response) => {
+// 	// console.log("showcurrent", req.user)
+
+// 	const currentUser = await User.findById(req.user);
+// 	if (!currentUser) {
+// 		res.status(StatusCodes.UNAUTHORIZED);
+// 		throw new Error("Not authorized");
+// 	}
+
+// 	const user = await User.findOne({ _id: req.user });
+// 	if (!user) {
+// 		res.status(StatusCodes.NOT_FOUND);
+// 		throw new Error("User not found");
+// 	}
+
+// 	const {
+// 		name,
+// 		email,
+// 		_id: id,
+// 		role,
+// 		tier,
+// 		profilePic,
+// 		noOfGems,
+// 		lastGemIncrement,
+// 	} = user;
+
+// 	const currentDate = new Date();
+// 	const startOfCurrentMinute = startOfMinute(currentDate); // Calculate the start of the current minute
+
+// 	// Check if the last gem increment was in a previous minute
+// 	if (!lastGemIncrement || startOfCurrentMinute > lastGemIncrement) {
+// 		// Increment the noOfGems by 20
+// 		if (user.tier == "standard" || user.tier == "premium") {
+// 			const minutesPassed = differenceInMinutes(startOfCurrentMinute, lastGemIncrement); // Calculate the number of minutes passed since the last increment
+// 			const gemsIncrement = Math.floor(minutesPassed / 1); // Increment the gems by 1 for every minute passed
+
+// 			user.noOfGems += gemsIncrement;
+// 			user.lastGemIncrement = startOfCurrentMinute;
+// 			await user.save();
+// 		}
+// 	}
+
+// 	res.status(StatusCodes.OK).json({
+// 		name,
+// 		email,
+// 		id,
+// 		role,
+// 		tier,
+// 		profilePic,
+// 		noOfGems,
+// 	});
+// 	// res.status(StatusCodes.OK).json({ user });
+// };
+
 // @desc    Get user data
 // @route   GET /showCurrentUser
 // @access  Private
 const showCurrentUser = async (req: Request, res: Response) => {
-	// console.log("showcurrent", req.user)
-
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
 		res.status(StatusCodes.UNAUTHORIZED);
@@ -225,20 +283,50 @@ const showCurrentUser = async (req: Request, res: Response) => {
 		profilePic,
 		noOfGems,
 		lastGemIncrement,
+		nextGemIncrement,
 	} = user;
 
+	const subscription = await stripe.subscriptions.list({
+		customer: currentUser.stripeCustomerId,
+	});
+
+	if (subscription.data.length > 0) {
+		if (
+			subscription.data[0].items.data[0].price.product == "prod_O701d8QfGkpAAf"
+		) {
+			user.tier = "premium";
+		} else if (
+			subscription.data[0].items.data[0].price.product == "prod_O7Gr7q0NmZpSzN"
+		) {
+			user.tier = "standard";
+		} else {
+			user.tier = "free";
+		}
+	}else {
+		user.tier = "free";
+	}
+
+	// subscription.data[0].items.data.price.product
+	// pre prod_O701d8QfGkpAAf
+	// standard  prod_O7Gr7q0NmZpSzN
+
 	const currentDate = new Date();
-	const startOfCurrentMonth = startOfMonth(currentDate);
+	const startOfCurrentDay = startOfDay(currentDate);
 
 	// Check if the last gem increment was in a previous month
-	if (!lastGemIncrement || startOfCurrentMonth > lastGemIncrement) {
+	if (!lastGemIncrement || startOfCurrentDay >= nextGemIncrement) {
 		// Increment the noOfGems by 20
+		// rework so that it goes up by the number of months passed, incase you didn't sign in for a few months
 		if (user.tier == "standard" || user.tier == "premium") {
 			user.noOfGems += 20;
-			user.lastGemIncrement = startOfCurrentMonth;
-			await user.save();
+			user.lastGemIncrement = startOfCurrentDay;
+			user.nextGemIncrement = addDays(startOfCurrentDay, 31);
 		}
 	}
+	
+	await user.save();
+	await currentUser.save();
+
 	res.status(StatusCodes.OK).json({
 		name,
 		email,
@@ -248,7 +336,6 @@ const showCurrentUser = async (req: Request, res: Response) => {
 		profilePic,
 		noOfGems,
 	});
-	// res.status(StatusCodes.OK).json({ user });
 };
 
 // @desc    Logout User

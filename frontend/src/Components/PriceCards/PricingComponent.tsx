@@ -32,6 +32,9 @@ const PricingComponent = (props: Props) => {
 		theme.breakpoints.down("md")
 	);
 
+
+	console.log(props.products[3].product)
+
 	let FreeFeatures = PricingDetails.free.map((detail, index) => {
 		return (
 			<ListItem key={index}>
@@ -300,7 +303,7 @@ const PricingComponent = (props: Props) => {
 													props.products[3].recurring == null
 														? "payment"
 														: "subscription",
-												productId: props.products[3].product,
+														productId:props.products[3].product
 											})
 										}
 									>

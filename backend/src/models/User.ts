@@ -31,6 +31,7 @@ interface IUser extends Document {
 	showFavoriteTags: boolean;
 	stripeCustomerId: string;
 	lastGemIncrement: Date;
+	nextGemIncrement: Date;
 }
 
 const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>(
@@ -178,6 +179,7 @@ const UserSchema: Schema<IUser> = new mongoose.Schema<IUser>(
 			required: true,
 		},
 		lastGemIncrement: { type: Date },
+		nextGemIncrement: { type: Date },
 	},
 	{ timestamps: true }
 );

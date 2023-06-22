@@ -7,7 +7,7 @@ import { stripe } from "../utils/stripe";
 import bodyParser from "body-parser";
 
 import { authenticateUser } from "../middleware/authentication";
-import { startOfMonth } from "date-fns";
+import { addDays, startOfDay, startOfMonth } from "date-fns";
 
 // const currentUser = await User.findById(req.user);
 // 	if (!currentUser) {
@@ -39,45 +39,99 @@ router.post("/purchase", async (req, res) => {
 		{
 			priceId: req.body.priceId,
 			productId: req.body.productId,
-			currentUser: req.user,
+			// currentUser: req.user,
 		},
 	]);
 
-	const session = await stripe.checkout.sessions.create(
-		{
-			mode: req.body.mode,
-			// mode: "subscription",
-			payment_method_types: ["card"],
-			line_items: [
-				{
-					price: req.body.priceId,
-					quantity: 1,
-				},
-			],
-			success_url: `${process.env.EMAIL_ORIGIN}/`,
-			cancel_url: `${process.env.EMAIL_ORIGIN}/store`,
-			customer: currentUser.stripeCustomerId,
-			// Add metadata to the payment intent
-			payment_intent_data: {
-				metadata: {
-					line_items: lineItemsMetadata,
+	// const session = await stripe.checkout.sessions.create(
+	// 	{
+	// 		mode: req.body.mode,
+	// 		payment_method_types: ["card"],
+	// 		line_items: [
+	// 			{
+	// 				price: req.body.priceId,
+	// 				quantity: 1,
+	// 			},
+	// 		],
+	// 		success_url: `${process.env.EMAIL_ORIGIN}/`,
+	// 		cancel_url: `${process.env.EMAIL_ORIGIN}/store`,
+	// 		customer: currentUser.stripeCustomerId,
+	// 	},
+	// 	{
+	// 		apiKey: process.env.STRIPE_SECRET_KEY,
+	// 	}
+	// );
+
+	if (req.body.mode == "payment") {
+		const session = await stripe.checkout.sessions.create(
+			{
+				mode: req.body.mode,
+				// mode: "subscription",
+				payment_method_types: ["card"],
+				line_items: [
+					{
+						price: req.body.priceId,
+						quantity: 1,
+					},
+				],
+				success_url: `${process.env.EMAIL_ORIGIN}/`,
+				cancel_url: `${process.env.EMAIL_ORIGIN}/store`,
+				customer: currentUser.stripeCustomerId,
+				// Add metadata to the payment intent
+				payment_intent_data: {
+					metadata: {
+						line_items: lineItemsMetadata,
+					},
 				},
 			},
-		},
-		{
-			apiKey: process.env.STRIPE_SECRET_KEY,
+			{
+				apiKey: process.env.STRIPE_SECRET_KEY,
+			}
+		);
+
+		return res.json(session);
+	} else {
+		const subscription = await stripe.subscriptions.list({
+			customer: currentUser.stripeCustomerId,
+		});
+
+		if (subscription.data.length > 0) {
+			res.status(StatusCodes.CONFLICT);
+			throw new Error(
+				"You already have a subscription, please cancel that to buy a new one"
+			);
 		}
-	);
 
-	// Update user's tier to "premium" if the session was created successfully
+		const session = await stripe.checkout.sessions.create(
+			{
+				// mode: req.body.mode,
+				mode: "subscription",
+				payment_method_types: ["card"],
+				line_items: [
+					{
+						price: req.body.priceId,
+						quantity: 1,
+					},
+				],
+				success_url: `${process.env.EMAIL_ORIGIN}/`,
+				// success_url: `${process.env.EMAIL_ORIGIN}/?priceId=${req.body.priceId}&productId=${req.body.productId}&currentUser=${req.user}`,
+				cancel_url: `${process.env.EMAIL_ORIGIN}/store`,
+				customer: currentUser.stripeCustomerId,
+				metadata: {
+					priceId: req.body.priceId,
+					productId: req.body.productId,
+					currentUser: req.user,
+					// Add more key-value pairs as needed
+				},
+			},
+			{
+				// expand: ["payment_intent"],
+				apiKey: process.env.STRIPE_SECRET_KEY,
+			}
+		);
 
-	// if (session) {
-	// 	currentUser.tier = "premium";
-	// 	await currentUser.save();
-	// }
-	// console.log(session);
-	return res.json(session);
-	// response.send().end;
+		return res.json(session);
+	}
 });
 
 router.post(
@@ -88,37 +142,31 @@ router.post(
 
 		if (event.type == "payment_intent.succeeded") {
 			const paymentIntent = event.data.object;
-
-			// console.log(paymentIntent)
-			// const lineItems = paymentIntent?.latest_charge?.data[0]?.billing_details?.line_items;
-			// console.log("1", paymentIntent.metadata.line_items);
-			// console.log("2", JSON.parse(paymentIntent.metadata.line_items)[0]);
-			// console.log(
-			// 	"3",
-			// 	JSON.parse(paymentIntent.metadata.line_items)[0].priceId
-			// );
-			// console.log(
-			// 	"4",
-			// 	JSON.parse(paymentIntent.metadata.line_items)[0].productId
-			// );
-			// console.log(paymentIntent.metadata.line_items.parse()[0])
-
-			let productId = JSON.parse(paymentIntent.metadata.line_items)[0]
-				.productId;
-
-			let currentUserId = JSON.parse(paymentIntent.metadata.line_items)[0]
-				.currentUser;
-
-			const currentUser = await User.findById(currentUserId);
-			console.log(currentUserId)
-			console.log(JSON.parse(paymentIntent.metadata.line_items))
+			const customerId = paymentIntent.customer;
+			const currentUser = await User.findOne({
+				stripeCustomerId: customerId,
+			});
 			if (!currentUser) {
 				response.status(StatusCodes.UNAUTHORIZED);
 				throw new Error("Not authorized");
 			}
 
+			let productId: string | undefined = "";
+
+			if (paymentIntent.invoice) {
+				const invoice = await stripe.invoices.retrieve(
+					paymentIntent.invoice
+				);
+				if (invoice) {
+					productId = invoice?.lines?.data[0]?.price?.product as string;
+				}
+			} else {
+				productId = JSON.parse(paymentIntent.metadata.line_items)[0]
+					.productId;
+			}
+
 			const currentDate = new Date();
-			const startOfCurrentMonth = startOfMonth(currentDate);
+			const startOfCurrentIncrement = startOfDay(currentDate);
 			console.log(productId);
 
 			if (productId == "prod_O7Gtlj72uJ1sFC") {
@@ -134,12 +182,14 @@ router.post(
 				// Standard Plan
 				currentUser.tier = "standard";
 				currentUser.noOfGems += 20;
-				currentUser.lastGemIncrement = startOfCurrentMonth;
+				currentUser.lastGemIncrement = startOfCurrentIncrement;
+				currentUser.nextGemIncrement = addDays(startOfCurrentIncrement, 31);
 			} else if (productId == "prod_O701d8QfGkpAAf") {
 				// Premium Plan
 				currentUser.tier = "premium";
 				currentUser.noOfGems += 20;
-				currentUser.lastGemIncrement = startOfCurrentMonth;
+				currentUser.lastGemIncrement = startOfCurrentIncrement;
+				currentUser.nextGemIncrement = addDays(startOfCurrentIncrement, 31);
 			}
 			await currentUser.save();
 		}
@@ -156,16 +206,29 @@ router.post("/cancel-subscription", async (req, res) => {
 		throw new Error("Not authorized");
 	}
 
-	// if (!currentUser.stripeSubscriptionId) {
-	//   return res.status(400).json({ message: "No active subscription found." });
-	// }
+	// const subscription = await stripe.subscriptions.del(currentUser.stripeCustomerId)
+	const subscription = await stripe.subscriptions.list({
+		customer: currentUser.stripeCustomerId,
+	});
 
-	// const stripeResponse = await stripe.subscriptions.del(currentUser.stripeSubscriptionId);
+	if (subscription.data.length < 1) {
+		res.status(StatusCodes.EXPECTATION_FAILED);
+		throw new Error("You do not own a subscription currently");
+	}
 
-	// Handle any necessary logic after canceling the subscription
-	// For example, updating the currentUser's subscription status in the database
+	const cancelledSubscription = await stripe.subscriptions.del(
+		subscription.data[0].id
+	);
+	if (cancelledSubscription.status == "canceled") {
+		currentUser.tier = "free";
+		await currentUser.save();
+	}
+	// subscription.data[0].items.data.price.product 
+	// pre prod_O701d8QfGkpAAf
+	// standard  prod_O7Gr7q0NmZpSzN
 
-	return res.json({ message: "Subscription canceled successfully." });
+	// return res.json({ subscription });
+	return res.json({ msg: "Subscription cancelled" });
 });
 
 export default router;
