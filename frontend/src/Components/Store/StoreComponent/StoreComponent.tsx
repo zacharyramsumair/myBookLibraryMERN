@@ -115,7 +115,7 @@ const StoreComponent = () => {
 											products[2].recurring == null
 												? "payment"
 												: "subscription",
-												// productId:products[2].product
+												productId:products[2].product
 									})
 								}
 							>
@@ -158,6 +158,8 @@ const StoreComponent = () => {
 											products[1].recurring == null
 												? "payment"
 												: "subscription",
+												productId:products[1].product
+
 									})
 								}
 							>
@@ -200,6 +202,8 @@ const StoreComponent = () => {
 											products[0].recurring == null
 												? "payment"
 												: "subscription",
+												productId:products[0].product
+
 									})
 								}
 							>

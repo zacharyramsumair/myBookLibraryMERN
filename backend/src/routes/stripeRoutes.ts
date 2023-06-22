@@ -7,6 +7,7 @@ import { stripe } from "../utils/stripe";
 import bodyParser from "body-parser";
 
 import { authenticateUser } from "../middleware/authentication";
+import { startOfMonth } from "date-fns";
 
 // const currentUser = await User.findById(req.user);
 // 	if (!currentUser) {
@@ -34,6 +35,14 @@ router.post("/purchase", async (req, res) => {
 		throw new Error("Not authorized");
 	}
 
+	const lineItemsMetadata = JSON.stringify([
+		{
+			priceId: req.body.priceId,
+			productId: req.body.productId,
+			currentUser: req.user,
+		},
+	]);
+
 	const session = await stripe.checkout.sessions.create(
 		{
 			mode: req.body.mode,
@@ -43,12 +52,17 @@ router.post("/purchase", async (req, res) => {
 				{
 					price: req.body.priceId,
 					quantity: 1,
-			
 				},
 			],
 			success_url: `${process.env.EMAIL_ORIGIN}/`,
 			cancel_url: `${process.env.EMAIL_ORIGIN}/store`,
 			customer: currentUser.stripeCustomerId,
+			// Add metadata to the payment intent
+			payment_intent_data: {
+				metadata: {
+					line_items: lineItemsMetadata,
+				},
+			},
 		},
 		{
 			apiKey: process.env.STRIPE_SECRET_KEY,
@@ -66,100 +80,68 @@ router.post("/purchase", async (req, res) => {
 	// response.send().end;
 });
 
-function handlePaymentIntentSucceeded(paymentIntent: any) {
-	console.log("df", paymentIntent);
-}
-
-// router.post(
-// 	"/webhook",
-// 	express.raw({ type: "application/json" }),
-// 	(request: any, response: any) => {
-// 		const sig: any = request.headers["stripe-signature"];
-// 		const endpointSecret =
-// 			"whsec_ced679d488c6fbfe79af55d1b1de1e0d51e35becb3f0d5f8a16be43dfdb42242";
-
-// 		console.log(endpointSecret);
-
-// 		let body = "";
-// 		let event: any = {
-// 			data: { object: "" },
-// 			type: "twinke",
-// 		};
-
-// 		request.on("data", (chunk: any) => {
-// 			body += chunk;
-// 		});
-
-// 		request.on("end", () => {
-// 			console.log("df",body);
-// 			try {
-// 				console.log(body);
-// 				event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
-// 				console.log("a",event);
-// 				console.log("v",event.type);
-// 				console.log("g",event?.data?.object);
-
-// 				// Handle the event
-// 				switch (event.type) {
-// 					case "payment_intent.succeeded":
-// 						const paymentIntentSucceeded = event.data.object;
-// 						console.log("payment", paymentIntentSucceeded);
-// 						handlePaymentIntentSucceeded(paymentIntentSucceeded);
-// 						// Handle payment_intent.succeeded event
-// 						break;
-// 					// Handle other event types
-// 					default:
-// 						console.log(`Unhandled event type ${event.type}`);
-// 				}
-// 			} catch (err:any) {
-// 				console.log(err.message);
-// 				return response.status(400).send(`Webhook Error: ${err.message}`);
-// 			}
-// 		});
-
-// 		console.log("z",request.data.object.id);
-// 		console.log("ze",request);
-
-// 		response.send().end();
-// 	}
-// );
-
-
-async function getProduct(paymentIntent:any){
-	const paymentIntentInfo = await stripe.paymentIntents.retrieve(paymentIntent.id);
-
-	// Access the product ID from the payment intent's metadata
-	const productId = paymentIntentInfo.metadata.productId;
-	
-	// Retrieve the product from your database or Stripe API
-	const product = await stripe.products.retrieve(productId);
-	
-	console.log("Purchased Product:", product);
-}
-
 router.post(
 	"/webhook",
 	bodyParser.raw({ type: "application/json" }),
-	(request, response) => {
+	async (request, response) => {
 		const event = request.body;
 
-		// Handle the event
-		switch (event.type) {
-			case "payment_intent.succeeded":
-				const paymentIntent = event.data.object;
-				console.log("PaymentIntent was successful!");
-				// console.log(paymentIntent);
-				// getProduct(paymentIntent)
-				// return
-				break;
-			case "payment_method.attached":
-				const paymentMethod = event.data.object;
-				console.log("PaymentMethod was attached to a Customer!");
-				// return
-				break;
-			// ... handle other event types
-			default:
-				console.log(`Unhandled event type ${event.type}`);
+		if (event.type == "payment_intent.succeeded") {
+			const paymentIntent = event.data.object;
+
+			// console.log(paymentIntent)
+			// const lineItems = paymentIntent?.latest_charge?.data[0]?.billing_details?.line_items;
+			// console.log("1", paymentIntent.metadata.line_items);
+			// console.log("2", JSON.parse(paymentIntent.metadata.line_items)[0]);
+			// console.log(
+			// 	"3",
+			// 	JSON.parse(paymentIntent.metadata.line_items)[0].priceId
+			// );
+			// console.log(
+			// 	"4",
+			// 	JSON.parse(paymentIntent.metadata.line_items)[0].productId
+			// );
+			// console.log(paymentIntent.metadata.line_items.parse()[0])
+
+			let productId = JSON.parse(paymentIntent.metadata.line_items)[0]
+				.productId;
+
+			let currentUserId = JSON.parse(paymentIntent.metadata.line_items)[0]
+				.currentUser;
+
+			const currentUser = await User.findById(currentUserId);
+			console.log(currentUserId)
+			console.log(JSON.parse(paymentIntent.metadata.line_items))
+			if (!currentUser) {
+				response.status(StatusCodes.UNAUTHORIZED);
+				throw new Error("Not authorized");
+			}
+
+			const currentDate = new Date();
+			const startOfCurrentMonth = startOfMonth(currentDate);
+			console.log(productId);
+
+			if (productId == "prod_O7Gtlj72uJ1sFC") {
+				// Handfull of Gems
+				currentUser.noOfGems += 5;
+			} else if (productId == "prod_O7Gt2fvlamo4oq") {
+				// Pouch of Gems
+				currentUser.noOfGems += 20;
+			} else if (productId == "prod_O7Gug1kUc5xkYV") {
+				// Bucket of Gems
+				currentUser.noOfGems += 50;
+			} else if (productId == "prod_O7Gr7q0NmZpSzN") {
+				// Standard Plan
+				currentUser.tier = "standard";
+				currentUser.noOfGems += 20;
+				currentUser.lastGemIncrement = startOfCurrentMonth;
+			} else if (productId == "prod_O701d8QfGkpAAf") {
+				// Premium Plan
+				currentUser.tier = "premium";
+				currentUser.noOfGems += 20;
+				currentUser.lastGemIncrement = startOfCurrentMonth;
+			}
+			await currentUser.save();
 		}
 
 		// Return a 200 response to acknowledge receipt of the event

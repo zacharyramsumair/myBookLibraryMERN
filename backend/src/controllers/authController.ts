@@ -11,6 +11,7 @@ import { filterXSS } from "xss";
 import sendResetPasswordEmail from "../utils/sendResetPasswordEmail";
 import createHash from "../utils/createHash";
 import { stripe } from "../utils/stripe";
+import { startOfMonth } from "date-fns";
 
 //base url '/api/v1/auth'
 
@@ -47,13 +48,12 @@ const registerUser = async (req: Request, res: Response) => {
 	} else {
 		const customer = await stripe.customers.create(
 			{
-			  email,
+				email,
 			},
 			{
-			  apiKey: process.env.STRIPE_SECRET_KEY,
+				apiKey: process.env.STRIPE_SECRET_KEY,
 			}
-		  );
-
+		);
 
 		// Create a new user with the provided email
 		await User.create({
@@ -216,7 +216,29 @@ const showCurrentUser = async (req: Request, res: Response) => {
 		throw new Error("User not found");
 	}
 
-	const { name, email, _id: id, role, tier, profilePic, noOfGems } = user;
+	const {
+		name,
+		email,
+		_id: id,
+		role,
+		tier,
+		profilePic,
+		noOfGems,
+		lastGemIncrement,
+	} = user;
+
+	const currentDate = new Date();
+	const startOfCurrentMonth = startOfMonth(currentDate);
+
+	// Check if the last gem increment was in a previous month
+	if (!lastGemIncrement || startOfCurrentMonth > lastGemIncrement) {
+		// Increment the noOfGems by 20
+		if (user.tier == "standard" || user.tier == "premium") {
+			user.noOfGems += 20;
+			user.lastGemIncrement = startOfCurrentMonth;
+			await user.save();
+		}
+	}
 	res.status(StatusCodes.OK).json({
 		name,
 		email,
@@ -374,8 +396,8 @@ const getMyProfilePageForEditing = async (req: Request, res: Response) => {
 
 	// res.json({msg:"your really should see this"})
 	res.json({
-		name: currentUser.name ,
-		birthday: currentUser.birthday ,
+		name: currentUser.name,
+		birthday: currentUser.birthday,
 		location: currentUser.location,
 		aboutMe: currentUser.aboutMe,
 		website: currentUser.website,
@@ -390,49 +412,48 @@ const getMyProfilePageForEditing = async (req: Request, res: Response) => {
 // @access  Public
 const getProfilePage = async (req: Request, res: Response) => {
 	const { id } = req.params; // Assuming the user ID is provided as a route parameter
-  
+
 	const user = await User.findById(id)
-	  .populate("favorites", "title imageUrl tags")
-	  .populate("userRatings.blockInfo", "title imageUrl")
-	  .populate("myBlocks", "title imageUrl tags")
-	  .exec();
-  
+		.populate("favorites", "title imageUrl tags")
+		.populate("userRatings.blockInfo", "title imageUrl")
+		.populate("myBlocks", "title imageUrl tags")
+		.exec();
+
 	if (!user) {
-	  res.status(StatusCodes.NOT_FOUND);
-	  throw new Error("User not found");
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("User not found");
 	}
-  
+
 	// Get the three tags with the highest count
 	const favoriteTags = user.showFavoriteTags
-	  ? user.favoriteTags
-		  .filter((tag) => tag.count > 0) // Filter tags with a count over 0
-		  .sort((a, b) => b.count - a.count) // Sort tags in descending order of count
-		  .slice(0, 2) // Take the top two tags
-		  .map((tag) => tag.tagName) // Extract the tag names
-	  : null;
-  
+		? user.favoriteTags
+				.filter((tag) => tag.count > 0) // Filter tags with a count over 0
+				.sort((a, b) => b.count - a.count) // Sort tags in descending order of count
+				.slice(0, 2) // Take the top two tags
+				.map((tag) => tag.tagName) // Extract the tag names
+		: null;
+
 	const userProfile = {
-	  personalInfo: {
-		name: user.name,
-		email: user.email,
-		location: user.location,
-		aboutMe: user.aboutMe,
-		website: user.website,
-		favoriteTags: favoriteTags,
-		birthday: user.birthday,
-		profilePic: user.profilePic,
-	  },
-	  favoriteBlocks: user.showFavorites ? user.favorites : null,
-	  ratedBlocks: user.userRatings.map((rating) => ({
-		block: rating.blockInfo,
-		rating: rating.rating,
-	  })),
-	  createdBlocks: user.myBlocks,
+		personalInfo: {
+			name: user.name,
+			email: user.email,
+			location: user.location,
+			aboutMe: user.aboutMe,
+			website: user.website,
+			favoriteTags: favoriteTags,
+			birthday: user.birthday,
+			profilePic: user.profilePic,
+		},
+		favoriteBlocks: user.showFavorites ? user.favorites : null,
+		ratedBlocks: user.userRatings.map((rating) => ({
+			block: rating.blockInfo,
+			rating: rating.rating,
+		})),
+		createdBlocks: user.myBlocks,
 	};
-  
+
 	res.status(StatusCodes.OK).json(userProfile);
-  };
-  
+};
 
 // @desc    Get user's favorite blocks
 // @route   GET /profile/favorite-blocks

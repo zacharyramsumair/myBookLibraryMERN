@@ -24,7 +24,7 @@ import { IProductInfo } from "../../Hooks/Stripe/useCreateStripeSession";
 
 type Props = {
 	products: any[];
-	createStripeSession:UseMutateFunction<any, unknown, IProductInfo, unknown>
+	createStripeSession: UseMutateFunction<any, unknown, IProductInfo, unknown>;
 };
 
 const PricingComponent = (props: Props) => {
@@ -300,6 +300,7 @@ const PricingComponent = (props: Props) => {
 													props.products[3].recurring == null
 														? "payment"
 														: "subscription",
+												productId: props.products[3].product,
 											})
 										}
 									>
@@ -397,6 +398,7 @@ const PricingComponent = (props: Props) => {
 													props.products[4].recurring == null
 														? "payment"
 														: "subscription",
+												productId: props.products[4].product,
 											})
 										}
 									>

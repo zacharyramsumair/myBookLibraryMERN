@@ -4,7 +4,7 @@ import axios from "axios";
 export interface IProductInfo {
 	priceId: string;
 	mode: string;
-	// productId:string;
+	productId:string;
 }
 
 const postRequest = async (data: IProductInfo) => {
