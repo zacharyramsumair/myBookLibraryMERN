@@ -22,7 +22,7 @@ import blockRouter from "./routes/blockRoutes";
 import stripeRouter from "./routes/stripeRoutes";
 import csrf from "csurf";
 import crypto from "crypto";
-
+import bodyParser from "body-parser";
 app.use(
 	rateLimiter({
 		windowMs: 15 * 60 * 1000,
@@ -35,6 +35,7 @@ app.use(mongoSanitize());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.JWT_SECRET));
+
 
 //prevent CSRF attacks
 // turn back on when done pass csrf-token in headers : learnt from https://www.youtube.com/watch?v=VrFNbqSUVP0
@@ -94,7 +95,6 @@ const start = async () => {
 		// 	res.json({csrfToken:req.csrfToken()})
 		// })
 
-		
 		// Use the authRouter for the '/api/v1/auth' route
 		app.use("/api/v1/auth", authRouter);
 		// Use the blockRouter for the '/api/v1/blocks' route

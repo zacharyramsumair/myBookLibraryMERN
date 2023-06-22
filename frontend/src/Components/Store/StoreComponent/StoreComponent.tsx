@@ -21,13 +21,13 @@ const StoreComponent = () => {
 	let navigate = useNavigate();
 
 	let [products, setProducts] = useState([
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "1" },
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "2" },
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "3" },
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "4" },
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "5" },
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "6" },
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "7" },
+		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "1" , product:""},
+		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "2" , product:""},
+		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "3" , product:""},
+		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "4" , product:""},
+		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "5" , product:""},
+		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "6" , product:""},
+		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "7" , product:""},
 	]);
 
 	let { data, error, isLoading, isError } = useGetProducts();
@@ -115,6 +115,7 @@ const StoreComponent = () => {
 											products[2].recurring == null
 												? "payment"
 												: "subscription",
+												// productId:products[2].product
 									})
 								}
 							>
