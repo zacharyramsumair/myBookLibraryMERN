@@ -10,15 +10,18 @@ import {
 } from "@mui/material";
 import PaginationButtons from "../PaginationButtons/PaginationButtons";
 import OurCard from "../ImageCarousel/OurCard";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+
 // import data from "../sampleBlocks";
 import { UserContext } from "../../../Contexts/UserContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useGetFavorites } from "../../../Hooks/Blocks/useGetFavorites";
 
 type Props = {};
 
 const MyFavoritesComponent = (props: Props) => {
 	const { user, setUser } = React.useContext(UserContext);
+	let navigate = useNavigate();
 
 	const location = useLocation();
 	const queryParams = new URLSearchParams(location.search);
@@ -48,12 +51,32 @@ const MyFavoritesComponent = (props: Props) => {
 	}, [page, limit]);
 
 	if (!user) {
-		<BlockFraming hideSearch={true}>
-			<Box sx={{ padding: 4 }}>
-				<Typography variant="h4">You must be logged in</Typography>
-
-			</Box>
-		</BlockFraming>;
+		return (
+			<BlockFraming hideSearch={true}>
+				<Box
+					sx={{
+						padding: 4,
+						display: "flex",
+						flexDirection: "column",
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Typography variant="h6">
+						You must be logged in to access Favorites
+					</Typography>
+					<Button
+						variant="contained"
+						sx={{ margin: 2 }}
+						onClick={() => {
+							navigate("/login");
+						}}
+					>
+						Login
+					</Button>
+				</Box>
+			</BlockFraming>
+		);
 	}
 
 	if (isLoading) {
@@ -75,7 +98,7 @@ const MyFavoritesComponent = (props: Props) => {
 		);
 	}
 
-	const cardElements = data.blocks.map((item:any) => {
+	const cardElements = data.blocks.map((item: any) => {
 		return (
 			<Grid item xs={12} sm={6} md={4} lg={3} key={item._id}>
 				<Paper elevation={4}>
@@ -90,15 +113,37 @@ const MyFavoritesComponent = (props: Props) => {
 			<Box sx={{ padding: 4 }}>
 				<Typography variant="h4">Favorites</Typography>
 
-				<Grid container spacing={2} sx={{ marginTop: 2 }}>
-					{cardElements}
-				</Grid>
+				{data.blocks.length == 0 && (
+					<>
+						<Box
+							sx={{
+								padding: 4,
+								display: "flex",
+								flexDirection: "column",
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<Typography variant="h6" sx={{display:"flex", alignItems:"center"}}>
+								You can add to Favorites by clicking the <FavoriteBorderIcon sx={{ color: "orange", marginX:1 }} /> 
+							</Typography>
+						</Box>
+					</>
+				)}
 
-				<PaginationButtons
-					totalPages={totalPages}
-					page={Number(page)}
-					route="favorites"
-				/>
+				{data.blocks.length > 0 && (
+					<>
+						<Grid container spacing={2} sx={{ marginTop: 2 }}>
+							{cardElements}
+						</Grid>
+
+						<PaginationButtons
+							totalPages={totalPages}
+							page={Number(page)}
+							route="favorites"
+						/>
+					</>
+				)}
 			</Box>
 		</BlockFraming>
 	);
