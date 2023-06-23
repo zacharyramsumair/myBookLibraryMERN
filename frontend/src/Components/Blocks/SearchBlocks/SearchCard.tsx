@@ -10,7 +10,7 @@ import {
 import { Favorite, Visibility } from "@mui/icons-material";
 import SearchStyle from "./Search.module.css";
 import allTags from "../allTags";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type SearchCardProps = {
 	item: {
@@ -28,6 +28,8 @@ type SearchCardProps = {
 };
 
 const SearchCard = ({ item }: SearchCardProps) => {
+	let navigate = useNavigate();
+
 	const isSmallScreen = useMediaQuery((theme: Theme) =>
 		theme.breakpoints.down("md")
 	);
@@ -44,7 +46,10 @@ const SearchCard = ({ item }: SearchCardProps) => {
 	};
 
 	return (
-		<Paper sx={{ paddingY: 2, margin: 2 }}>
+		<Paper
+			sx={{ paddingY: 2, margin: 2, cursor: "pointer" }}
+			onClick={() => navigate(`/block/${item._id}`)}
+		>
 			<Box
 				sx={{
 					display: "grid",
@@ -67,6 +72,9 @@ const SearchCard = ({ item }: SearchCardProps) => {
 							flexDirection: "column",
 							alignItems: "center",
 							justifyContent: "center",
+							position:"relative",
+							width: "6em", height: "8em",
+							marginX:2
 						}}
 					>
 						<img
@@ -74,6 +82,26 @@ const SearchCard = ({ item }: SearchCardProps) => {
 							alt={item.title}
 							style={{ width: "6em", height: "8em" }}
 						/>
+						{item.tier == "paid" && (
+							<Box
+								component="div"
+								sx={{ position: "absolute", top: 3, right: 3 }}
+							>
+								{/* <DiamondIcon sx={{color:"#FFD700"}} /> */}
+								<svg
+									style={{borderRadius:"50%", backgroundColor:"#FFD700", color:"#fff"}}
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 16 16"
+								>
+									<path
+										fill="currentColor"
+										d="M7.51 4.87C7.01 6.27 6.45 6.95 5.94 7c-.57.07-1.07-.18-1.54-.8a.54.54 0 0 0-.1-.1 1 1 0 1 0-.8.4l.01.12.82 3.24A1.5 1.5 0 0 0 5.78 11h4.44a1.5 1.5 0 0 0 1.45-1.14l.82-3.24a.54.54 0 0 0 .01-.12 1 1 0 1 0-.8-.4.54.54 0 0 0-.1.09c-.49.62-1 .87-1.54.81-.5-.05-1.04-.74-1.57-2.13a1 1 0 1 0-.98 0zM11 11.75a.5.5 0 1 1 0 1H5a.5.5 0 1 1 0-1h6z"
+									></path>
+								</svg>
+							</Box>
+						)}
 					</Box>
 				</Box>
 
@@ -81,7 +109,6 @@ const SearchCard = ({ item }: SearchCardProps) => {
 					sx={{
 						display: "grid",
 						gridArea: "basicBlockInfo",
-						
 					}}
 				>
 					<Box
@@ -93,7 +120,10 @@ const SearchCard = ({ item }: SearchCardProps) => {
 						}}
 					>
 						<Typography variant="body1">{item.title}</Typography>
-						<Typography variant="body1">{item.author.substring(0,75)} {item.author.length>75 ? "..." : ""}</Typography>
+						<Typography variant="body1">
+							{item.author.substring(0, 75)}{" "}
+							{item.author.length > 75 ? "..." : ""}
+						</Typography>
 					</Box>
 				</Box>
 
@@ -112,7 +142,9 @@ const SearchCard = ({ item }: SearchCardProps) => {
 							justifyContent: "center",
 						}}
 					>
-						<Typography variant="body2">Rating: {item.rating.toFixed(2)}</Typography>
+						<Typography variant="body2">
+							Rating: {item.rating.toFixed(2)}
+						</Typography>
 					</Box>
 				</Box>
 
@@ -121,7 +153,7 @@ const SearchCard = ({ item }: SearchCardProps) => {
 					sx={{
 						display: "grid",
 						gridArea: "tags",
-						width: {xs:"100%", md: "10em"}
+						width: { xs: "100%", md: "10em" },
 					}}
 				>
 					<Typography
@@ -139,13 +171,17 @@ const SearchCard = ({ item }: SearchCardProps) => {
 							// <Button key={tag} variant="outlined" size="small" sx={{fontSize:"0.8rem"}}>
 							// 	{getTagDisplayName(tag)}
 							// </Button>
-							<Box key={index} component={"span"} sx={{paddingX:"1px"}}>
-									<Link style={{ color: "#5A5A5A" }} to="#">
+							<Box
+								key={index}
+								component={"span"}
+								sx={{ paddingX: "1px" }}
+							>
+								<Link style={{ color: "#5A5A5A" }} to="#">
 									{/* <Link style={{ color: "#5A5A5A" }} to={`/${tag}`}> */}
-										{getTagDisplayName(tag)}
-									</Link>
-									{item.tags.indexOf(tag) !== item.tags.length - 1 && ","}
-								</Box>
+									{getTagDisplayName(tag)}
+								</Link>
+								{item.tags.indexOf(tag) !== item.tags.length - 1 && ","}
+							</Box>
 						))}
 					</Typography>
 				</Box>
