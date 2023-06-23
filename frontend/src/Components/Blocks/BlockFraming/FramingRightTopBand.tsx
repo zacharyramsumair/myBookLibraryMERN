@@ -24,6 +24,7 @@ import BookIcon from "@mui/icons-material/Book";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ConstructionIcon from "@mui/icons-material/Construction";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AddIcon from "@mui/icons-material/Add";
 // import GemIcon from "@mui/icons-material/Gem";
 import GemIcon from "./GemIcon";
@@ -447,6 +448,23 @@ const FramingRightTopBand = (props: Props) => {
 					>
 						<FavoriteIcon />
 						<Typography sx={{ marginLeft: 1 }}>Favorites</Typography>
+					</ListItem>
+					<ListItem
+						sx={{
+							padding: { xs: "1.0em 1.5em" },
+							opacity: activeNavSection === "store" ? 1 : 0.5,
+							background:
+								activeNavSection === "store"
+									? "#e3e3e3"
+									: "inherit",
+						}}
+						onClick={() => {
+							navigate("/store");
+							setActiveNavSection("store");
+						}}
+					>
+						<ShoppingCartIcon />
+						<Typography sx={{ marginLeft: 1 }}>Store</Typography>
 					</ListItem>
 				</List>
 			</Drawer>

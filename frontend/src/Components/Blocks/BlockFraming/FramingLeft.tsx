@@ -4,6 +4,7 @@ import Framing from "./Framing.module.css";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import BookIcon from "@mui/icons-material/Book";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import logo from "../../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
@@ -115,6 +116,23 @@ const FramingLeft = (props: Props) => {
 				>
 					<FavoriteIcon />
 					<Typography sx={{ marginLeft: 1 }}>Favorites</Typography>
+				</ListItem>
+				<ListItem
+					sx={{
+						padding: { md: "0.5em 1.5em", lg: "0.5em 3em" },
+						opacity: activeNavSection === "store" ? 1 : 0.5,
+						background:
+							activeNavSection === "store" ? "#e3e3e3" : "inherit",
+							cursor:"pointer"
+
+					}}
+					onClick={() => {
+						navigate("/store");
+						setActiveNavSection("store");
+					}}
+				>
+					<ShoppingCartIcon />
+					<Typography sx={{ marginLeft: 1 }}>Store</Typography>
 				</ListItem>
 			</List>
 		</Grid>

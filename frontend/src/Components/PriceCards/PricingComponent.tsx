@@ -16,15 +16,17 @@ import {
 	Theme,
 	Divider,
 } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import PricingDetails from "../../assets/PricingDetails";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UseMutateFunction } from "@tanstack/react-query";
 import { IProductInfo } from "../../Hooks/Stripe/useCreateStripeSession";
+import { UserContext } from "../../Contexts/UserContext";
 
 type Props = {
 	products: any[];
 	createStripeSession: UseMutateFunction<any, unknown, IProductInfo, unknown>;
+	handleNotLoggedIn: () => void;
 };
 
 const PricingComponent = (props: Props) => {
@@ -32,8 +34,10 @@ const PricingComponent = (props: Props) => {
 		theme.breakpoints.down("md")
 	);
 
+	let { user, setUser, fetchUser } = useContext(UserContext);
+	let navigate = useNavigate();
 
-	console.log(props.products[3].product)
+	console.log(props.products[3].product);
 
 	let FreeFeatures = PricingDetails.free.map((detail, index) => {
 		return (
@@ -287,7 +291,7 @@ const PricingComponent = (props: Props) => {
 									alignItems: "center",
 								}}
 							>
-								<Link to="#">
+								<Link to={user? "#" : "/login"}>
 									<Button
 										variant="contained"
 										sx={{
@@ -297,14 +301,16 @@ const PricingComponent = (props: Props) => {
 											width: "100%",
 										}}
 										onClick={() =>
-											props.createStripeSession({
-												priceId: props.products[3].id,
-												mode:
-													props.products[3].recurring == null
-														? "payment"
-														: "subscription",
-														productId:props.products[3].product
-											})
+											user
+												? props.createStripeSession({
+														priceId: props.products[3].id,
+														mode:
+															props.products[3].recurring == null
+																? "payment"
+																: "subscription",
+														productId: props.products[3].product,
+												  })
+												: props.handleNotLoggedIn()
 										}
 									>
 										Get started
@@ -385,7 +391,7 @@ const PricingComponent = (props: Props) => {
 									alignItems: "center",
 								}}
 							>
-								<Link to="#">
+								<Link to={user? "#" : "/login"}>
 									<Button
 										variant="contained"
 										sx={{
@@ -395,14 +401,16 @@ const PricingComponent = (props: Props) => {
 											width: "100%",
 										}}
 										onClick={() =>
-											props.createStripeSession({
-												priceId: props.products[4].id,
-												mode:
-													props.products[4].recurring == null
-														? "payment"
-														: "subscription",
-												productId: props.products[4].product,
-											})
+											user
+												? props.createStripeSession({
+														priceId: props.products[4].id,
+														mode:
+															props.products[4].recurring == null
+																? "payment"
+																: "subscription",
+														productId: props.products[4].product,
+												  })
+												:  props.handleNotLoggedIn()
 										}
 									>
 										Get started

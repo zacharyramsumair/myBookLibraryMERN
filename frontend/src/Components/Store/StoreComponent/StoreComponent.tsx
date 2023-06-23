@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import {
 	Box,
 	Typography,
@@ -16,18 +16,69 @@ import { useNavigate } from "react-router-dom";
 import PricingComponent from "../../PriceCards/PricingComponent";
 import { useGetProducts } from "../../../Hooks/Stripe/getAllProducts";
 import { useCreateStripeSession } from "../../../Hooks/Stripe/useCreateStripeSession";
+import { UserContext } from "../../../Contexts/UserContext";
 
 const StoreComponent = () => {
 	let navigate = useNavigate();
+	let { user, setUser, fetchUser } = useContext(UserContext);
 
 	let [products, setProducts] = useState([
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "1" , product:""},
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "2" , product:""},
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "3" , product:""},
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "4" , product:""},
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "5" , product:""},
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "6" , product:""},
-		{ nickname: "", price: 0, unit_amount: 0, recurring: null, id: "7" , product:""},
+		{
+			nickname: "",
+			price: 0,
+			unit_amount: 0,
+			recurring: null,
+			id: "1",
+			product: "",
+		},
+		{
+			nickname: "",
+			price: 0,
+			unit_amount: 0,
+			recurring: null,
+			id: "2",
+			product: "",
+		},
+		{
+			nickname: "",
+			price: 0,
+			unit_amount: 0,
+			recurring: null,
+			id: "3",
+			product: "",
+		},
+		{
+			nickname: "",
+			price: 0,
+			unit_amount: 0,
+			recurring: null,
+			id: "4",
+			product: "",
+		},
+		{
+			nickname: "",
+			price: 0,
+			unit_amount: 0,
+			recurring: null,
+			id: "5",
+			product: "",
+		},
+		{
+			nickname: "",
+			price: 0,
+			unit_amount: 0,
+			recurring: null,
+			id: "6",
+			product: "",
+		},
+		{
+			nickname: "",
+			price: 0,
+			unit_amount: 0,
+			recurring: null,
+			id: "7",
+			product: "",
+		},
 	]);
 
 	let { data, error, isLoading, isError } = useGetProducts();
@@ -55,6 +106,15 @@ const StoreComponent = () => {
 	}, [dataCreateStripeSession, isSuccessCreateStripeSession]);
 
 	// const createStripSession = (priceId)
+
+	 const handleNotLoggedIn = () =>{
+		navigate("/login")
+		toast.error("You must be logged in to make a purchase", {
+			position: toast.POSITION.TOP_CENTER,
+		});
+	}
+
+	
 
 	if (isLoading || isLoadingCreateStripeSession) {
 		return (
@@ -95,6 +155,7 @@ const StoreComponent = () => {
 					<PricingComponent
 						products={products}
 						createStripeSession={createStripeSession}
+						handleNotLoggedIn={handleNotLoggedIn}
 					/>
 				</Box>
 
@@ -109,14 +170,16 @@ const StoreComponent = () => {
 						<Grid item xs={4} sx={{ marginTop: 1 }}>
 							<Card
 								onClick={() =>
-									createStripeSession({
-										priceId: products[2].id,
-										mode:
-											products[2].recurring == null
-												? "payment"
-												: "subscription",
-												productId:products[2].product
-									})
+									user
+										? createStripeSession({
+												priceId: products[2].id,
+												mode:
+													products[2].recurring == null
+														? "payment"
+														: "subscription",
+												productId: products[2].product,
+										  })
+										: handleNotLoggedIn()
 								}
 							>
 								<Box
@@ -152,15 +215,16 @@ const StoreComponent = () => {
 						<Grid item xs={4} sx={{ marginTop: 1 }}>
 							<Card
 								onClick={() =>
-									createStripeSession({
-										priceId: products[1].id,
-										mode:
-											products[1].recurring == null
-												? "payment"
-												: "subscription",
-												productId:products[1].product
-
-									})
+									user
+										? createStripeSession({
+												priceId: products[1].id,
+												mode:
+													products[1].recurring == null
+														? "payment"
+														: "subscription",
+												productId: products[1].product,
+										  })
+										: handleNotLoggedIn()
 								}
 							>
 								<Box
@@ -196,15 +260,16 @@ const StoreComponent = () => {
 						<Grid item xs={4} sx={{ marginTop: 1 }}>
 							<Card
 								onClick={() =>
-									createStripeSession({
-										priceId: products[0].id,
-										mode:
-											products[0].recurring == null
-												? "payment"
-												: "subscription",
-												productId:products[0].product
-
-									})
+									user
+										? createStripeSession({
+												priceId: products[0].id,
+												mode:
+													products[0].recurring == null
+														? "payment"
+														: "subscription",
+												productId: products[0].product,
+										  })
+										: handleNotLoggedIn()
 								}
 							>
 								<Box
