@@ -7,6 +7,17 @@ import mongoose from "mongoose";
 import quotes from "../utils/quotes";
 import { createReadStream } from "fs";
 import { reconstructFieldPath } from "express-validator/src/field-selection";
+// import nl2br  from "nl2br"
+
+function nl2br(str:string) {
+	if (typeof str !== 'string') {
+	  return '';
+	}
+	
+	// Replace newlines with line break tags
+	var breakTag ='<br/>';
+	return str.replace(/(\r\n|\r|\n)/g, breakTag);
+  }
 
 // @desc    Get all blocks
 // @route   POST /

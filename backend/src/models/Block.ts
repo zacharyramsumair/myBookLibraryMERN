@@ -119,38 +119,7 @@ const BlockSchema: Schema<Block> = new mongoose.Schema<Block>(
 			type: Number,
 			default: 0,
 		},
-		// comments: {
-		// 	type: [
-		// 		{
-		// 			// title: String,
-		// 			content: String,
-		// 			createdBy: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: "User",
-    //       },
-		// 			replies: {
-		// 				type: [
-		// 					{
-		// 						replyTo: {
-		// 							creator: {
-    //                 type: mongoose.Schema.Types.ObjectId,
-    //                 ref: "User",
-    //               },
-		// 							text: String,
-		// 						},
-		// 						content: String,
-		// 						createdBy: {
-    //               type: mongoose.Schema.Types.ObjectId,
-    //               ref: "User",
-    //             }
-		// 					},
-		// 				],
-		// 				default: [],
-		// 			},
-		// 		},
-		// 	],
-		// 	default: [],
-		// },
+		
 	},
 	{ timestamps: true }
 );

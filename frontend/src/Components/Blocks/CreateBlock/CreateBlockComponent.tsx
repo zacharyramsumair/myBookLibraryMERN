@@ -179,6 +179,9 @@ const CreateBlockComponent = () => {
 			price: formData.price,
 			tier: formData.tier,
 		});
+
+
+		// console.log(formData.text.split("\n"))
 	};
 
 	const tagElements = allTags.slice(1).map((tag, index) => (

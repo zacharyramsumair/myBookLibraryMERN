@@ -165,6 +165,20 @@ const ReadSingleBlockComponent = (props: Props) => {
 		tier,
 	} = SingleBlockData;
 
+
+	// let textElements = text.split("\n").map((para:string, index:number) => {
+	// 	return <Typography key={index}>{para}</Typography>
+	// })
+
+	let textElements = text.replace(/\n/g, "<br>").split("<br>").map((para:string, index:number) => {
+		if(para ==""){
+			return <br />
+		}
+		return <Typography key={index}>{para}</Typography>
+	})
+
+	console.log(textElements)
+
 	return (
 		<BlockFraming hideSearch={false}>
 			<Box sx={{ padding: 4 }}>
@@ -255,7 +269,10 @@ const ReadSingleBlockComponent = (props: Props) => {
 				</Box>
 
 				<Box sx={{ mt: 4 }}>
-					<Typography variant="body2">{text}</Typography>
+					<Typography variant="body2">{textElements}</Typography>
+
+
+
 					{!fullBlock && (
 						<Box
 							sx={{
