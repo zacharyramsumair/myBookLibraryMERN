@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import BlockFraming from "../Blocks/BlockFraming/BlockFraming";
 import { useEditProfile } from "../../Hooks/Auth/useEditProfile";
 import { useGetProfileForUpdating } from "../../Hooks/Auth/useGetProfileInfoForEditing";
+import { useDeleteSubscription } from "../../Hooks/Stripe/useDeleteCancelSubscription";
 
 interface ProfileData {
 	name: string;
@@ -41,7 +42,9 @@ const UserSettingsEdit = () => {
 		showFavoriteTags: true,
 	});
 	const [modalOpen, setModalOpen] = useState(false);
+	const [subModalOpen, setSubModalOpen] = useState(false);
 	const [inputValue, setInputValue] = useState("");
+	const [subscription, setSubscription] = useState<any>(null);
 
 	let {
 		LoadingProfileForUpdating,
@@ -59,24 +62,32 @@ const UserSettingsEdit = () => {
 		isSuccess,
 	} = useEditProfile();
 
+	let {
+		deleteSubscription,
+		errorDeleteSubscription,
+		DeleteSubscriptionData,
+		isErrorDeleteSubscription,
+		isLoadingDeleteSubscription,
+		isSuccessDeleteSubscription,
+	} = useDeleteSubscription();
+
 	useEffect(() => {
-    if(ProfileForUpdatingData){
-		console.log(ProfileForUpdatingData);
-		setProfileData({
-      ...profileData,
-			name: ProfileForUpdatingData.name,
-			birthday: ProfileForUpdatingData.birthday,
-			location: ProfileForUpdatingData.location,
-			aboutMe: ProfileForUpdatingData.aboutMe,
-			website: ProfileForUpdatingData.website,
-			showFavoriteTags: ProfileForUpdatingData.showFavoriteTags,
-			showFavorites: ProfileForUpdatingData.showFavorites,
-			profilePic: ProfileForUpdatingData.profilePic,
-		});
-    // console.log(ProfileForUpdatingData.profilePic)
-
-
-  }
+		if (ProfileForUpdatingData) {
+			console.log(ProfileForUpdatingData);
+			setProfileData({
+				...profileData,
+				name: ProfileForUpdatingData.name,
+				birthday: ProfileForUpdatingData.birthday,
+				location: ProfileForUpdatingData.location,
+				aboutMe: ProfileForUpdatingData.aboutMe,
+				website: ProfileForUpdatingData.website,
+				showFavoriteTags: ProfileForUpdatingData.showFavoriteTags,
+				showFavorites: ProfileForUpdatingData.showFavorites,
+				profilePic: ProfileForUpdatingData.profilePic,
+			});
+			setSubscription(ProfileForUpdatingData.subscription.data[0]);
+			// console.log(ProfileForUpdatingData.profilePic)
+		}
 	}, [ProfileForUpdatingData]);
 
 	const handleProfileChange = (
@@ -114,9 +125,25 @@ const UserSettingsEdit = () => {
 		setModalOpen(true);
 	};
 
+	const handleCancelSubscription = async () => {
+		handleSubModalClose();
+		await handleSave();
+		await deleteSubscription();
+		setSubscription(null)
+		// refetch();
+	};
+
 	const handleModalClose = () => {
 		setModalOpen(false);
 		setInputValue("");
+	};
+
+	const handleSubModalOpen = () => {
+		setSubModalOpen(true);
+	};
+
+	const handleSubModalClose = () => {
+		setSubModalOpen(false);
 	};
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -343,6 +370,18 @@ const UserSettingsEdit = () => {
 								Save
 							</Button>
 						</Box>
+
+						{subscription && (
+							<Box sx={{ paddingY: 7 }}>
+								<Button
+									variant="contained"
+									color="warning"
+									onClick={handleSubModalOpen}
+								>
+									Cancel {subscription.plan.nickname}
+								</Button>
+							</Box>
+						)}
 					</Grid>
 				</Grid>
 			</Box>
@@ -393,6 +432,68 @@ const UserSettingsEdit = () => {
 						>
 							Upload
 						</Button>
+					</Box>
+				</Container>
+			</Modal>
+			<Modal
+				open={subModalOpen}
+				onClose={handleModalClose}
+				aria-labelledby="unsubscribe-modal"
+				aria-describedby="unsubscribe-modal-description"
+			>
+				<Container
+					sx={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						height: "100vh",
+					}}
+				>
+					<Box
+						sx={{
+							display: "flex",
+							flexDirection: "column",
+							alignItems: "center",
+							justifyContent: "center",
+							backgroundColor: "#fff",
+							padding: 4,
+							borderRadius: 4,
+							boxShadow: 24,
+							width: "50%",
+							maxWidth: 500,
+						}}
+					>
+						<Typography variant="body1" align="center" gutterBottom>
+							Are you sure? Think of all the fun you had!
+						</Typography>
+						<Box
+							sx={{
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "space-around",
+							}}
+						>
+							<Button
+								variant="contained"
+								color="primary"
+								size="large"
+								sx={{ margin: 2 }}
+								onClick={handleSubModalClose}
+							>
+								Cancel
+							</Button>
+							<Button
+								variant="text"
+								color="warning"
+								size="small"
+								sx={{ margin: 2 }}
+								onClick={handleCancelSubscription}
+
+								// onClick={}
+							>
+								Unsubscribe
+							</Button>
+						</Box>
 					</Box>
 				</Container>
 			</Modal>

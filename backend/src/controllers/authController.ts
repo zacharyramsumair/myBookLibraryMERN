@@ -481,6 +481,10 @@ const getMyProfilePageForEditing = async (req: Request, res: Response) => {
 		throw new Error("Not authorized");
 	}
 
+	const subscription = await stripe.subscriptions.list({
+		customer: currentUser.stripeCustomerId,
+	});
+
 	// res.json({msg:"your really should see this"})
 	res.json({
 		name: currentUser.name,
@@ -491,6 +495,7 @@ const getMyProfilePageForEditing = async (req: Request, res: Response) => {
 		showFavoriteTags: currentUser.showFavoriteTags,
 		showFavorites: currentUser.showFavorites,
 		profilePic: currentUser.profilePic,
+		subscription
 	});
 };
 

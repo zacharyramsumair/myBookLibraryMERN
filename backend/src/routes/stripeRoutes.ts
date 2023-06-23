@@ -1,19 +1,13 @@
 import express from "express";
 import User from "../models/User";
 import { StatusCodes } from "http-status-codes";
-// import Article from "../models/article";
-// import { checkAuth } from "../middleware/checkAuth";
 import { stripe } from "../utils/stripe";
 import bodyParser from "body-parser";
 
 import { authenticateUser } from "../middleware/authentication";
 import { addDays, startOfDay, startOfMonth } from "date-fns";
 
-// const currentUser = await User.findById(req.user);
-// 	if (!currentUser) {
-// 		res.status(StatusCodes.UNAUTHORIZED);
-// 		throw new Error("Not authorized");
-// 	}
+
 
 const router = express.Router();
 router.use(authenticateUser);
@@ -27,7 +21,6 @@ router.get("/products", async (req, res) => {
 });
 
 router.post("/purchase", async (req, res) => {
-	// const user = await User.findOne({ email: req.user });
 
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
@@ -43,25 +36,7 @@ router.post("/purchase", async (req, res) => {
 		},
 	]);
 
-	// const session = await stripe.checkout.sessions.create(
-	// 	{
-	// 		mode: req.body.mode,
-	// 		payment_method_types: ["card"],
-	// 		line_items: [
-	// 			{
-	// 				price: req.body.priceId,
-	// 				quantity: 1,
-	// 			},
-	// 		],
-	// 		success_url: `${process.env.EMAIL_ORIGIN}/`,
-	// 		cancel_url: `${process.env.EMAIL_ORIGIN}/store`,
-	// 		customer: currentUser.stripeCustomerId,
-	// 	},
-	// 	{
-	// 		apiKey: process.env.STRIPE_SECRET_KEY,
-	// 	}
-	// );
-
+	
 	if (req.body.mode == "payment") {
 		const session = await stripe.checkout.sessions.create(
 			{
@@ -114,7 +89,6 @@ router.post("/purchase", async (req, res) => {
 					},
 				],
 				success_url: `${process.env.EMAIL_ORIGIN}/`,
-				// success_url: `${process.env.EMAIL_ORIGIN}/?priceId=${req.body.priceId}&productId=${req.body.productId}&currentUser=${req.user}`,
 				cancel_url: `${process.env.EMAIL_ORIGIN}/store`,
 				customer: currentUser.stripeCustomerId,
 				metadata: {
@@ -199,7 +173,7 @@ router.post(
 	}
 );
 
-router.post("/cancel-subscription", async (req, res) => {
+router.delete("/cancel-subscription", async (req, res) => {
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
 		res.status(StatusCodes.UNAUTHORIZED);

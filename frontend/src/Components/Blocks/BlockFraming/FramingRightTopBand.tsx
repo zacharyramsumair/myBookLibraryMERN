@@ -250,7 +250,9 @@ const FramingRightTopBand = (props: Props) => {
 										pointerEvents: "none", // Disable pointer events on this item
 									}}
 								>
-									{user.tier} Tier
+
+									<Typography component={"span"} sx={{textTransform:"uppercase"}}>{user.tier}{" "}</Typography>
+									 Tier
 								</Typography>
 								{/* <AddIcon
 									sx={{ marginLeft: "auto", cursor: "pointer" }}
