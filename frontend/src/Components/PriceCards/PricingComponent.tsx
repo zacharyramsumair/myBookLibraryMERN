@@ -260,8 +260,7 @@ const PricingComponent = (props: Props) => {
 								variant="body1"
 								sx={{ textAlign: "center", mb: "1em" }}
 							>
-								Most popular tier. Perfect for the user who just wants
-								to read everything.
+								Most popular tier. Perfect for readers who want to level up their knowledge everyday.
 							</Typography>
 							<Divider />
 							<List dense>{StandardFeatures}</List>

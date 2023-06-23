@@ -1,23 +1,29 @@
 export default {
 	free: [
-		{ feature: "View free posts", included: true },
+		{ feature: "View free Blocks", included: true },
 		{ feature: "Create a bookshelf", included: true },
-		{ feature: "Comment", included: true },
-		{ feature: "View Premium posts", included: false },
-		{ feature: "Create Posts", included: false },
+		{ feature: "Save Favorites", included: true },
+		{ feature: "Create Blocks", included: true },
+		{ feature: "Create Blocks", included: true },
+		{ feature: "20 free gems per month", included: false },
+		{ feature: "Create Paid Blocks for free", included: false },
 	],
 	standard: [
-		{ feature: "View free posts", included: true },
+		{ feature: "View free Blocks", included: true },
 		{ feature: "Create a bookshelf", included: true },
-		{ feature: "Comment", included: true },
-		{ feature: "View Premium posts", included: false },
-		{ feature: "Create Posts", included: false },
+		{ feature: "Save Favorites", included: true },
+		{ feature: "Create Blocks", included: true },
+		{ feature: "20 free gems per month", included: true },
+		{ feature: "Create Paid Blocks for free", included: false },
+
 	],
 	premium: [
-		{ feature: "View free posts", included: true },
+		{ feature: "View free blocks", included: true },
 		{ feature: "Create a bookshelf", included: true },
-		{ feature: "Comment", included: true },
-		{ feature: "View Premium posts", included: true },
-		{ feature: "Create Posts", included: true },
+		{ feature: "Save Favorites", included: true },
+		{ feature: "Create Blocks", included: true },
+		{ feature: "20 free gems per month", included: true },
+		{ feature: "Create Paid Blocks for free", included: true },
+
 	],
 };
