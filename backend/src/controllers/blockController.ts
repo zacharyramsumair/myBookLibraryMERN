@@ -207,7 +207,13 @@ const createBlock = async (req: Request, res: Response) => {
 		}
 
 		let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
-		if (currentUser.noOfGems < paidBlockCost && currentUser.role != "admin") {
+
+		if (
+			currentUser.tier != "premium" &&
+			currentUser.noOfGems < paidBlockCost &&
+			currentUser.role != "admin"
+		) {
+			// if (currentUser.noOfGems < paidBlockCost && currentUser.role != "admin") {
 			res.status(StatusCodes.EXPECTATION_FAILED);
 			throw new Error("Not enough gems.");
 		}
