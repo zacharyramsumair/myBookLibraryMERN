@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Box, Button, Theme, Typography, useMediaQuery } from "@mui/material";
 import { UserContext } from "../../Contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
+import bookBlocks  from "../../assets/bookBlocks.png"
 
 type Props = {};
 
@@ -12,7 +13,7 @@ const LandingPageCallToAction = (props: Props) => {
 	);
 	//larger than medium breakpoint (not including medium)
 	const isMediumScreen = useMediaQuery((theme: Theme) =>
-		theme.breakpoints.up("md")
+		theme.breakpoints.down("lg")
 	);
 
 
@@ -52,15 +53,24 @@ const LandingPageCallToAction = (props: Props) => {
 					sx={{
 						textAlign: { xs: "center", md: "left" },
 						color: "#000",
-						marginX: { xs: "5%", md: "10%", lg: "15%" },
+						marginX: { xs: "5%", md: "1%", lg: "20%" },
 					}}
 				>
 					<Typography
-						variant={isSmallScreen ? "h2" : "h1"}
+						variant={isMediumScreen? "h2" :isSmallScreen ? "h3" : "h1"}
 						component="h1"
 						sx={{ mb: 2, fontWeight: 700 }}
 					>
-						Live your adventure
+						Build your Future. 
+					
+					</Typography>
+					<Typography
+						variant={"h5"}
+						component="h2"
+						sx={{ mb: 2, fontWeight: 700 }}
+					>
+						One Block at a time
+					
 					</Typography>
 					<Typography variant="body1" sx={{ mb: 2, color: "#6e6c65", width:{xs:"100%",md:"75%", lg:"85%"} }}>
 						Read anything you want right now, like seriously. Come one,
@@ -117,7 +127,8 @@ const LandingPageCallToAction = (props: Props) => {
 				>
 					<img
 						className="landingImage"
-						src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Pan_Blue_Circle.png"
+						// src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Pan_Blue_Circle.png"
+						src={bookBlocks}
 						alt=""
 					/>
 				</Box>

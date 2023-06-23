@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Typography, Link, Grid, TextField, Button } from "@mui/material";
+import logo from "../../assets/logo.png"
 
 const Footer = () => {
 	return (
@@ -23,15 +24,15 @@ const Footer = () => {
 				// alignItems="center"
 				sx={{ flexGrow: 1 }}
 			>
-				<Grid item xs={5} sm={6} md={3} sx={{ pt: 0 }}>
+				{/* <Grid item xs={5} sm={6} md={3} sx={{ pt: 0 }}>
 					<Typography variant="body2" sx={{ pt: 0 }}>
 						<Link sx={{ color: "#fff", textDecoration: "none" }} href="/">
-							Logo
+							<img src={logo} alt="logo" style={{width:"10em", height:"auto"}} />
 						</Link>
 					</Typography>
-				</Grid>
+				</Grid> */}
 
-				<Grid item xs={3.5} sm={3} md={2}>
+				<Grid item xs={6}  md={3.5}>
 					<Link
 						sx={{ color: "#fff", textDecoration: "none" }}
 						href="/try-now"
@@ -40,7 +41,7 @@ const Footer = () => {
 					</Link>
 				</Grid>
 
-				<Grid item xs={3.5} sm={3} md={2}>
+				<Grid item xs={6}  md={3.5}>
 					<Grid container direction="column" spacing={2}>
 						<Grid item>
 							<Link

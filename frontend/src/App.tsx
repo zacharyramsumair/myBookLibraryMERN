@@ -58,8 +58,8 @@ function App() {
 				<Router>
 					<Routes>
 						{/* landing page and greeting */}
-						<Route path="/home" element={<LandingPage />} />
-						<Route path="/prices" element={<PricingPage />} />
+						<Route path="/landingPage" element={<LandingPage />} />
+						{/* <Route path="/prices" element={<PricingPage />} /> */}
 
 						{/* auth */}
 						<Route

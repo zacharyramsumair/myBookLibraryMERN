@@ -16,6 +16,7 @@ import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../Contexts/UserContext";
 import { useLogout } from "../../Hooks/Auth/useLogoutUser";
+import logo from "../../assets/logo.png";
 
 interface Props {
 	/**
@@ -29,8 +30,6 @@ const drawerWidth = 250;
 const navItems = [
 	{ text: "Login", link: "/login", removeWhenUser: true },
 	{ text: "Register", link: "/register", removeWhenUser: true },
-	{ text: "Pricing", link: "/prices", removeWhenUser: false },
-	{ text: "FAQ", link: "/FAQ", removeWhenUser: false },
 ];
 
 export default function Navbar(props: Props) {
@@ -50,9 +49,7 @@ export default function Navbar(props: Props) {
 	const drawer = (
 		<Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
 			<Link to="/">
-				<Typography variant="h6" sx={{ my: 2 }}>
-					MUI
-				</Typography>
+				<img src={logo} style={{ width: "8em", height: "8em" }} />
 			</Link>
 			<Divider />
 			<List>
@@ -154,7 +151,7 @@ export default function Navbar(props: Props) {
 						<MenuIcon />
 					</IconButton>
 
-					<Link to="/">
+					{/* <Link to="/">
 						<Typography
 							variant="h6"
 							noWrap
@@ -172,7 +169,7 @@ export default function Navbar(props: Props) {
 						>
 							LOGO
 						</Typography>
-					</Link>
+					</Link> */}
 
 					<Box
 						sx={{
@@ -181,19 +178,11 @@ export default function Navbar(props: Props) {
 							justifyContent: "space-between",
 						}}
 					>
-						<Link to="/">
-							<Typography
-								variant="h6"
-								sx={{
-									flexGrow: 1,
-									display: { xs: "none", sm: "block" },
-									color: "white",
-									textDecoration: "none",
-								}}
-							>
-								MUI a
-							</Typography>
-						</Link>
+						<Box sx={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+							{/* <Link to="/"> */}
+								{/* <img src={logo} style={{ width: "3em", height: "3em" }} /> */}
+							{/* </Link> */}
+						</Box>
 
 						<Box sx={{ display: { xs: "none", sm: "block" } }}>
 							{user && (
