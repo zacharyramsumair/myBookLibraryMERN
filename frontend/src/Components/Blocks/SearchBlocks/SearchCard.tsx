@@ -72,9 +72,10 @@ const SearchCard = ({ item }: SearchCardProps) => {
 							flexDirection: "column",
 							alignItems: "center",
 							justifyContent: "center",
-							position:"relative",
-							width: "6em", height: "8em",
-							marginX:2
+							position: "relative",
+							width: "6em",
+							height: "8em",
+							marginX: 2,
 						}}
 					>
 						<img
@@ -89,7 +90,11 @@ const SearchCard = ({ item }: SearchCardProps) => {
 							>
 								{/* <DiamondIcon sx={{color:"#FFD700"}} /> */}
 								<svg
-									style={{borderRadius:"50%", backgroundColor:"#FFD700", color:"#fff"}}
+									style={{
+										borderRadius: "50%",
+										backgroundColor: "#FFD700",
+										color: "#fff",
+									}}
 									xmlns="http://www.w3.org/2000/svg"
 									width="20"
 									height="20"

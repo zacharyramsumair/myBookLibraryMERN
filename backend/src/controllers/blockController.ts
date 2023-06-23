@@ -3,11 +3,8 @@ import { StatusCodes } from "http-status-codes";
 import Block from "../models/Block";
 import { IBlock } from "../interfaces";
 import User from "../models/User";
-import mongoose from "mongoose";
 import quotes from "../utils/quotes";
-import { createReadStream } from "fs";
-import { reconstructFieldPath } from "express-validator/src/field-selection";
-// import nl2br  from "nl2br"
+
 
 function nl2br(str:string) {
 	if (typeof str !== 'string') {
@@ -762,9 +759,9 @@ const getDashboard = async (req: Request, res: Response) => {
 	// console.log("req.user", req.user)
 	// console.log("req.user", req.signedCookies)
 
-	const currentDate = new Date().toISOString().split("T")[0]; // Get the current date
-	const quoteIndex = currentDate.length % (quotes.length - 1); // Calculate the index based on the date
-	const quote = quotes[quoteIndex]; // Access the quote at the calculated index
+	// const currentDate = new Date().toISOString().split("T")[0]; // Get the current date
+	// const quoteIndex = currentDate.length % (quotes.length - 1); // Calculate the index based on the date
+	const quote = quotes[new Date().getDate()]; // Access the quote at the calculated index
 
 	const newArrivals = await Block.find()
 		.sort({ createdAt: -1 })

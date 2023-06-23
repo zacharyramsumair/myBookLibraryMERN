@@ -26,7 +26,7 @@ const QuoteofTheDay = (props: Props) => {
 			<Typography variant="h6" sx={{ fontWeight: "bold", color: "white" }}>
 				Quote of the day
 			</Typography>
-			<Typography variant="body2" sx={{ color: "white" }}>
+			<Typography variant="body2" sx={{ color: "white", marginTop:2 }}>
 				"{props.quote}"{" "}
 			</Typography>
 			<Typography

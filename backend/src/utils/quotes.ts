@@ -94,8 +94,69 @@ export default [
 		quote: "So it goes.",
 		source: "Kurt Vonnegut, Slaughterhouse-Five",
 	},
-	// {
-	// 	quote: "",
-	// 	source: "",
-	// },
+	{
+		quote: "There is some good in this world, and it’s worth fighting for.",
+		source: "J.R.R. Tolkien, The Two Towers",
+	},
+	{
+		quote: "It is only with the heart that one can see rightly; what is essential is invisible to the eye.",
+		source: "Antoine de Saint-Exupéry, The Little Prince",
+	},
+	{
+		quote: "Beware; for I am fearless, and therefore powerful.",
+		source: "Mary Shelley, Frankenstein",
+	},
+	{
+		quote: "The only way out of the labyrinth of suffering is to forgive.",
+		source: "John Green, Looking for Alaska",
+	},
+	{
+		quote: "This above all: To thine own self be true, And it must follow, as the night the day, Thou canst not then be false to any man.",
+		source: "William Shakespeare, Hamlet",
+	},
+	{
+		quote: "I took a deep breath and listened to the old brag of my heart: I am, I am, I am.”",
+		source: "Sylvia Plath, The Bell Jar",
+	},
+	{
+		quote: "Love is or it ain’t. Thin love ain’t love at all.",
+		source: "Toni Morrison, Beloved",
+	},
+	{
+		quote: "We accept the love we think we deserve.",
+		source: "Stephen Chbosky, The Perks of Being a Wallflower",
+	},
+	{
+		quote: "And so we beat on, boats against the current, borne back ceaselessly into the past.",
+		source: "F. Scott Fitzgerald, The Great Gatsby",
+	},
+	{
+		quote: "Ever’body’s askin’ that. ‘What we comin’ to?’ Seems to me we don’t never come to nothin’. Always on the way.",
+		source: "John Steinbeck, The Grapes of Wrath",
+	},
+	{
+		quote: "Whatever our souls are made of, his and mine are the same.",
+		source: "Emily Brontë, Wuthering Heights",
+	},
+	{
+		quote: "I am not afraid of storms, for I am learning how to sail my ship.",
+		source: "Louisa May Alcott, Little Women",
+	},
+	{
+		quote: "It is nothing to die; it is dreadful not to live.",
+		source: "Victor Hugo, Les Misérables",
+	},
+	{
+		quote: "Who controls the past controls the future. Who controls the present controls the past.",
+		source: "George Orwell, Nineteen Eighty-Four",
+	},
+	{
+		quote: "Tomorrow I’ll think of some way to get him back. After all, tomorrow is another day.",
+		source: "Margaret Mitchell, Gone with the Wind",
+	},
+	{
+		quote: "Once upon a time there was a boy who loved a girl, and her laughter was a question he wanted to spend his whole life answering.",
+		source: "Nicole Krauss, The History of Love",
+	},
+	
 ];
