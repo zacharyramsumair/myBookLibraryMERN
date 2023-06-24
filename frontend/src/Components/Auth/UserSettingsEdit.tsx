@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect, useContext } from "react";
 import {
 	TextField,
 	Button,
@@ -17,6 +17,7 @@ import BlockFraming from "../Blocks/BlockFraming/BlockFraming";
 import { useEditProfile } from "../../Hooks/Auth/useEditProfile";
 import { useGetProfileForUpdating } from "../../Hooks/Auth/useGetProfileInfoForEditing";
 import { useDeleteSubscription } from "../../Hooks/Stripe/useDeleteCancelSubscription";
+import { UserContext } from "../../Contexts/UserContext";
 
 interface ProfileData {
 	name: string;
@@ -30,6 +31,8 @@ interface ProfileData {
 }
 
 const UserSettingsEdit = () => {
+	let { user, setUser, fetchUser } = useContext(UserContext);
+
 	const [profileData, setProfileData] = useState<ProfileData>({
 		name: "User's Name",
 		birthday: new Date().toISOString().split("T")[0],
@@ -118,6 +121,7 @@ const UserSettingsEdit = () => {
 	const handleSave = () => {
 		console.log(profileData);
 		editProfile(profileData);
+		fetchUser()
 	};
 
 	const handleModalOpen = () => {
@@ -129,6 +133,7 @@ const UserSettingsEdit = () => {
 		await handleSave();
 		await deleteSubscription();
 		setSubscription(null);
+		fetchUser()
 		// refetch();
 	};
 
