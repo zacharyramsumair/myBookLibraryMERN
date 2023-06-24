@@ -277,7 +277,8 @@ const ReadSingleBlockComponent = (props: Props) => {
 						<Box
 							sx={{
 								mt: 4,
-								backgroundColor: "#f8f8f8",
+								// backgroundColor: "#f8f8f8",
+								backgroundColor: "#fabbbb",
 								padding: 2,
 								borderRadius: 4,
 							}}

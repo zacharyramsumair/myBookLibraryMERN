@@ -250,7 +250,7 @@ const CreateBlockComponent = () => {
 						</Typography>
 					</Box>
 					<TextField
-						label="Price"
+						label="Price (Cost 1 gem)"
 						variant="outlined"
 						fullWidth
 						name="price"
