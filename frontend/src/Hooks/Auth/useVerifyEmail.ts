@@ -7,7 +7,7 @@ type FormValues = {
 }
 
 const putRequest = async (data:FormValues) => {
-    const response = await axios.put(`/api/v1/auth/verify-email`, data);
+    const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/verify-email`, data);
     return response.data;
 };
 

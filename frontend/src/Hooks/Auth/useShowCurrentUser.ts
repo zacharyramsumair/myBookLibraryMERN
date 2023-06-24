@@ -4,7 +4,7 @@ import axios from 'axios';
 
 
 const getRequest = async () => {
-    const response = await axios.get(`/api/v1/auth/showCurrentUser`);
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/showCurrentUser`);
     // console.log(response.data)
     return response.data;
 };

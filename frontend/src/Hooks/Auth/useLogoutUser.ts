@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
 const deleteRequest = async () => {
-  const response = await axios.delete(`/api/v1/auth/logout`);
+  const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/logout`);
   // console.log(response.data);
   return response.data;
 };

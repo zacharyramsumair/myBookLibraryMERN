@@ -12,7 +12,7 @@ interface IBlock{
 }
 
 const postRequest = async (data:IBlock) => {
-    const response = await axios.post(`/api/v1/blocks`,data );
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/blocks`,data );
     // console.log(response.data)
     return response.data;
 };

@@ -7,7 +7,7 @@ type FormValues = {
 }
 
 const postRequest = async (data:FormValues) => {
-    const response = await axios.post(`/api/v1/auth/login`, data);
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/login`, data);
     // console.log(response.data)
     return response.data;
 };

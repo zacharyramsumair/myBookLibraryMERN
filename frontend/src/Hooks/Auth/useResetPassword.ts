@@ -8,7 +8,7 @@ type FormValues = {
 }
 
 const putRequest = async (data:FormValues) => {
-    const response = await axios.put(`/api/v1/auth/reset-password`, data);
+    const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/reset-password`, data);
     // console.log(response.data)
     return response.data;
 };

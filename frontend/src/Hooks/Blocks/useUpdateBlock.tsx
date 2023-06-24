@@ -17,7 +17,7 @@ interface IData{
 }
 
 const putRequest = async (data: IData) => {
-	const response = await axios.put(`/api/v1/blocks/block/${data.id}`, data.blockInfo);
+	const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/v1/blocks/block/${data.id}`, data.blockInfo);
 	// console.log(response.data);
 	return response.data;
 };

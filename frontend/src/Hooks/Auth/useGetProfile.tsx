@@ -2,7 +2,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
 const getRequest = async (profileId: string) => {
-	const response = await axios.get(`/api/v1/auth/profile/${profileId}`);
+	const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/profile/${profileId}`);
 	return response.data;
 };
 

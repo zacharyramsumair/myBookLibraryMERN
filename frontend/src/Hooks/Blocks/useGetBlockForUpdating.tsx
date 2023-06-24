@@ -2,7 +2,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
 const getRequest = async (blockId: string) => {
-  const response = await axios.get(`/api/v1/blocks/block/${blockId}`);
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/blocks/block/${blockId}`);
   return response.data;
 };
 

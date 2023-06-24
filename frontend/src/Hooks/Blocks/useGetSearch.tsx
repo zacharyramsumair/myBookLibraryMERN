@@ -11,7 +11,7 @@ interface ISearchParameters {
 
 const getRequest = async (searchParameters: ISearchParameters) => {
   const response = await axios.get(
-    `/api/v1/blocks/search?title=${searchParameters.title}&page=${searchParameters.page}&limit=${searchParameters.limit}&sort=${searchParameters.sort}&tag=${searchParameters.tag}`
+    `${import.meta.env.VITE_BACKEND_URL}/api/v1/blocks/search?title=${searchParameters.title}&page=${searchParameters.page}&limit=${searchParameters.limit}&sort=${searchParameters.sort}&tag=${searchParameters.tag}`
   );
   return response.data;
 };

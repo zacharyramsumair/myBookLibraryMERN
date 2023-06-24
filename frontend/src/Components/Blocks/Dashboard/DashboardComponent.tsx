@@ -9,7 +9,7 @@ type Props = {};
 
 const DashboardComponent = (props: Props) => {
 	let { data, error, isLoading, isError } = useGetDashboard();
-	// console.log(data)
+	console.log(data)
 
 	if (isLoading) {
 		return (

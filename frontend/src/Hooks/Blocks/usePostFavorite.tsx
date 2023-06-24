@@ -4,7 +4,7 @@ import axios from 'axios';
 
 
 const postRequest = async (id:string) => {
-    const response = await axios.post(`/api/v1/blocks/favorite/${id}` );
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/blocks/favorite/${id}` );
     // console.log(response.data)
     return response.data;
 };

@@ -9,7 +9,7 @@ limit:string
 }
 const getRequest = async (getUserShelfParameters: IGetUserShelfParameters) => {
 	// let apiString = `/api/v1/block/${data}`
-	const response = await axios.get(`/api/v1/blocks/user-shelf?page=${getUserShelfParameters.page}&limit=${getUserShelfParameters.limit}`);
+	const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/blocks/user-shelf?page=${getUserShelfParameters.page}&limit=${getUserShelfParameters.limit}`);
 	return response.data;
 };
 

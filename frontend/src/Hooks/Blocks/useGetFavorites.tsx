@@ -9,7 +9,7 @@ limit:string
 }
 const getRequest = async (favoritesParameters: IFavoritesParameters) => {
 	// let apiString = `/api/v1/block/${data}`
-	const response = await axios.get(`/api/v1/blocks/favorites?page=${favoritesParameters.page}&limit=${favoritesParameters.limit}`);
+	const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/blocks/favorites?page=${favoritesParameters.page}&limit=${favoritesParameters.limit}`);
 	return response.data;
 };
 

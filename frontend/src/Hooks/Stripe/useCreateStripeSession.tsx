@@ -8,7 +8,7 @@ export interface IProductInfo {
 }
 
 const postRequest = async (data: IProductInfo) => {
-	const response = await axios.post(`/api/v1/stripe/purchase`, data);
+	const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/stripe/purchase`, data);
 	// console.log(response.data);
 	return response.data;
 };

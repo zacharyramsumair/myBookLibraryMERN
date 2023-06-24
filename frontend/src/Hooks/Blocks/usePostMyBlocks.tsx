@@ -11,7 +11,7 @@ interface IMyBlockParameters {
 }
 
 const postRequest = async (myBlockParameters: IMyBlockParameters) => {
-    const response = await axios.post( `/api/v1/blocks/my-blocks?page=${myBlockParameters.page}&limit=${myBlockParameters.limit}&sortBy=${myBlockParameters.sortBy}&sortOrder=${myBlockParameters.sortOrder}`);
+    const response = await axios.post( `${import.meta.env.VITE_BACKEND_URL}/api/v1/blocks/my-blocks?page=${myBlockParameters.page}&limit=${myBlockParameters.limit}&sortBy=${myBlockParameters.sortBy}&sortOrder=${myBlockParameters.sortOrder}`);
     return response.data;
 };
 

@@ -10,7 +10,7 @@ interface IMyBlockParameters {
 
 const getRequest = async (myBlockParameters: IMyBlockParameters) => {
 	const response = await axios.get(
-		`/api/v1/blocks/my-blocks?page=${myBlockParameters.page}&limit=${myBlockParameters.limit}&sortBy=${myBlockParameters.sortBy}&sortOrder=${myBlockParameters.sortOrder}`
+		`${import.meta.env.VITE_BACKEND_URL}/api/v1/blocks/my-blocks?page=${myBlockParameters.page}&limit=${myBlockParameters.limit}&sortBy=${myBlockParameters.sortBy}&sortOrder=${myBlockParameters.sortOrder}`
 	);
 	return response.data;
 };
