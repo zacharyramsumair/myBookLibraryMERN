@@ -1,0 +1,25 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const router = express_1.default.Router();
+const authController_1 = __importDefault(require("../controllers/authController"));
+const authentication_1 = require("../middleware/authentication");
+router.use(authentication_1.authenticateUser);
+router.post('/', authController_1.default.registerUser);
+router.put('/verify-email', authController_1.default.verifyEmail);
+router.post('/login', authController_1.default.loginUser);
+router.get('/showCurrentUser', authController_1.default.showCurrentUser);
+router.delete('/logout', authController_1.default.logout);
+router.post('/forgot-password', authController_1.default.forgotPassword);
+router.put('/reset-password', authController_1.default.resetPassword);
+router.put('/profile', authController_1.default.editProfile);
+router.get('/userprofile', authController_1.default.getMyProfilePageForEditing);
+router.get('/profile/favorite-blocks', authController_1.default.getFavoriteBlocks);
+router.get('/profile/rated-blocks', authController_1.default.getRatedBlocks);
+router.get('/profile/created-blocks', authController_1.default.getCreatedBlocks);
+router.get('/profile/money-earned', authController_1.default.getMoneyEarned);
+router.get('/profile/:id', authController_1.default.getProfilePage);
+exports.default = router;
