@@ -75,7 +75,6 @@ const UserSettingsEdit = () => {
 		if (ProfileForUpdatingData) {
 			console.log(ProfileForUpdatingData);
 			setProfileData({
-				...profileData,
 				name: ProfileForUpdatingData.name,
 				birthday: ProfileForUpdatingData.birthday,
 				location: ProfileForUpdatingData.location,
@@ -129,7 +128,7 @@ const UserSettingsEdit = () => {
 		handleSubModalClose();
 		await handleSave();
 		await deleteSubscription();
-		setSubscription(null)
+		setSubscription(null);
 		// refetch();
 	};
 

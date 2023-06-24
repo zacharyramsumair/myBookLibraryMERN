@@ -14,6 +14,7 @@ export const useGetProfileForUpdating = () => {
       return response;
     },
     {
+      cacheTime: 0, 
       refetchOnMount: false, // Do not refetch on component mount
       refetchOnWindowFocus: false, // Do not refetch on window focus
       refetchOnReconnect: false, // Do not refetch on network reconnect

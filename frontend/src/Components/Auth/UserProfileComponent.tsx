@@ -37,25 +37,25 @@ const UserProfileComponent = (props: Props) => {
 		}
 	}, [ProfileData]);
 
-  function calculateAge(birthday: string): number {
-    const birthDate = new Date(birthday);
-    const today = new Date();
-  
-    let age = today.getFullYear() - birthDate.getFullYear();
-  
-    // Check if the birthday hasn't occurred yet this year
-    if (
-      today.getMonth() < birthDate.getMonth() ||
-      (today.getMonth() === birthDate.getMonth() &&
-        today.getDate() < birthDate.getDate())
-    ) {
-      age--;
-    }
-  
-    return age;
-  }
+	function calculateAge(birthday: string): number {
+		const birthDate = new Date(birthday);
+		const today = new Date();
 
-  const getTagDisplayName = (backendName: string) => {
+		let age = today.getFullYear() - birthDate.getFullYear();
+
+		// Check if the birthday hasn't occurred yet this year
+		if (
+			today.getMonth() < birthDate.getMonth() ||
+			(today.getMonth() === birthDate.getMonth() &&
+				today.getDate() < birthDate.getDate())
+		) {
+			age--;
+		}
+
+		return age;
+	}
+
+	const getTagDisplayName = (backendName: string) => {
 		const displayTag = allTags.find((tag) => tag.backendName === backendName);
 		return displayTag ? displayTag.display : "";
 	};
@@ -79,10 +79,12 @@ const UserProfileComponent = (props: Props) => {
 		);
 	}
 
-
-
-let doesNameEndWithS = ProfileData.personalInfo.name.endsWith("s") ||ProfileData.personalInfo.name.endsWith("S")
-let possessiveName = `${ProfileData.personalInfo.name}'${doesNameEndWithS ? "" : "s"}`
+	let doesNameEndWithS =
+		ProfileData.personalInfo.name.endsWith("s") ||
+		ProfileData.personalInfo.name.endsWith("S");
+	let possessiveName = `${ProfileData.personalInfo.name}'${
+		doesNameEndWithS ? "" : "s"
+	}`;
 
 	return (
 		<BlockFraming hideSearch={true}>
@@ -133,22 +135,30 @@ let possessiveName = `${ProfileData.personalInfo.name}'${doesNameEndWithS ? "" :
 								{/* Replace with the actual about me */}
 							</Typography>
 
-							<Typography variant="subtitle1" gutterBottom>
-								{/* Favorite Genres: Romance + Fantasy{" "} */}
-								Favorite Genres:{" "}
+							{ProfileData.personalInfo.favoriteTags && (
+								<Typography variant="subtitle1" gutterBottom>
+									{/* Favorite Genres: Romance + Fantasy{" "} */}
+									Favorite Genres:{" "}
+									{ProfileData.personalInfo.favoriteTags.map(
+										(tag: string) => {
+											console.log(tag);
+											return (
+												<Box component={"span"}>
+													{getTagDisplayName(tag)}
+													{ProfileData.personalInfo.favoriteTags.indexOf(
+														tag
+													) !==
+														ProfileData.personalInfo.favoriteTags
+															.length -
+															1 && " + "}
+												</Box>
+											);
+										}
+									)}
+								</Typography>
+							)}
 
-                {ProfileData.personalInfo.favoriteTags.map((tag:string) =>{
-                  console.log(tag)
-                  return <Box component={"span"}>
-                    {getTagDisplayName(tag)} 
-                    {ProfileData.personalInfo.favoriteTags.indexOf(tag) !== ProfileData.personalInfo.favoriteTags.length - 1 && " + "}
-
-                  </Box>
-                })}
-               
-							</Typography>
-
-							<Typography variant="subtitle1" gutterBottom>
+							{/* <Typography variant="subtitle1" gutterBottom>
 								Website:{" "}
 								<Link
 									sx={{
@@ -166,14 +176,54 @@ let possessiveName = `${ProfileData.personalInfo.name}'${doesNameEndWithS ? "" :
 									{ProfileData.personalInfo.website}
 								</Link>{" "}
 								{/* Replace with the real website */}
+							{/* </Typography> */}
+
+							<Typography variant="subtitle1" gutterBottom>
+								Website:{" "}
+								<Typography
+									variant="subtitle1"
+									component={"span"}
+									sx={{
+										textDecoration: "none",
+										color: "blue",
+										cursor: "pointer",
+										wordBreak: "break-all",
+										wordWrap: "break-word",
+										whiteSpace: "pre-wrap",
+									}}
+									onClick={() => {
+										window.open(
+											ProfileData.personalInfo.website.startsWith(
+												"https://"
+											)
+												? `${ProfileData.personalInfo.website}`
+												: `https://${ProfileData.personalInfo.website}`,
+											"_blank"
+										);
+									}}
+								>
+									{ProfileData.personalInfo.website}
+								</Typography>
 							</Typography>
 						</Box>
 					</Grid>
 				</Grid>
 				<Box>
 					{/* <ImageCarousel  fullRow={true} headerText={` Blocks`} align="left" listOfImages={ProfileData.createdBlocks} /> */}
-					<ImageCarousel  fullRow={true} headerText={`${possessiveName} Blocks`} align="left" listOfImages={ProfileData.createdBlocks} />
-					<ImageCarousel  fullRow={true} headerText={`${possessiveName} Favorites`} align="left" listOfImages={ProfileData.favoriteBlocks} />
+					<ImageCarousel
+						fullRow={true}
+						headerText={`${possessiveName} Blocks`}
+						align="left"
+						listOfImages={ProfileData.createdBlocks}
+					/>
+					{ProfileData.favoriteBlocks && (
+						<ImageCarousel
+							fullRow={true}
+							headerText={`${possessiveName} Favorites`}
+							align="left"
+							listOfImages={ProfileData.favoriteBlocks}
+						/>
+					)}
 				</Box>
 			</Box>
 		</BlockFraming>
