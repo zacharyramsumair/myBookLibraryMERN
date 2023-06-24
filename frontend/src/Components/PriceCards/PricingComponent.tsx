@@ -211,9 +211,16 @@ const PricingComponent = (props: Props) => {
 											color: "#B315EC",
 											fontWeight: "700",
 											width: "100%",
+											transition: "transform 0.3s",
+											"&:hover": {
+												transform: "scale(1.1)",
+												backgroundColor: "#fff",
+											},
 										}}
 									>
-										Get started
+										{user.tier == "free"
+											? "Current Tier"
+											: "Get started"}
 									</Button>
 								</Link>
 							</Box>
@@ -260,7 +267,8 @@ const PricingComponent = (props: Props) => {
 								variant="body1"
 								sx={{ textAlign: "center", mb: "1em" }}
 							>
-								Most popular tier. Perfect for readers who want to level up their knowledge everyday.
+								Most popular tier. Perfect for readers who want to level
+								up their knowledge everyday.
 							</Typography>
 							<Divider />
 							<List dense>{StandardFeatures}</List>
@@ -290,7 +298,7 @@ const PricingComponent = (props: Props) => {
 									alignItems: "center",
 								}}
 							>
-								<Link to={user? "#" : "/login"}>
+								<Link to={user ? "#" : "/login"}>
 									<Button
 										variant="contained"
 										sx={{
@@ -298,6 +306,11 @@ const PricingComponent = (props: Props) => {
 											color: "#ED1593",
 											fontWeight: "700",
 											width: "100%",
+											transition: "transform 0.3s",
+											"&:hover": {
+												transform: "scale(1.1)",
+												backgroundColor: "#fff",
+											},
 										}}
 										onClick={() =>
 											user
@@ -312,7 +325,9 @@ const PricingComponent = (props: Props) => {
 												: props.handleNotLoggedIn()
 										}
 									>
-										Get started
+										{user.tier == "standard"
+											? "Current Tier"
+											: "Buy Now"}
 									</Button>
 								</Link>
 							</Box>
@@ -390,7 +405,7 @@ const PricingComponent = (props: Props) => {
 									alignItems: "center",
 								}}
 							>
-								<Link to={user? "#" : "/login"}>
+								<Link to={user ? "#" : "/login"}>
 									<Button
 										variant="contained"
 										sx={{
@@ -398,6 +413,11 @@ const PricingComponent = (props: Props) => {
 											color: "#1681ED",
 											fontWeight: "700",
 											width: "100%",
+											transition: "transform 0.3s",
+											"&:hover": {
+												transform: "scale(1.1)",
+												backgroundColor: "#fff",
+											},
 										}}
 										onClick={() =>
 											user
@@ -409,10 +429,12 @@ const PricingComponent = (props: Props) => {
 																: "subscription",
 														productId: props.products[4].product,
 												  })
-												:  props.handleNotLoggedIn()
+												: props.handleNotLoggedIn()
 										}
 									>
-										Get started
+										{user.tier == "premium"
+											? "Current Tier"
+											: "Buy Now"}
 									</Button>
 								</Link>
 							</Box>
