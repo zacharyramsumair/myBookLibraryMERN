@@ -4,7 +4,7 @@ import axios from "axios";
 
 const deleteRequest = async (id: string) => {
 	const response = await axios.delete(`/api/v1/blocks/block/${id}`);
-	console.log(response.data);
+	// console.log(response.data);
 	return response.data;
 };
 

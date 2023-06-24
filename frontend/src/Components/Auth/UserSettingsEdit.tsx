@@ -76,7 +76,7 @@ const UserSettingsEdit = () => {
 
 	useEffect(() => {
 		if (ProfileForUpdatingData) {
-			console.log(ProfileForUpdatingData);
+			// console.log(ProfileForUpdatingData);
 			setProfileData({
 				name: ProfileForUpdatingData.name,
 				birthday: ProfileForUpdatingData.birthday,
@@ -119,7 +119,7 @@ const UserSettingsEdit = () => {
 	// };
 
 	const handleSave = () => {
-		console.log(profileData);
+		// console.log(profileData);
 		editProfile(profileData);
 		fetchUser()
 	};

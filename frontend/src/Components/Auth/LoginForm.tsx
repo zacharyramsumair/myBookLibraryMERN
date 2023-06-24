@@ -59,7 +59,7 @@ const LoginForm: React.FC = () => {
 	});
 
 	const onSubmit = (data: FormValues) => {
-		console.log(data);
+		// console.log(data);
 		loginUser(data);
 	};
 

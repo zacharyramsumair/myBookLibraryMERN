@@ -29,7 +29,7 @@ const ForgotPasswordForm = (props: Props) => {
   });
 
   const onSubmit = (data: FormValues) => {
-    console.log(data);
+    // console.log(data);
     forgotPassword(data)
   };
 

@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const getRequest = async () => {
     const response = await axios.get(`/api/v1/stripe/products`);
-    console.log(response.data)
+    // console.log(response.data)
     return response.data;
 };
 

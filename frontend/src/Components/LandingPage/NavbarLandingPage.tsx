@@ -34,9 +34,9 @@ const navItems = [
 
 export default function Navbar(props: Props) {
 	const { user, setUser } = React.useContext(UserContext);
-	if (user) {
-		console.log("user", user);
-	}
+	// if (user) {
+	// 	console.log("user", user);
+	// }
 
 	let { logout, error, data, isError, isLoading, isSuccess } = useLogout();
 	const { window } = props;

@@ -61,7 +61,7 @@ const ResetPasswordForm = (props: Props) => {
 	});
 
 	const onSubmit = (data: FormValues) => {
-		console.log(data);
+		// console.log(data);
 		const email = queryParams.get("email");
 		const token = queryParams.get("token");
 		// console.log(data)

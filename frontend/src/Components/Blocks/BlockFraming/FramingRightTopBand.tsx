@@ -77,7 +77,7 @@ const FramingRightTopBand = (props: Props) => {
 			limit: "10",
 			sort: "ratingDesc",
 		};
-		console.log(searchParameters);
+		// console.log(searchParameters);
 		setGlobalSearchParameters(searchParameters)
 		navigate("/search?page=1");
 		// setTimeout(() => {

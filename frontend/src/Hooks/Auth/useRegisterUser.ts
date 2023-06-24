@@ -10,7 +10,7 @@ interface IUserData {
 
 const postRequest = async (data:IUserData) => {
     const response = await axios.post(`/api/v1/auth`,data );
-    console.log(response.data)
+    // console.log(response.data)
     return response.data;
 };
 

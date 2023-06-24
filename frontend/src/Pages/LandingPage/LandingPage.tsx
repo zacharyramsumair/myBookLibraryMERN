@@ -12,7 +12,7 @@ const LandingPage = () => {
   const isMediumScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
 
 
-  console.log(isSmallScreen)
+  // console.log(isSmallScreen)
   return (
     <>
     <Navbar/>

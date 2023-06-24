@@ -85,7 +85,7 @@ const SearchBlocksComponent = (props: Props) => {
 
 	useEffect(() => {
 		if (PostSearchData) {
-			console.log(PostSearchData);
+			// console.log(PostSearchData);
 
 			if (PostSearchData.blocks.length > 0) {
 				setTotalPages(PostSearchData.totalPages);

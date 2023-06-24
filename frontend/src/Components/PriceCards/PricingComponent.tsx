@@ -37,7 +37,7 @@ const PricingComponent = (props: Props) => {
 	let { user, setUser, fetchUser } = useContext(UserContext);
 	let navigate = useNavigate();
 
-	console.log(props.products[3].product);
+	// console.log(props.products[3].product);
 
 	let FreeFeatures = PricingDetails.free.map((detail, index) => {
 		return (

@@ -58,7 +58,7 @@ const MyBlocksComponent = (props: Props) => {
 
 	useEffect(() => {
 		if (MyBlocksData) {
-			console.log(MyBlocksData);
+			// console.log(MyBlocksData);
 
 			if (MyBlocksData.blocks.length > 0) {
 				setTotalPages(MyBlocksData.totalPages);

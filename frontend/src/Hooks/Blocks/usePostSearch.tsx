@@ -12,7 +12,7 @@ interface ISearchParameters {
 
 const postRequest = async (searchParameters: ISearchParameters) => {
     const response = await axios.post( `/api/v1/blocks/search?title=${searchParameters.title}&page=${searchParameters.page}&limit=${searchParameters.limit}&sort=${searchParameters.sort}&tag=${searchParameters.tag}`);
-    console.log(response.data)
+    // console.log(response.data)
     return response.data;
 };
 

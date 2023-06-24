@@ -3,7 +3,7 @@ import axios from "axios";
 
 const deleteRequest = async () => {
 	const response = await axios.delete(`/api/v1/stripe/cancel-subscription`);
-	console.log(response.data);
+	// console.log(response.data);
 	return response.data;
 };
 

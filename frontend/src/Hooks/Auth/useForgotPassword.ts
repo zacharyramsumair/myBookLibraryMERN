@@ -7,7 +7,7 @@ type FormValues = {
 
 const postRequest = async (data:FormValues) => {
     const response = await axios.post(`/api/v1/auth/forgot-password`, data);
-    console.log(response.data)
+    // console.log(response.data)
     return response.data;
 };
 

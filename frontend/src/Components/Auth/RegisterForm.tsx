@@ -67,7 +67,7 @@ const RegisterForm: React.FC = () => {
 	});
 
 	const onSubmit = (data: FormValues) => {
-		console.log(data);
+		// console.log(data);
 		registerUser(data);
 	};
 

@@ -78,7 +78,7 @@ const CreateBlockComponent = () => {
 	const handleImageUpload = async () => {
 		try {
 			// const isValid = await imageUrlValidator(inputValue);
-			console.log(imageModalValue);
+			// console.log(imageModalValue);
 			const isValid = await isValidImageUrl(imageModalValue);
 
 			if (isValid) {
@@ -165,12 +165,12 @@ const CreateBlockComponent = () => {
 		// formData.tags = formData.tags.map((string) => string.replace(/\s/g, "").toLowerCase());
 
 		// Form submission logic
-		console.log({
-			...formData,
-			// tags: formData.tags.map((string) =>
-			// 	string.replace(/\s/g, "").toLowerCase()
-			// ),
-		});
+		// console.log({
+		// 	...formData,
+		// 	// tags: formData.tags.map((string) =>
+		// 	// 	string.replace(/\s/g, "").toLowerCase()
+		// 	// ),
+		// });
 		createBlock({
 			title: formData.title,
 			text: formData.text,

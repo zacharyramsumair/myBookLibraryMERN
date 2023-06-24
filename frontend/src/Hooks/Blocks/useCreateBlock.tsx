@@ -13,7 +13,7 @@ interface IBlock{
 
 const postRequest = async (data:IBlock) => {
     const response = await axios.post(`/api/v1/blocks`,data );
-    console.log(response.data)
+    // console.log(response.data)
     return response.data;
 };
 

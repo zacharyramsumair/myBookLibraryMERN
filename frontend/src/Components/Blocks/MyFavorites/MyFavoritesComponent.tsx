@@ -41,7 +41,7 @@ const MyFavoritesComponent = (props: Props) => {
 
 	useEffect(() => {
 		if (data) {
-			console.log(data);
+			// console.log(data);
 			setTotalPages(data.totalPages);
 		}
 	}, [data]);

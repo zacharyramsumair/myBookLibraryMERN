@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const postRequest = async (id:string) => {
     const response = await axios.post(`/api/v1/blocks/favorite/${id}` );
-    console.log(response.data)
+    // console.log(response.data)
     return response.data;
 };
 

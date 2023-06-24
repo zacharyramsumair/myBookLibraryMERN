@@ -13,7 +13,7 @@ interface IProfileInfo {
 
 const putRequest = async (data: IProfileInfo) => {
 	const response = await axios.put(`/api/v1/auth/profile`, data);
-	console.log(response.data);
+	// console.log(response.data);
 	return response.data;
 };
 

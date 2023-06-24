@@ -31,11 +31,11 @@ const UserProfileComponent = (props: Props) => {
 		blockId
 	);
 
-	useEffect(() => {
-		if (ProfileData) {
-			console.log(ProfileData);
-		}
-	}, [ProfileData]);
+	// useEffect(() => {
+	// 	if (ProfileData) {
+	// 		console.log(ProfileData);
+	// 	}
+	// }, [ProfileData]);
 
 	function calculateAge(birthday: string): number {
 		const birthDate = new Date(birthday);
@@ -79,7 +79,7 @@ const UserProfileComponent = (props: Props) => {
 		);
 	}
 
-	console.log(calculateAge(ProfileData.personalInfo.birthday));
+	// console.log(calculateAge(ProfileData.personalInfo.birthday));
 
 	let doesNameEndWithS =
 		ProfileData.personalInfo.name.endsWith("s") ||
@@ -149,7 +149,7 @@ const UserProfileComponent = (props: Props) => {
 									Favorite Genres:{" "}
 									{ProfileData.personalInfo.favoriteTags.map(
 										(tag: string) => {
-											console.log(tag);
+											// console.log(tag);
 											return (
 												<Box component={"span"}>
 													{getTagDisplayName(tag)}

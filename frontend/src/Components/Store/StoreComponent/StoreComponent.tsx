@@ -93,14 +93,14 @@ const StoreComponent = () => {
 
 	useEffect(() => {
 		if (data) {
-			console.log(data.data);
+			// console.log(data.data);
 			setProducts(data.data);
 		}
 	}, [data]);
 
 	useEffect(() => {
 		if (dataCreateStripeSession && isSuccessCreateStripeSession) {
-			console.log(dataCreateStripeSession.url);
+			// console.log(dataCreateStripeSession.url);
 			window.location.href = dataCreateStripeSession.url;
 		}
 	}, [dataCreateStripeSession, isSuccessCreateStripeSession]);

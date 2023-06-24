@@ -80,13 +80,13 @@ const EditBlockComponent = () => {
 					position: toast.POSITION.TOP_CENTER,
 				});
 			} else if (user.id != BlockForUpdatingData.createdBy._id && user.role != "admin") {
-				console.log(user)
+				// console.log(user)
 				navigate(`/block/${blockId}`);
 				toast.error("You do not have access to edit this block", {
 					position: toast.POSITION.TOP_CENTER,
 				});
 			} else {
-				console.log(BlockForUpdatingData)
+				// console.log(BlockForUpdatingData)
 				setFormData({
 					title: BlockForUpdatingData.title,
 					price: BlockForUpdatingData.price,
@@ -100,15 +100,15 @@ const EditBlockComponent = () => {
 		}
 	}, [BlockForUpdatingData]);
 
-	console.log(formData)
+	// console.log(formData)
 
 	//alert errors
 	useEffect(() => {
 		if (errorUpdateBlock) {
-			console.log(errorUpdateBlock);
+			// console.log(errorUpdateBlock);
 		}
 		if (ErrorBlockForUpdating) {
-			console.log(ErrorBlockForUpdating);
+			// console.log(ErrorBlockForUpdating);
 		}
 	}, [errorUpdateBlock, ErrorBlockForUpdating]);
 
@@ -154,7 +154,7 @@ const EditBlockComponent = () => {
 	const handleImageUpload = async () => {
 		try {
 			// const isValid = await imageUrlValidator(inputValue);
-			console.log(imageModalValue);
+			// console.log(imageModalValue);
 			const isValid = await isValidImageUrl(imageModalValue);
 
 			if (isValid) {
@@ -240,7 +240,7 @@ const EditBlockComponent = () => {
 		}
 
 		// Form submission logic
-		console.log(formData);
+		// console.log(formData);
 		updateBlock({ id: blockId, blockInfo: { ...formData } });
 	};
 
@@ -249,7 +249,7 @@ const EditBlockComponent = () => {
 	};
 
 	const handleDeleteConfirm = () => {
-		console.log("Block deleted");
+		// console.log("Block deleted");
 		deleteBlock(blockId);
 		setDeleteModalOpen(false);
 		navigate("/myBlocks");

@@ -148,7 +148,7 @@ const getBlockById = async (req: Request, res: Response) => {
 		await currentUser.save();
 	}
 
-	console.log(currentUser?.userShelf);
+	// console.log(currentUser?.userShelf);
 
 	block.views += 1;
 	await block.save();
@@ -414,13 +414,13 @@ const searchBlocks = async (req: Request, res: Response) => {
 		searchQuery.tags = { $in: [tag] };
 	}
 
-	console.log(title);
-	console.log(tag);
-	console.log(sort);
+	// console.log(title);
+	// console.log(tag);
+	// console.log(sort);
 	// console.log(sort)
 	// Check if title is provided and not empty
 	if (title.trim() !== "") {
-		console.log("here 1");
+		// console.log("here 1");
 		searchQuery.title = { $regex: title, $options: "i" };
 	}
 
@@ -691,7 +691,7 @@ const getUserShelfBlocks = async (req: Request, res: Response) => {
 		(id) => !currentUser.myBlocks.includes(id)
 	);
 
-	console.log(blockIds);
+	// console.log(blockIds);
 	const page = parseInt(req.query.page as string) || 1; // Get the current page from query parameters
 	const limit = parseInt(req.query.limit as string) || 10; // Set the limit per page from query parameters
 	const skip = (page - 1) * limit; // Calculate the number of documents to skip

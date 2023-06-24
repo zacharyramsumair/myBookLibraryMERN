@@ -177,7 +177,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 		return <Typography key={index}>{para}</Typography>
 	})
 
-	console.log(textElements)
+	// console.log(textElements)
 
 	return (
 		<BlockFraming hideSearch={false}>

@@ -8,7 +8,7 @@ type Props = {
 
 const postRequest = async (props:Props) => {
     const response = await axios.post(`/api/v1/blocks/rate/${props.id}`, {rating:props.rating} );
-    console.log(response.data)
+    // console.log(response.data)
     return response.data;
 };
 

@@ -141,7 +141,7 @@ router.post(
 
 			const currentDate = new Date();
 			const startOfCurrentIncrement = startOfDay(currentDate);
-			console.log(productId);
+			// console.log(productId);
 
 			if (productId == "prod_O7Gtlj72uJ1sFC") {
 				// Handfull of Gems

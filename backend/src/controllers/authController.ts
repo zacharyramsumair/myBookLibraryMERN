@@ -465,8 +465,8 @@ const editProfile = async (req: Request, res: Response) => {
 		throw new Error("Not authorized");
 	}
 
-	console.log(currentUser.birthday);
-	console.log(birthday);
+	// console.log(currentUser.birthday);
+	// console.log(birthday);
 	currentUser.name = name;
 	currentUser.birthday = birthday;
 	currentUser.location = location;
