@@ -647,7 +647,6 @@ const getMoneyEarned = async (req: Request, res: Response) => {
 	}
 
 	res.json({moneyEarnedInCents:currentUser.moneyEarnedInCents})
-	// res.send("money")
 };
 
 export default {

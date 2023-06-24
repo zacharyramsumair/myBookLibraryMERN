@@ -30,7 +30,6 @@ const DashboardComponent = (props: Props) => {
 		);
 	}
 
-	console.log(data)
 
 	return (
 		<BlockFraming hideSearch={true}>
@@ -48,7 +47,8 @@ const DashboardComponent = (props: Props) => {
 					<Typography>
 						Money Earned:{" "}
 						<Typography sx={{ fontWeight: "bold" }} component={"span"}>
-							$0.00
+							{/* ${data.moneyEarnedInCents/100} */}
+							${(data.moneyEarnedInCents / 100).toFixed(2)}
 						</Typography>
 					</Typography>
 				</Box>
