@@ -218,6 +218,7 @@ const createBlock = async (req: Request, res: Response) => {
 		res.status(StatusCodes.UNAUTHORIZED);
 		throw new Error("Not authorized");
 	}
+	let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
 
 	//checks for paid blocks
 	if (price != 0) {
@@ -225,8 +226,6 @@ const createBlock = async (req: Request, res: Response) => {
 			res.status(StatusCodes.BAD_REQUEST);
 			throw new Error("Price must be an integer greater than or equal to 0");
 		}
-
-		let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
 
 		if (
 			currentUser.tier != "premium" &&
@@ -246,6 +245,7 @@ const createBlock = async (req: Request, res: Response) => {
 		}
 	}
 
+	currentUser.noOfGems -= paidBlockCost;
 	// when putting our info allow rating, rating count, rating total, views and favorite count
 	const block = await Block.create({
 		title,

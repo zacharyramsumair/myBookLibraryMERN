@@ -1,13 +1,16 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import { Box, Typography, TextField, Button, Modal } from "@mui/material";
 import { toast } from "react-toastify";
 import BlockFraming from "../BlockFraming/BlockFraming";
 import allTags from "../allTags";
 import { useCreateBlock } from "../../../Hooks/Blocks/useCreateBlock";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../../Contexts/UserContext";
 
 const CreateBlockComponent = () => {
 	let navigate = useNavigate();
+	let { user, setUser, fetchUser } = useContext(UserContext);
+
 
 	const [formData, setFormData] = useState({
 		title: "",
@@ -34,6 +37,7 @@ const CreateBlockComponent = () => {
 	useEffect(() => {
 		if (data) {
 			// console.log(data)
+			fetchUser()
 			navigate(`/block/${data._id}`);
 		}
 	}, [isSuccess]);
@@ -175,6 +179,8 @@ const CreateBlockComponent = () => {
 			price: formData.price,
 			tier: formData.tier,
 		});
+
+		// fetchUser()
 
 		// console.log(formData.text.split("\n"))
 	};

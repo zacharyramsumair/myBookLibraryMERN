@@ -33,6 +33,7 @@ const registerUser = async (req: Request, res: Response) => {
 	}
 
 	email = filterXSS(email, xssOptions);
+	email = email.toLowerCase()
 	name = filterXSS(name, xssOptions);
 	password = filterXSS(password, xssOptions);
 
@@ -90,6 +91,7 @@ const verifyEmail = async (req: Request, res: Response) => {
 	let { verificationToken, email } = req.body;
 	email = filterXSS(email, xssOptions);
 	verificationToken = filterXSS(verificationToken, xssOptions);
+	email = email.toLowerCase()
 
 	const user = await User.findOne({ email });
 
@@ -129,6 +131,8 @@ const loginUser = async (req: Request, res: Response) => {
 
 	let { email, password } = req.body;
 	email = filterXSS(email, xssOptions);
+	email = email.toLowerCase()
+
 	password = filterXSS(password, xssOptions);
 
 	if (!email || !password) {
@@ -366,11 +370,13 @@ const logout = async (req: Request, res: Response) => {
 // @route   POST /forgot-password
 // @access  Public
 const forgotPassword = async (req: Request, res: Response) => {
-	const { email } = req.body;
+	let { email } = req.body;
 	if (!email) {
 		res.status(StatusCodes.BAD_REQUEST);
 		throw new Error("Please provide valid email");
 	}
+	email = email.toLowerCase()
+
 
 	const user = await User.findOne({ email });
 	if (!user) {
@@ -411,11 +417,13 @@ const forgotPassword = async (req: Request, res: Response) => {
 // @route   PUT /reset-password
 // @access  Public
 const resetPassword = async (req: Request, res: Response) => {
-	const { token, email, password } = req.body;
+	let { token, email, password } = req.body;
 	if (!token || !email || !password) {
 		res.status(StatusCodes.BAD_REQUEST);
 		throw new Error("Please provide all values");
 	}
+	email = email.toLowerCase()
+
 	const user = await User.findOne({ email });
 
 	if (user) {
