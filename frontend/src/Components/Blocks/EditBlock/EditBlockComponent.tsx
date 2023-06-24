@@ -38,6 +38,7 @@ const EditBlockComponent = () => {
 		tags: [] as string[],
 		imageUrl:
 			"https://png.pngtree.com/png-vector/20191027/ourmid/pngtree-book-cover-template-vector-realistic-illustration-isolated-on-gray-background-empty-png-image_1893997.jpg",
+			oldTier:"free"
 	});
 
 	// let navigate = useNavigate();
@@ -78,7 +79,8 @@ const EditBlockComponent = () => {
 				toast.error("You do not have access to edit this block", {
 					position: toast.POSITION.TOP_CENTER,
 				});
-			} else if (user.id != BlockForUpdatingData.createdBy._id) {
+			} else if (user.id != BlockForUpdatingData.createdBy._id && user.role != "admin") {
+				console.log(user)
 				navigate(`/block/${blockId}`);
 				toast.error("You do not have access to edit this block", {
 					position: toast.POSITION.TOP_CENTER,
@@ -91,6 +93,7 @@ const EditBlockComponent = () => {
 					text: BlockForUpdatingData.text,
 					tags: BlockForUpdatingData.tags,
 					imageUrl: BlockForUpdatingData.imageUrl,
+					oldTier:BlockForUpdatingData.tier
 				});
 			}
 		}

@@ -79,6 +79,8 @@ const UserProfileComponent = (props: Props) => {
 		);
 	}
 
+	console.log(calculateAge(ProfileData.personalInfo.birthday));
+
 	let doesNameEndWithS =
 		ProfileData.personalInfo.name.endsWith("s") ||
 		ProfileData.personalInfo.name.endsWith("S");
@@ -120,20 +122,26 @@ const UserProfileComponent = (props: Props) => {
 								Name: {ProfileData.personalInfo.name}{" "}
 								{/* Replace with the actual name */}
 							</Typography>
-							<Typography variant="subtitle1" gutterBottom>
-								Age: {calculateAge(ProfileData.personalInfo.birthday)}{" "}
-								{/* Age: {ProfileData.personalInfo.birthday}{" "} */}
-								{/* Replace with the actual age */}
-							</Typography>
+							{!isNaN(
+								calculateAge(ProfileData.personalInfo.birthday)
+							) && (
+								<Typography variant="subtitle1" gutterBottom>
+									Age:{" "}
+									{calculateAge(ProfileData.personalInfo.birthday)}{" "}
+								</Typography>
+							)}
 
-							<Typography variant="subtitle1" gutterBottom>
-								Location: {ProfileData.personalInfo.location}{" "}
-								{/* Replace with the actual location */}
-							</Typography>
-							<Typography variant="subtitle1" gutterBottom>
-								About Me: {ProfileData.personalInfo.aboutMe}
-								{/* Replace with the actual about me */}
-							</Typography>
+							{ProfileData.personalInfo.location != "" && (
+								<Typography variant="subtitle1" gutterBottom>
+									Location: {ProfileData.personalInfo.location}{" "}
+								</Typography>
+							)}
+
+							{ProfileData.personalInfo.aboutMe != "" && (
+								<Typography variant="subtitle1" gutterBottom>
+									About Me: {ProfileData.personalInfo.aboutMe}
+								</Typography>
+							)}
 
 							{ProfileData.personalInfo.favoriteTags && (
 								<Typography variant="subtitle1" gutterBottom>
@@ -158,53 +166,33 @@ const UserProfileComponent = (props: Props) => {
 								</Typography>
 							)}
 
-							{/* <Typography variant="subtitle1" gutterBottom>
-								Website:{" "}
-								<Link
-									sx={{
-										textDecoration: "none",
-										color: "blue",
-										cursor: "pointer",
-										wordBreak: "break-all",
-										wordWrap: "break-word",
-										whiteSpace: "pre-wrap",
-									}}
-									href={ProfileData.personalInfo.website}
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									{ProfileData.personalInfo.website}
-								</Link>{" "}
-								{/* Replace with the real website */}
-							{/* </Typography> */}
-
-							<Typography variant="subtitle1" gutterBottom>
-								Website:{" "}
-								<Typography
-									variant="subtitle1"
-									component={"span"}
-									sx={{
-										textDecoration: "none",
-										color: "blue",
-										cursor: "pointer",
-										wordBreak: "break-all",
-										wordWrap: "break-word",
-										whiteSpace: "pre-wrap",
-									}}
-									onClick={() => {
-										window.open(
-											ProfileData.personalInfo.website.startsWith(
-												"https://"
-											)
-												? `${ProfileData.personalInfo.website}`
-												: `https://${ProfileData.personalInfo.website}`,
-											"_blank"
-										);
-									}}
-								>
-									{ProfileData.personalInfo.website}
-								</Typography>
+						{ProfileData.personalInfo.website != "" &&<Typography variant="subtitle1" gutterBottom>
+							Website:{" "}
+							<Typography
+								variant="subtitle1"
+								component={"span"}
+								sx={{
+									textDecoration: "none",
+									color: "blue",
+									cursor: "pointer",
+									wordBreak: "break-all",
+									wordWrap: "break-word",
+									whiteSpace: "pre-wrap",
+								}}
+								onClick={() => {
+									window.open(
+										ProfileData.personalInfo.website.startsWith(
+											"https://"
+										)
+											? `${ProfileData.personalInfo.website}`
+											: `https://${ProfileData.personalInfo.website}`,
+										"_blank"
+									);
+								}}
+							>
+								{ProfileData.personalInfo.website}
 							</Typography>
+						</Typography>}
 						</Box>
 					</Grid>
 				</Grid>

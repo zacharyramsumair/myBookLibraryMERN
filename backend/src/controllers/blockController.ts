@@ -4,16 +4,7 @@ import Block from "../models/Block";
 import { IBlock } from "../interfaces";
 import User from "../models/User";
 import quotes from "../utils/quotes";
-
-function nl2br(str: string) {
-	if (typeof str !== "string") {
-		return "";
-	}
-
-	// Replace newlines with line break tags
-	var breakTag = "<br/>";
-	return str.replace(/(\r\n|\r|\n)/g, breakTag);
-}
+let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
 
 // @desc    Get all blocks
 // @route   POST /
@@ -179,7 +170,8 @@ const getBlockById = async (req: Request, res: Response) => {
 			});
 		} else if (
 			currentUser.blocksBought.includes(block._id) ||
-			currentUser.myBlocks.includes(block._id)
+			currentUser.myBlocks.includes(block._id) ||
+			currentUser.role == "admin"
 		) {
 			return res
 				.status(StatusCodes.OK)
@@ -218,7 +210,6 @@ const createBlock = async (req: Request, res: Response) => {
 		res.status(StatusCodes.UNAUTHORIZED);
 		throw new Error("Not authorized");
 	}
-	let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
 
 	//checks for paid blocks
 	if (price != 0) {
@@ -245,7 +236,9 @@ const createBlock = async (req: Request, res: Response) => {
 		}
 	}
 
-	currentUser.noOfGems -= paidBlockCost;
+	if (currentUser.role != "admin") {
+		currentUser.noOfGems -= paidBlockCost;
+	}
 	// when putting our info allow rating, rating count, rating total, views and favorite count
 	const block = await Block.create({
 		title,
@@ -280,8 +273,6 @@ const createBlock = async (req: Request, res: Response) => {
 
 	await currentUser.save();
 
-	await currentUser.save();
-
 	res.status(StatusCodes.CREATED).json(block);
 };
 
@@ -290,7 +281,7 @@ const createBlock = async (req: Request, res: Response) => {
 // @access  Private
 const updateBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
-	const { title, tags, imageUrl, text, price, tier } = req.body;
+	const { title, tags, imageUrl, text, price, tier, oldTier } = req.body;
 
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {
@@ -323,17 +314,25 @@ const updateBlock = async (req: Request, res: Response) => {
 			throw new Error("Price must be an integer greater than or equal to 0");
 		}
 
-		// let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
-		// if (currentUser.noOfGems < paidBlockCost && currentUser.role != "admin") {
-		// 	res.status(StatusCodes.EXPECTATION_FAILED);
-		// 	throw new Error("Not enough gems.");
-		// }
-
 		if (text.length < 500) {
 			res.status(StatusCodes.EXPECTATION_FAILED);
 			throw new Error(
 				"Paid Blocks must be a minimum of 500 characters long"
 			);
+		}
+
+		if (oldTier == "free" && price > 0) {
+			if (
+				currentUser.noOfGems < paidBlockCost &&
+				currentUser.role != "admin"
+			) {
+				res.status(StatusCodes.EXPECTATION_FAILED);
+				throw new Error("Not enough gems.");
+			}
+
+			if (currentUser.role != "admin") {
+				currentUser.noOfGems -= paidBlockCost;
+			}
 		}
 	}
 
@@ -345,6 +344,7 @@ const updateBlock = async (req: Request, res: Response) => {
 	block.tier = price == 0 ? "free" : "paid";
 
 	await block.save();
+	await currentUser.save();
 	res.status(StatusCodes.OK).json(block);
 };
 

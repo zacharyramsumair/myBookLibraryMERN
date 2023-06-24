@@ -219,7 +219,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 									navigate(`/profile/${createdBy._id}`);
 								}}
 								component="span"
-								sx={{ textDecoration: "underline" }}
+								sx={{ textDecoration: "underline" , cursor:"pointer" }}
 							>
 								{createdBy.name}
 							</Typography>

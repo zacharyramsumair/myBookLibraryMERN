@@ -8,6 +8,7 @@ interface IBlock {
 	text:string;
 	price:number;
 	tier:string;
+	oldTier:string;
 }
 
 interface IData{

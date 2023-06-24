@@ -49,7 +49,10 @@ const MyBlocksCard = (props: Props) => {
 		return displayTag ? displayTag.display : "";
 	};
 	return (
-		<Paper sx={{ paddingY: 2, margin: 2, width: "100%" }}>
+		<Paper
+			sx={{ paddingY: 2, margin: 2, width: "100%", cursor: "pointer" }}
+			onClick={() => navigate(`/block/${props.item._id}`)}
+		>
 			<Box
 				sx={{
 					display: "grid",
@@ -185,7 +188,10 @@ const MyBlocksCard = (props: Props) => {
 						})}
 					</Typography> */}
 
-					<Typography variant="subtitle2" sx={{ fontSize: "0.7rem", marginTop:3 }}>
+					<Typography
+						variant="subtitle2"
+						sx={{ fontSize: "0.7rem", marginTop: 3 }}
+					>
 						Last Update:{" "}
 						{new Date(props.item.updatedAt).toLocaleDateString("en-TT", {
 							timeZone: "America/Port_of_Spain",
