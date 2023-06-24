@@ -137,7 +137,7 @@ const StoreComponent = () => {
 
 	return (
 		<BlockFraming hideSearch={true}>
-			<Box sx={{ padding: 4 }}>
+			<Box sx={{ padding: "0 0 0 4" }}>
 				<Paper
 					sx={{ padding: 1, display: "flex", justifyContent: "center" }}
 				>

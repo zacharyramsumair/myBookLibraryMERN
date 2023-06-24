@@ -124,7 +124,7 @@ const PricingComponent = (props: Props) => {
 					"0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
 				// marginX: 3,
 				// marginY: isSmallScreen ? 10 : 15,
-				marginY: 2,
+				marginBottom: 2,
 			}}
 		>
 			{/* <Typography variant="h4" align="center">

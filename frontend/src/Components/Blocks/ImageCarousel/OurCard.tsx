@@ -52,7 +52,7 @@ export default function OurCard(props: Props) {
 			)}
 			</Box>
 			<CardContent sx={{ margin: "auto" }}>
-				<Typography variant="subtitle2">{props.item.title}</Typography>
+				<Typography variant="subtitle2" sx={{textAlign:'center'}}>{props.item.title}</Typography>
 			</CardContent>
 		</Card>
 	);
