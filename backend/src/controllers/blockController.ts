@@ -783,14 +783,14 @@ const getDashboard = async (req: Request, res: Response) => {
 
 			// Get 30 random blocks with a rating > 3 and matching the user's favorite tags
 			recommendedBlocks = await Block.aggregate([
-				{ $match: { rating: { $gte: 0 }, tags: { $in: favoriteTags } } },
+				{ $match: { rating: { $gte: 2.5 }, tags: { $in: favoriteTags } } },
 				{ $sample: { size: 30 } },
 				{ $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
 			]);
 
 			if (recommendedBlocks.length < 5) {
 				recommendedBlocks = await Block.aggregate([
-					{ $match: { rating: { $gte: 0 } } },
+					{ $match: { rating: { $gte: 2.5 } } },
 					{ $sample: { size: 30 } },
 					{ $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
 				]);
@@ -800,7 +800,7 @@ const getDashboard = async (req: Request, res: Response) => {
 		// User is not logged in
 		// Get 30 random blocks with a rating > 3
 		recommendedBlocks = await Block.aggregate([
-			{ $match: { rating: { $gte: 0 } } },
+			{ $match: { rating: { $gte: 2.5 } } },
 			{ $sample: { size: 30 } },
 			{ $project: { title: 1, tier: 1, imageUrl: 1 } }, // Include only title, tier, and imageUrl fields
 		]);
