@@ -59,37 +59,32 @@ function App() {
 					<Routes>
 						{/* landing page and greeting */}
 						<Route path="/landingPage" element={<LandingPage />} />
-						{/* <Route path="/prices" element={<PricingPage />} /> */}
 
 						{/* auth */}
 						<Route
 							path="/login"
-							element={
-								!user ? <LoginPage /> : <Navigate to="/settings" />
-							}
+							element={!user ? <LoginPage /> : <Navigate to="/" />}
 						/>
 						<Route
 							path="/register"
-							element={
-								!user ? <RegisterPage /> : <Navigate to="/settings" />
-							}
+							element={!user ? <RegisterPage /> : <Navigate to="/" />}
 						/>
-						<Route path="/verifyEmail" element={<VerifyEmailPage />} />
+						<Route
+							path="/verifyEmail"
+							element={!user ? <VerifyEmailPage /> : <Navigate to="/" />}
+						/>
+
 						<Route
 							path="/forgotPassword"
-							element={<ForgotPasswordPage />}
+							element={
+								!user ? <ForgotPasswordPage /> : <Navigate to="/" />
+							}
 						/>
+
 						<Route
 							path="/resetPassword"
 							element={<ResetPasswordPage />}
 						/>
-
-						{/* <Route
-							path="settings"
-							element={
-								user ? <UserSettingsPage /> : <Navigate to="/login" />
-							}
-						/> */}
 
 						{/* Blocks and main app area */}
 						<Route path="/" element={<Dashboard />} />
@@ -97,15 +92,39 @@ function App() {
 						<Route path="/Shelf" element={<MyShelf />} />
 						<Route path="/favorites" element={<MyFavorites />} />
 						<Route path="/search" element={<SearchBlocks />} />
-						<Route path="/creatorStudio" element={<CreatorStudio />} />
-						<Route path="/myBlocks" element={<MyBlocks />} />
-						<Route path="/create" element={<CreateBlock />} />
-						<Route path="/edit/:id" element={<EditBlock />} />
-						<Route path="/settings" element={<UserSettingsPage />} />
+
+						<Route
+							path="/creatorStudio"
+							element={
+								!user ? <Navigate to="/login" /> : <CreatorStudio />
+							}
+						/>
+
+						<Route
+							path="/myBlocks"
+							element={!user ? <Navigate to="/login" /> : <MyBlocks />}
+						/>
+
+						<Route
+							path="/create"
+							element={
+								!user ? <Navigate to="/login" /> : <CreateBlock />
+							}
+						/>
+						<Route
+							path="/edit/:id"
+							element={!user ? <Navigate to="/login" /> : <EditBlock />}
+						/>
+						<Route
+							path="/settings"
+							element={
+								!user ? <Navigate to="/login" /> : <UserSettingsPage />
+							}
+						/>
 						<Route path="/profile/:id" element={<UserProfile />} />
 
 						{/* store */}
-						<Route path="/store" element={<Store/>} />
+						<Route path="/store" element={<Store />} />
 
 						{/* 404 Not Found */}
 						<Route path="*" element={<NotFoundPage />} />
