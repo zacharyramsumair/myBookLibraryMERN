@@ -5,16 +5,15 @@ import { IBlock } from "../interfaces";
 import User from "../models/User";
 import quotes from "../utils/quotes";
 
-
-function nl2br(str:string) {
-	if (typeof str !== 'string') {
-	  return '';
+function nl2br(str: string) {
+	if (typeof str !== "string") {
+		return "";
 	}
-	
+
 	// Replace newlines with line break tags
-	var breakTag ='<br/>';
+	var breakTag = "<br/>";
 	return str.replace(/(\r\n|\r|\n)/g, breakTag);
-  }
+}
 
 // @desc    Get all blocks
 // @route   POST /
@@ -92,6 +91,19 @@ const buyBlock = async (req: Request, res: Response) => {
 	});
 
 	await currentUser.save();
+
+	//update money earned for creator
+
+	const creator = await User.findById(block.createdBy);
+
+	if (!creator) {
+		res.status(StatusCodes.EXPECTATION_FAILED);
+		throw new Error("There is no creator for this block");
+	}
+	creator.moneyEarnedInCents += block.price;
+
+	await creator.save();
+
 	return res
 		.status(StatusCodes.OK)
 		.json({ msg: `${currentUser._id} bought block ${block._id}` });

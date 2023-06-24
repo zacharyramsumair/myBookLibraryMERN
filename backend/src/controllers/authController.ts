@@ -292,17 +292,19 @@ const showCurrentUser = async (req: Request, res: Response) => {
 
 	if (subscription.data.length > 0) {
 		if (
-			subscription.data[0].items.data[0].price.product == "prod_O701d8QfGkpAAf"
+			subscription.data[0].items.data[0].price.product ==
+			"prod_O701d8QfGkpAAf"
 		) {
 			user.tier = "premium";
 		} else if (
-			subscription.data[0].items.data[0].price.product == "prod_O7Gr7q0NmZpSzN"
+			subscription.data[0].items.data[0].price.product ==
+			"prod_O7Gr7q0NmZpSzN"
 		) {
 			user.tier = "standard";
 		} else {
 			user.tier = "free";
 		}
-	}else {
+	} else {
 		user.tier = "free";
 	}
 
@@ -323,7 +325,7 @@ const showCurrentUser = async (req: Request, res: Response) => {
 			user.nextGemIncrement = addDays(startOfCurrentDay, 31);
 		}
 	}
-	
+
 	await user.save();
 	await currentUser.save();
 
@@ -495,7 +497,7 @@ const getMyProfilePageForEditing = async (req: Request, res: Response) => {
 		showFavoriteTags: currentUser.showFavoriteTags,
 		showFavorites: currentUser.showFavorites,
 		profilePic: currentUser.profilePic,
-		subscription
+		subscription,
 	});
 };
 
@@ -637,6 +639,16 @@ const getCreatedBlocks = async (req: Request, res: Response) => {
 	res.status(StatusCodes.OK).json(createdBlocks);
 };
 
+const getMoneyEarned = async (req: Request, res: Response) => {
+	const currentUser = await User.findById(req.user);
+	if (!currentUser) {
+		res.status(StatusCodes.UNAUTHORIZED);
+		throw new Error("Not authorized");
+	}
+
+	res.json({moneyEarnedInCents:currentUser.moneyEarnedInCents})
+};
+
 export default {
 	registerUser,
 	verifyEmail,
@@ -651,4 +663,5 @@ export default {
 	getFavoriteBlocks,
 	getRatedBlocks,
 	getCreatedBlocks,
+	getMoneyEarned
 };

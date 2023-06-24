@@ -22,5 +22,6 @@ router.get('/profile/:id', authController.getProfilePage)
 router.get('/profile/favorite-blocks', authController.getFavoriteBlocks)
 router.get('/profile/rated-blocks', authController.getRatedBlocks)
 router.get('/profile/created-blocks', authController.getCreatedBlocks)
+router.get('/profile/money-earned', authController.getMoneyEarned)
 
  export default router
