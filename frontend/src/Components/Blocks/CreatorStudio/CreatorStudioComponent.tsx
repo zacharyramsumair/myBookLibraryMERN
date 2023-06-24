@@ -1,12 +1,37 @@
 import React from "react";
 import BlockFraming from "../BlockFraming/BlockFraming";
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useGetMoneyEarned } from "../../../Hooks/Auth/useGetMoneyEarned";
 
 type Props = {};
 
 const DashboardComponent = (props: Props) => {
 	let navigate = useNavigate();
+
+	let { isLoading, error, data, refetch } = useGetMoneyEarned();
+
+	if (isLoading) {
+		return (
+			<BlockFraming hideSearch={false}>
+				<Box sx={{ paddingX: 4 }}>
+					<Box
+						sx={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							minHeight: 200,
+						}}
+					>
+						<CircularProgress />
+					</Box>
+				</Box>
+			</BlockFraming>
+		);
+	}
+
+	console.log(data)
+
 	return (
 		<BlockFraming hideSearch={true}>
 			<Box
