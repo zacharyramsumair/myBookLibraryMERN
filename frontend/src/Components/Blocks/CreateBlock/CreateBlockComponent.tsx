@@ -7,9 +7,7 @@ import { useCreateBlock } from "../../../Hooks/Blocks/useCreateBlock";
 import { useNavigate } from "react-router-dom";
 
 const CreateBlockComponent = () => {
-
-	let navigate = useNavigate()
-
+	let navigate = useNavigate();
 
 	const [formData, setFormData] = useState({
 		title: "",
@@ -33,14 +31,12 @@ const CreateBlockComponent = () => {
 		isSuccess,
 	} = useCreateBlock();
 
-
-	useEffect(()=>{
-		if(data){
+	useEffect(() => {
+		if (data) {
 			// console.log(data)
-			navigate(`/block/${data._id}`)
+			navigate(`/block/${data._id}`);
 		}
-
-	}, [isSuccess])
+	}, [isSuccess]);
 
 	const handleModalOpen = () => {
 		setModalOpen(true);
@@ -134,7 +130,7 @@ const CreateBlockComponent = () => {
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		formData.price = Number(formData.price)
+		formData.price = Number(formData.price);
 
 		// Validation logic
 		if (formData.title.trim() === "") {
@@ -142,9 +138,9 @@ const CreateBlockComponent = () => {
 			return;
 		}
 
-		if(formData.price < 0 || !Number.isInteger(formData.price)){
+		if (formData.price < 0 || !Number.isInteger(formData.price)) {
 			toast.error("Price must be an integer greater than or equal to 0");
-				return;
+			return;
 		}
 
 		if (formData.price > 0) {
@@ -180,16 +176,22 @@ const CreateBlockComponent = () => {
 			tier: formData.tier,
 		});
 
-
 		// console.log(formData.text.split("\n"))
 	};
 
 	const tagElements = allTags.slice(1).map((tag, index) => (
 		<Button
 			variant="contained"
-			color={formData.tags.includes(tag.backendName) ? "secondary" : "primary"}
+			// color={
+			// 	formData.tags.includes(tag.backendName) ? "#7dbeff" : "primary"
+			// }
 			onClick={() => handleTagClick(tag.backendName)}
-			sx={{ margin: 0.5 }}
+			sx={{
+				margin: 0.5,
+				backgroundColor: formData.tags.includes(tag.backendName)
+					? "#2f4d6b"
+					: "primary",
+			}}
 			key={index}
 		>
 			{tag.display}
@@ -259,7 +261,6 @@ const CreateBlockComponent = () => {
 						onChange={handleInputChange}
 						margin="normal"
 						// inputProps={{ min: 0 }}
-
 					/>
 					<TextField
 						label="Text"
@@ -289,7 +290,18 @@ const CreateBlockComponent = () => {
 						</Box>
 					</Box>
 					<Box sx={{ marginTop: 2 }}>
-						<Button variant="contained" color="success" type="submit">
+						<Button
+							variant="contained"
+							sx={{
+								backgroundColor: "#F35657",
+								transition: "transform 0.3s",
+								"&:hover": {
+									transform: "scale(1.05)",
+									backgroundColor: "#f74042",
+								},
+							}}
+							type="submit"
+						>
 							Create Block
 						</Button>
 					</Box>

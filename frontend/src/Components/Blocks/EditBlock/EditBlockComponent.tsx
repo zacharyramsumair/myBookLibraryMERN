@@ -276,11 +276,16 @@ const EditBlockComponent = () => {
 	const tagElements = allTags.slice(1).map((tag, index) => (
 		<Button
 			variant="contained"
-			color={
-				formData.tags.includes(tag.backendName) ? "secondary" : "primary"
-			}
+			// color={
+			// 	formData.tags.includes(tag.backendName) ? "secondary" : "primary"
+			// }
 			onClick={() => handleTagClick(tag.backendName)}
-			sx={{ margin: 0.5 }}
+			sx={{
+				margin: 0.5,
+				backgroundColor: formData.tags.includes(tag.backendName)
+					? "#2f4d6b"
+					: "primary",
+			}}
 			key={index}
 		>
 			{tag.display}
@@ -392,18 +397,34 @@ const EditBlockComponent = () => {
 					<Box sx={{ marginTop: 5 }}>
 						<Button
 							variant="contained"
-							color="error"
+							// color="error"
 							type="button"
 							onClick={() => navigate(-1)}
-							sx={{ marginX: 1 }}
+							sx={{
+								marginX: 1,
+								backgroundColor: "#eee",
+								color: "#000",
+								"&:hover": {
+									// transform: "scale(1.05)",
+									backgroundColor: "#eee",
+									color: "#000",
+								},
+							}}
 						>
 							Cancel
 						</Button>
 						<Button
 							variant="contained"
-							color="success"
 							type="submit"
-							sx={{ marginX: 1 }}
+							sx={{
+								marginX: 1,
+								backgroundColor: "#F35657",
+								transition: "transform 0.3s",
+								"&:hover": {
+									transform: "scale(1.05)",
+									backgroundColor: "#f74042",
+								},
+							}}
 						>
 							Edit Block
 						</Button>
