@@ -86,6 +86,7 @@ const EditBlockComponent = () => {
 					position: toast.POSITION.TOP_CENTER,
 				});
 			} else {
+				console.log(BlockForUpdatingData)
 				setFormData({
 					title: BlockForUpdatingData.title,
 					price: BlockForUpdatingData.price,
@@ -98,6 +99,8 @@ const EditBlockComponent = () => {
 			}
 		}
 	}, [BlockForUpdatingData]);
+
+	console.log(formData)
 
 	//alert errors
 	useEffect(() => {

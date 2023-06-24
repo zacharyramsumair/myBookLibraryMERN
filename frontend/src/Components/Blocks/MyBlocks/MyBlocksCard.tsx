@@ -143,7 +143,6 @@ const MyBlocksCard = (props: Props) => {
 						<Box sx={{ display: "flex", alignItems: "center" }}>
 							<Visibility fontSize="small" />
 							<Typography variant="body2" sx={{ marginLeft: 1 }}>
-								{/* 100 */}
 								{props.item.views}
 							</Typography>
 						</Box>
@@ -174,19 +173,15 @@ const MyBlocksCard = (props: Props) => {
 				>
 					<Button
 						variant="contained"
-						onClick={() => navigate(`/edit/${props.item._id}`)}
+						// onClick={() => navigate(`/edit/${props.item._id}`)}
+						onClick={(e) => {
+							e.stopPropagation();
+							navigate(`/edit/${props.item._id}`);
+						}}
 					>
-						{" "}
 						<EditIcon sx={{ marginRight: 1 }} />
 						Edit{" "}
 					</Button>
-					{/* <Typography variant="subtitle2">
-						Last Updated:{" "}
-						{new Date(props.item.updatedAt).toLocaleString("en-TT", {
-							timeZone: "America/Port_of_Spain",
-							hour12: true,
-						})}
-					</Typography> */}
 
 					<Typography
 						variant="subtitle2"

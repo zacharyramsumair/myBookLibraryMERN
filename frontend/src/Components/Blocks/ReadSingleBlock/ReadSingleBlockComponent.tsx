@@ -97,7 +97,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 		}
 	}, [isSuccessBuyBlock, refetch, boughtToastShown]);
 
-	console.log(SingleBlockData);
+	// console.log(SingleBlockData);
 	useEffect(() => {
 		if (SingleBlockData) {
 			setIsFavorite(SingleBlockData.isFavorite);
