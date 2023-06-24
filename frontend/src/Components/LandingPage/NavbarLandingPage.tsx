@@ -139,7 +139,7 @@ export default function Navbar(props: Props) {
 	return (
 		<React.Fragment>
 			<CssBaseline />
-			<AppBar component="nav">
+			<AppBar component="nav" sx={{backgroundColor:"#FF9500"}} >
 				<Toolbar>
 					<IconButton
 						color="inherit"

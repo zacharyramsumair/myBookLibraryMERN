@@ -8,6 +8,7 @@ import {
 	Typography,
 	Box,
 	CircularProgress,
+	Divider,
 } from "@mui/material";
 import { z } from "zod";
 import { useLoginUser } from "../../Hooks/Auth/useLoginUser";
@@ -158,7 +159,7 @@ const LoginForm: React.FC = () => {
 						</Button>
 					</form>
 
-					<Box sx={{ marginTop: 3 }}>
+					<Box sx={{ marginY: 3 }}>
 						<Typography variant="body2">
 							{" "}
 							Don't have an account?{" "}
@@ -166,10 +167,21 @@ const LoginForm: React.FC = () => {
 								onClick={() => navigate("/register")}
 								variant="body2"
 								component={"span"}
-								sx={{ color: "#3366CC", cursor:"pointer" }}
+								sx={{ color: "#3366CC", cursor: "pointer" }}
 							>
-							Register here.
+								Register here.
 							</Typography>{" "}
+						</Typography>
+					</Box>
+
+					<Divider />
+					<Box sx={{ marginTop: 3 }}>
+						<Typography variant="body2">Demo Account :</Typography>
+						<Typography variant="body2">
+							Email - blocksDemoAccount123@gmail.com{" "}
+						</Typography>
+						<Typography variant="body2">
+							Password - blocksDemoAccount123@gmail.com{" "}
 						</Typography>
 					</Box>
 				</>

@@ -83,7 +83,7 @@ const LandingPageCallToAction = (props: Props) => {
 							alignItems: "center",
 						}}
 					>
-						<Link to="/login">
+						<Link to="/">
 						<Button
 							variant="contained"
 							

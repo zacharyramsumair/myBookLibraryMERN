@@ -35,7 +35,7 @@ const Footer = () => {
 				<Grid item xs={6}  md={3.5}>
 					<Link
 						sx={{ color: "#fff", textDecoration: "none" }}
-						href="/try-now"
+						href="/"
 					>
 						Try Now
 					</Link>
