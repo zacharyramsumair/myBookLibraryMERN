@@ -76,6 +76,7 @@ const MyBlocksCard = (props: Props) => {
 						}}
 					>
 						<img
+						crossOrigin="anonymous"
 							// src="https://png.pngtree.com/png-vector/20191027/ourmid/pngtree-book-cover-template-vector-realistic-illustration-isolated-on-gray-background-empty-png-image_1893997.jpg"
 							src={props.item.image}
 							alt={props.item.title}

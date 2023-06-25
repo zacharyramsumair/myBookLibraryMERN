@@ -42,6 +42,7 @@ const FramingLeft = (props: Props) => {
 					sx={{ cursor: "pointer" }}
 				>
 					<img
+					crossOrigin="anonymous"
 						className={Framing.logo}
 						src={logo}
 						// src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c51f.png"

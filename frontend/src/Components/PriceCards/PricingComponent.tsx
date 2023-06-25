@@ -218,7 +218,7 @@ const PricingComponent = (props: Props) => {
 											},
 										}}
 									>
-										{user.tier == "free"
+										{user && user?.tier == "free"
 											? "Current Tier"
 											: "Get started"}
 									</Button>
@@ -325,7 +325,7 @@ const PricingComponent = (props: Props) => {
 												: props.handleNotLoggedIn()
 										}
 									>
-										{user.tier == "standard"
+										{user && user?.tier == "standard"
 											? "Current Tier"
 											: "Buy Now"}
 									</Button>
@@ -432,7 +432,7 @@ const PricingComponent = (props: Props) => {
 												: props.handleNotLoggedIn()
 										}
 									>
-										{user.tier == "premium"
+										{user && user?.tier == "premium"
 											? "Current Tier"
 											: "Buy Now"}
 									</Button>

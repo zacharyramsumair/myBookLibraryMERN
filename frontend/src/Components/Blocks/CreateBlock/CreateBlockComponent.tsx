@@ -222,6 +222,7 @@ const CreateBlockComponent = () => {
 					>
 						<Box>
 							<img
+							crossOrigin="anonymous"
 								src={formData.imageUrl}
 								alt=""
 								style={{ width: "8em", height: "10em" }}

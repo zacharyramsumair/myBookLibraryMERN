@@ -18,6 +18,10 @@ import { useGetProducts } from "../../../Hooks/Stripe/getAllProducts";
 import { useCreateStripeSession } from "../../../Hooks/Stripe/useCreateStripeSession";
 import { UserContext } from "../../../Contexts/UserContext";
 
+import handfullOfGems from "../../../assets/handfullOfGems.png"
+import pouchOfGems from "../../../assets/pouchOfGems.png"
+import bucketOfGems from "../../../assets/bucketOfGems.png"
+
 const StoreComponent = () => {
 	let navigate = useNavigate();
 	let { user, setUser, fetchUser } = useContext(UserContext);
@@ -197,8 +201,10 @@ const StoreComponent = () => {
 										{/* Handfull of Gems */}
 										{data && products[2].nickname}
 									</Typography>
-									<img
-										src="https://store.supercell.com/images/brawlstars/5b359823b45a89eb468465c318290150.png"
+									<img 
+										// src="https://store.supercell.com/images/brawlstars/5b359823b45a89eb468465c318290150.png"
+										src={handfullOfGems}
+										crossOrigin="anonymous"
 										alt=""
 										style={{ width: "100%" }}
 									/>
@@ -242,8 +248,9 @@ const StoreComponent = () => {
 										{/* Pouch of Gems */}
 										{data && products[1].nickname}
 									</Typography>
-									<img
-										src="https://store.supercell.com/images/clashroyale/d94bbe2102d77b7e39347d011da86b8f.png"
+									<img crossOrigin="anonymous"
+										// src="https://store.supercell.com/images/clashroyale/d94bbe2102d77b7e39347d011da86b8f.png"
+										src={pouchOfGems}
 										alt=""
 										style={{ width: "100%" }}
 									/>
@@ -287,8 +294,9 @@ const StoreComponent = () => {
 										{/* Bucket of Gems */}
 										{data && products[0].nickname}
 									</Typography>
-									<img
-										src="https://store.supercell.com/images/clashroyale/c7195e16e40f60dba67d4233375b0e34.png"
+									<img crossOrigin="anonymous"
+										// src="https://store.supercell.com/images/clashroyale/c7195e16e40f60dba67d4233375b0e34.png"
+										src={bucketOfGems}
 										alt=""
 										style={{ width: "100%" }}
 									/>

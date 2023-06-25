@@ -79,6 +79,7 @@ const SearchCard = ({ item }: SearchCardProps) => {
 						}}
 					>
 						<img
+						crossOrigin="anonymous"
 							src={item.image}
 							alt={item.title}
 							style={{ width: "6em", height: "8em" }}

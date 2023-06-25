@@ -49,7 +49,7 @@ export default function Navbar(props: Props) {
 	const drawer = (
 		<Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
 			<Link to="/">
-				<img src={logo} style={{ width: "8em", height: "8em" }} />
+				<img crossOrigin="anonymous" src={logo} style={{ width: "8em", height: "8em" }} />
 			</Link>
 			<Divider />
 			<List>

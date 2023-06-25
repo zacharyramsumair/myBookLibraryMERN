@@ -126,6 +126,7 @@ const LandingPageCallToAction = (props: Props) => {
 					}}
 				>
 					<img
+					crossOrigin="anonymous"
 						className="landingImage"
 						// src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Pan_Blue_Circle.png"
 						src={bookBlocks}

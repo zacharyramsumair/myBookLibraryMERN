@@ -192,6 +192,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 				>
 					<Box sx={{ flexShrink: 0 }}>
 						<img
+						crossOrigin="anonymous"
 							src={imageUrl}
 							alt={title}
 							style={{ width: "15em", height: "20em" }}
@@ -246,6 +247,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 								}}
 							>
 								<img
+								crossOrigin="anonymous"
 									src={gemImage}
 									alt=""
 									style={{

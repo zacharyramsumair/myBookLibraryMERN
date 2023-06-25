@@ -34,6 +34,7 @@ export default function OurCard(props: Props) {
 			
 			<Box component="div" marginTop={2} sx={{position:"relative"}}>
 				<img
+				crossOrigin="anonymous"
 					src={props.item.imageUrl}
 					className={Styles.cardImage}
 					loading="lazy"
