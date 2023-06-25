@@ -182,9 +182,9 @@ const createBlock = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             res.status(http_status_codes_1.StatusCodes.EXPECTATION_FAILED);
             throw new Error("Paid Blocks must be a minimum of 500 characters long");
         }
-    }
-    if (currentUser.role != "admin") {
-        currentUser.noOfGems -= paidBlockCost;
+        if (currentUser.role != "admin") {
+            currentUser.noOfGems -= paidBlockCost;
+        }
     }
     // when putting our info allow rating, rating count, rating total, views and favorite count
     const block = yield Block_1.default.create({

@@ -234,11 +234,11 @@ const createBlock = async (req: Request, res: Response) => {
 				"Paid Blocks must be a minimum of 500 characters long"
 			);
 		}
+		if (currentUser.role != "admin") {
+			currentUser.noOfGems -= paidBlockCost;
+		}
 	}
 
-	if (currentUser.role != "admin") {
-		currentUser.noOfGems -= paidBlockCost;
-	}
 	// when putting our info allow rating, rating count, rating total, views and favorite count
 	const block = await Block.create({
 		title,
