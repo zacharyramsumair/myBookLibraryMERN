@@ -239,6 +239,13 @@ const EditBlockComponent = () => {
 			return;
 		}
 
+		if(formData.oldTier =="free" && formData.tier =="paid" && user.noOfGems < 1){
+			toast.error("You do enough gems to make this a paid block", {
+				position: toast.POSITION.TOP_CENTER,
+			});
+			return
+		}
+
 		// Form submission logic
 		// console.log(formData);
 		updateBlock({ id: blockId, blockInfo: { ...formData } });
