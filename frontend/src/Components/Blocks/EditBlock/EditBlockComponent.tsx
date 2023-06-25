@@ -19,6 +19,7 @@ import { useGetBlockForUpdating } from "../../../Hooks/Blocks/useGetBlockForUpda
 import { useDeleteBlock } from "../../../Hooks/Blocks/useDeleteBlock";
 import { BlurCircular } from "@mui/icons-material";
 import { UserContext } from "../../../Contexts/UserContext";
+import axios from "axios";
 
 const EditBlockComponent = () => {
 	let navigate = useNavigate();
@@ -129,6 +130,7 @@ const EditBlockComponent = () => {
 
 	const isValidImageUrl = async (url: string): Promise<boolean> => {
 		const img = new Image();
+		img.crossOrigin = "anonymous"; 
 
 		const loadImage = (): Promise<boolean> =>
 			new Promise((resolve) => {
@@ -144,6 +146,17 @@ const EditBlockComponent = () => {
 
 		return await loadImage();
 	};
+
+	// const isValidImageUrl = async (url:string) => {
+	// 	try {
+	// 		const response = await axios.head(url);
+	// 		const contentType = response.headers["content-type"];
+	// 		console.log(contentType)
+	// 		return contentType.startsWith("image/");
+	// 	} catch (error) {
+	// 		return false;
+	// 	}
+	// };
 
 	const handleImageModalValueChange = (
 		event: ChangeEvent<HTMLInputElement>

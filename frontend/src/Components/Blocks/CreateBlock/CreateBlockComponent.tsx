@@ -6,11 +6,11 @@ import allTags from "../allTags";
 import { useCreateBlock } from "../../../Hooks/Blocks/useCreateBlock";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../../Contexts/UserContext";
+import axios from "axios";
 
 const CreateBlockComponent = () => {
 	let navigate = useNavigate();
 	let { user, setUser, fetchUser } = useContext(UserContext);
-
 
 	const [formData, setFormData] = useState({
 		title: "",
@@ -37,7 +37,7 @@ const CreateBlockComponent = () => {
 	useEffect(() => {
 		if (data) {
 			// console.log(data)
-			fetchUser()
+			fetchUser();
 			navigate(`/block/${data._id}`);
 		}
 	}, [isSuccess]);
@@ -53,6 +53,8 @@ const CreateBlockComponent = () => {
 
 	const isValidImageUrl = async (url: string): Promise<boolean> => {
 		const img = new Image();
+		img.crossOrigin = "anonymous"; 
+
 
 		const loadImage = (): Promise<boolean> =>
 			new Promise((resolve) => {
@@ -68,6 +70,17 @@ const CreateBlockComponent = () => {
 
 		return await loadImage();
 	};
+
+	// const isValidImageUrl = async (url:string) => {
+	// 	try {
+	// 		const response = await axios.head(url);
+	// 		const contentType = response.headers["content-type"];
+	// 		console.log(contentType)
+	// 		return contentType.startsWith("image/");
+	// 	} catch (error) {
+	// 		return false;
+	// 	}
+	// };
 
 	const handleImageModalValueChange = (
 		event: ChangeEvent<HTMLInputElement>
@@ -90,7 +103,7 @@ const CreateBlockComponent = () => {
 				handleModalClose();
 			} else {
 				console.log("Invalid image URL");
-				toast.error("Invalid image URL", {
+				toast.error("Invalid image URL...", {
 					position: toast.POSITION.TOP_CENTER,
 				});
 			}
@@ -222,7 +235,7 @@ const CreateBlockComponent = () => {
 					>
 						<Box>
 							<img
-							crossOrigin="anonymous"
+								crossOrigin="anonymous"
 								src={formData.imageUrl}
 								alt=""
 								style={{ width: "8em", height: "10em" }}
