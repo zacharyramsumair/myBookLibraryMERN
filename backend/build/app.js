@@ -76,8 +76,8 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
         app.use("/api/v1/blocks", blockRoutes_1.default);
         app.use("/api/v1/stripe", stripeRoutes_1.default);
         if (process.env.NODE_ENV === "production") {
-            app.use(express_1.default.static(path_1.default.join(__dirname, "../../frontend/dist")));
-            app.get("*", (req, res) => res.sendFile(path_1.default.resolve(__dirname, "../../", "frontend", "dist", "index.html")));
+            app.use(express_1.default.static(path_1.default.join(__dirname, "../frontend/dist")));
+            app.get("*", (req, res) => res.sendFile(path_1.default.resolve(__dirname, "../", "frontend", "dist", "index.html")));
         }
         else {
             app.get("/", (req, res) => res.send("Please set to production"));
