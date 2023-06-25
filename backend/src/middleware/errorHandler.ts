@@ -13,7 +13,8 @@ const errorHandler = (
 	res.json({
 		message: err.message,
 		// stack: process.env.NODE_ENV === 'production' ? null : err.stack,
-		stack: null,
+		// stack: null,
+    stack:err.stack
 	});
 };
 
