@@ -10,6 +10,8 @@ import {
 	Grid,
 	Link,
 	CircularProgress,
+	useMediaQuery,
+	Theme,
 } from "@mui/material";
 import ImageCarousel from "../Blocks/ImageCarousel/ImageCarousel";
 import { Favorite } from "@mui/icons-material";
@@ -26,6 +28,10 @@ const UserProfileComponent = (props: Props) => {
 	if (id) {
 		blockId = id;
 	}
+
+	const isSmallScreen = useMediaQuery((theme: Theme) =>
+	theme.breakpoints.down("md")
+);
 
 	let { LoadingProfile, ErrorProfile, ProfileData, refetch } = useGetProfile(
 		blockId
@@ -118,7 +124,7 @@ const UserProfileComponent = (props: Props) => {
 					</Grid>
 					<Grid item xs={12} sm={6}>
 						<Box>
-							<Typography variant="h6" gutterBottom>
+							<Typography variant={isSmallScreen ? "subtitle1" : "h6"} gutterBottom>
 								Name: {ProfileData.personalInfo.name}{" "}
 								{/* Replace with the actual name */}
 							</Typography>
@@ -198,13 +204,13 @@ const UserProfileComponent = (props: Props) => {
 				</Grid>
 				<Box>
 					{/* <ImageCarousel  fullRow={true} headerText={` Blocks`} align="left" listOfImages={ProfileData.createdBlocks} /> */}
-					<ImageCarousel
+					{ProfileData.createdBlocks.length > 0 && <ImageCarousel
 						fullRow={true}
 						headerText={`${possessiveName} Blocks`}
 						align="left"
 						listOfImages={ProfileData.createdBlocks}
-					/>
-					{ProfileData.favoriteBlocks && (
+					/>}
+					{ProfileData.favoriteBlocks && ProfileData.favoriteBlocks.length >0 && (
 						<ImageCarousel
 							fullRow={true}
 							headerText={`${possessiveName} Favorites`}

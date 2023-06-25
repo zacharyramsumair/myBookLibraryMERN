@@ -18,9 +18,9 @@ import { useGetProducts } from "../../../Hooks/Stripe/getAllProducts";
 import { useCreateStripeSession } from "../../../Hooks/Stripe/useCreateStripeSession";
 import { UserContext } from "../../../Contexts/UserContext";
 
-import handfullOfGems from "../../../assets/handfullOfGems.png"
-import pouchOfGems from "../../../assets/pouchOfGems.png"
-import bucketOfGems from "../../../assets/bucketOfGems.png"
+import handfullOfGems from "../../../assets/handfullOfGems.png";
+import pouchOfGems from "../../../assets/pouchOfGems.png";
+import bucketOfGems from "../../../assets/bucketOfGems.png";
 
 const StoreComponent = () => {
 	let navigate = useNavigate();
@@ -111,14 +111,12 @@ const StoreComponent = () => {
 
 	// const createStripSession = (priceId)
 
-	 const handleNotLoggedIn = () =>{
-		navigate("/login")
+	const handleNotLoggedIn = () => {
+		navigate("/login");
 		toast.error("You must be logged in to make a purchase", {
 			position: toast.POSITION.TOP_CENTER,
 		});
-	}
-
-	
+	};
 
 	if (isLoading || isLoadingCreateStripeSession) {
 		return (
@@ -199,15 +197,27 @@ const StoreComponent = () => {
 										sx={{ textAlign: "center", marginTop: 1 }}
 									>
 										{/* Handfull of Gems */}
-										{data && products[2].nickname}
+										{data && products[2].nickname}{"  "}
+										<Typography
+											variant="h6"
+											component={"span"}
+											sx={{
+												color: "#21D02B",
+											}}
+										>
+											(5)
+										</Typography>
 									</Typography>
-									<img 
-										// src="https://store.supercell.com/images/brawlstars/5b359823b45a89eb468465c318290150.png"
-										src={handfullOfGems}
-										crossOrigin="anonymous"
-										alt=""
-										style={{ width: "100%" }}
-									/>
+
+									<Box>
+										<img
+											// src="https://store.supercell.com/images/brawlstars/5b359823b45a89eb468465c318290150.png"
+											src={handfullOfGems}
+											crossOrigin="anonymous"
+											alt=""
+											style={{ width: "100%" }}
+										/>
+									</Box>
 									<Typography
 										variant="body1"
 										sx={{ textAlign: "center", marginBottom: 1 }}
@@ -246,14 +256,26 @@ const StoreComponent = () => {
 										sx={{ textAlign: "center", marginTop: 1 }}
 									>
 										{/* Pouch of Gems */}
-										{data && products[1].nickname}
+										{data && products[1].nickname}{"  "}
+										<Typography
+											variant="h6"
+											component={"span"}
+											sx={{
+												color: "#21D02B",
+											}}
+										>
+											(20)
+										</Typography>
 									</Typography>
-									<img crossOrigin="anonymous"
-										// src="https://store.supercell.com/images/clashroyale/d94bbe2102d77b7e39347d011da86b8f.png"
-										src={pouchOfGems}
-										alt=""
-										style={{ width: "100%" }}
-									/>
+									<Box>
+										<img
+											// src="https://store.supercell.com/images/brawlstars/5b359823b45a89eb468465c318290150.png"
+											src={pouchOfGems}
+											crossOrigin="anonymous"
+											alt=""
+											style={{ width: "100%" }}
+										/>
+									</Box>
 									<Typography
 										variant="body1"
 										sx={{ textAlign: "center", marginBottom: 1 }}
@@ -292,14 +314,26 @@ const StoreComponent = () => {
 										sx={{ textAlign: "center", marginTop: 1 }}
 									>
 										{/* Bucket of Gems */}
-										{data && products[0].nickname}
+										{data && products[0].nickname}{"  "}
+										<Typography
+											variant="h6"
+											component={"span"}
+											sx={{
+												color: "#21D02B",
+											}}
+										>
+											(50)
+										</Typography>
 									</Typography>
-									<img crossOrigin="anonymous"
-										// src="https://store.supercell.com/images/clashroyale/c7195e16e40f60dba67d4233375b0e34.png"
-										src={bucketOfGems}
-										alt=""
-										style={{ width: "100%" }}
-									/>
+									<Box>
+										<img
+											// src="https://store.supercell.com/images/brawlstars/5b359823b45a89eb468465c318290150.png"
+											src={bucketOfGems}
+											crossOrigin="anonymous"
+											alt=""
+											style={{ width: "100%" }}
+										/>
+									</Box>
 									<Typography
 										variant="body1"
 										sx={{ textAlign: "center", marginBottom: 1 }}

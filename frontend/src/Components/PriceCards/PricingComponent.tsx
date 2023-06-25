@@ -22,6 +22,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { UseMutateFunction } from "@tanstack/react-query";
 import { IProductInfo } from "../../Hooks/Stripe/useCreateStripeSession";
 import { UserContext } from "../../Contexts/UserContext";
+import { toast } from "react-toastify";
 
 type Props = {
 	products: any[];
@@ -312,18 +313,44 @@ const PricingComponent = (props: Props) => {
 												backgroundColor: "#fff",
 											},
 										}}
-										onClick={() =>
-											user
-												? props.createStripeSession({
+										// onClick={() =>
+										// 	user
+										// 		? props.createStripeSession({
+										// 				priceId: props.products[3].id,
+										// 				mode:
+										// 					props.products[3].recurring == null
+										// 						? "payment"
+										// 						: "subscription",
+										// 				productId: props.products[3].product,
+										// 		  })
+										// 		: props.handleNotLoggedIn()
+										// }
+
+										onClick={() => {
+											console.log(user)
+											if (user) {
+												if (user.tier == "free") {
+													props.createStripeSession({
 														priceId: props.products[3].id,
 														mode:
 															props.products[3].recurring == null
 																? "payment"
 																: "subscription",
 														productId: props.products[3].product,
-												  })
-												: props.handleNotLoggedIn()
-										}
+													});
+												} else {
+													toast.error(
+														"You can only have on subscription at a time",
+														{
+															position:
+																toast.POSITION.TOP_CENTER,
+														}
+													);
+												}
+											} else {
+												props.handleNotLoggedIn();
+											}
+										}}
 									>
 										{user && user?.tier == "standard"
 											? "Current Tier"
@@ -419,18 +446,30 @@ const PricingComponent = (props: Props) => {
 												backgroundColor: "#fff",
 											},
 										}}
-										onClick={() =>
-											user
-												? props.createStripeSession({
+										onClick={() => {
+											if (user) {
+												if (user.tier == "free") {
+													props.createStripeSession({
 														priceId: props.products[4].id,
 														mode:
 															props.products[4].recurring == null
 																? "payment"
 																: "subscription",
 														productId: props.products[4].product,
-												  })
-												: props.handleNotLoggedIn()
-										}
+													});
+												} else {
+													toast.error(
+														"You can only have on subscription at a time",
+														{
+															position:
+																toast.POSITION.TOP_CENTER,
+														}
+													);
+												}
+											} else {
+												props.handleNotLoggedIn();
+											}
+										}}
 									>
 										{user && user?.tier == "premium"
 											? "Current Tier"
