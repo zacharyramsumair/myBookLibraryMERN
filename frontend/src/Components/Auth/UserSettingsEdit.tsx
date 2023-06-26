@@ -130,9 +130,9 @@ const UserSettingsEdit = () => {
 
 	const handleCancelSubscription = async () => {
 		handleSubModalClose();
-		handleSave();
 		deleteSubscription();
 		setSubscription(null);
+		handleSave();
 		fetchUser();
 		// refetch();
 	};
