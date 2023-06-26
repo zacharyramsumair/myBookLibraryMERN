@@ -74,7 +74,7 @@ const LandingPageCallToAction = (props: Props) => {
 					</Typography>
 					<Typography variant="body1" sx={{ mb: 2, color: "#6e6c65", width:{xs:"100%",md:"75%", lg:"85%"} }}>
 						Read anything you want right now, like seriously. Come one,
-						try it. It's Free !
+						try it. It's Free!
 					</Typography>
 					<Box
 						sx={{
