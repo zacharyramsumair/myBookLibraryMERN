@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Box, Button, Theme, Typography, useMediaQuery } from "@mui/material";
 import { UserContext } from "../../../Contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
-import bookBlocks  from "../../assets/bookBlocks.png"
+import bookBlocks from "../../assets/bookBlocks.png";
 
 type Props = {};
 
@@ -15,7 +15,6 @@ const LandingPageCallToAction = (props: Props) => {
 	const isMediumScreen = useMediaQuery((theme: Theme) =>
 		theme.breakpoints.down("lg")
 	);
-
 
 	// let { user, setUser } = useContext(UserContext);
 	// let navigate = useNavigate();
@@ -57,12 +56,11 @@ const LandingPageCallToAction = (props: Props) => {
 					}}
 				>
 					<Typography
-						variant={isMediumScreen? "h2" :isSmallScreen ? "h3" : "h1"}
+						variant={isMediumScreen ? "h2" : isSmallScreen ? "h3" : "h1"}
 						component="h1"
 						sx={{ mb: 2, fontWeight: 700 }}
 					>
-						Build your Future. 
-					
+						Build your Future.
 					</Typography>
 					<Typography
 						variant={"h5"}
@@ -70,11 +68,28 @@ const LandingPageCallToAction = (props: Props) => {
 						sx={{ mb: 2, fontWeight: 700 }}
 					>
 						One Block at a time
-					
 					</Typography>
-					<Typography variant="body1" sx={{ mb: 2, color: "#6e6c65", width:{xs:"100%",md:"75%", lg:"85%"} }}>
+					<Typography
+						variant="body1"
+						sx={{
+							mb: 2,
+							color: "#6e6c65",
+							width: { xs: "100%", md: "75%", lg: "85%" },
+						}}
+					>
 						Read anything you want right now, like seriously. Come one,
-						try it. It's Free !
+						try it. It's Free!
+						{/* <Typography
+							variant="body1"
+							component={"span"}
+							sx={{
+								color: "#6e6c65",
+
+								whiteSpace: "nowrap",
+							}}
+						>
+							Free!
+						</Typography> */}
 					</Typography>
 					<Box
 						sx={{
@@ -84,20 +99,18 @@ const LandingPageCallToAction = (props: Props) => {
 						}}
 					>
 						<Link to="/">
-						<Button
-							variant="contained"
-							
-							sx={{
-								
-								backgroundColor: "#FFB3A6",
-								color: "#000",
-								"&:hover, &:focus": {
-									backgroundColor: "#FF977D",
-								},
-							}}
-						>
-							Try for Free
-						</Button>
+							<Button
+								variant="contained"
+								sx={{
+									backgroundColor: "#FFB3A6",
+									color: "#000",
+									"&:hover, &:focus": {
+										backgroundColor: "#FF977D",
+									},
+								}}
+							>
+								Try for Free
+							</Button>
 						</Link>
 						{/* <Button variant="contained" color="secondary">
             Buy ME
@@ -126,7 +139,7 @@ const LandingPageCallToAction = (props: Props) => {
 					}}
 				>
 					<img
-					crossOrigin="anonymous"
+						crossOrigin="anonymous"
 						className="landingImage"
 						// src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Pan_Blue_Circle.png"
 						src={bookBlocks}

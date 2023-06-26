@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import BlockFraming from "../BlockFraming/BlockFraming";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useGetSingleBlock } from "../../../Hooks/Blocks/useGetSingleBlock";
@@ -14,6 +14,7 @@ import Rating from "@mui/material/Rating";
 import { useAddRating } from "../../../Hooks/Blocks/useAddRating";
 import gemImage from "../,,/../../../assets/gem.png";
 import allTags from "../allTags";
+import { UserContext } from "../../../Contexts/UserContext";
 
 type Props = {
 	// book: {
@@ -27,6 +28,8 @@ type Props = {
 
 const ReadSingleBlockComponent = (props: Props) => {
 	let navigate = useNavigate();
+	let { user, setUser, fetchUser } = useContext(UserContext);
+
 	let blockId = "";
 	let { id } = useParams();
 	if (id) {
@@ -107,7 +110,6 @@ const ReadSingleBlockComponent = (props: Props) => {
 		}
 	}, [SingleBlockData]);
 
-
 	const getTagDisplayName = (backendName: string) => {
 		const displayTag = allTags.find((tag) => tag.backendName === backendName);
 		return displayTag ? displayTag.display : "";
@@ -147,8 +149,14 @@ const ReadSingleBlockComponent = (props: Props) => {
 	// const transformedTags = SingleBlockData.tags.map(transformTag);
 
 	const toggleFavorite = () => {
-		setIsFavorite((prev) => !prev);
-		postFavorite(blockId);
+		if (user) {
+			setIsFavorite((prev) => !prev);
+			postFavorite(blockId);
+		}else{
+			toast.error("Log in to save to favorites", {
+				position: toast.POSITION.TOP_CENTER,
+			});
+		}
 	};
 
 	let {
@@ -165,17 +173,19 @@ const ReadSingleBlockComponent = (props: Props) => {
 		tier,
 	} = SingleBlockData;
 
-
 	// let textElements = text.split("\n").map((para:string, index:number) => {
 	// 	return <Typography key={index}>{para}</Typography>
 	// })
 
-	let textElements = text.replace(/\n/g, "<br>").split("<br>").map((para:string, index:number) => {
-		if(para ==""){
-			return <br />
-		}
-		return <Typography key={index}>{para}</Typography>
-	})
+	let textElements = text
+		.replace(/\n/g, "<br>")
+		.split("<br>")
+		.map((para: string, index: number) => {
+			if (para == "") {
+				return <br />;
+			}
+			return <Typography key={index}>{para}</Typography>;
+		});
 
 	// console.log(textElements)
 
@@ -192,7 +202,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 				>
 					<Box sx={{ flexShrink: 0 }}>
 						<img
-						crossOrigin="anonymous"
+							crossOrigin="anonymous"
 							src={imageUrl}
 							alt={title}
 							style={{ width: "15em", height: "20em" }}
@@ -220,7 +230,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 									navigate(`/profile/${createdBy._id}`);
 								}}
 								component="span"
-								sx={{ textDecoration: "underline" , cursor:"pointer" }}
+								sx={{ textDecoration: "underline", cursor: "pointer" }}
 							>
 								{createdBy.name}
 							</Typography>
@@ -230,7 +240,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 							{tags.map((tag: string, index: number) => (
 								<Box key={index} component={"span"}>
 									<Link style={{ color: "#5A5A5A" }} to="#">
-									{/* <Link style={{ color: "#5A5A5A" }} to={`/${tag}`}> */}
+										{/* <Link style={{ color: "#5A5A5A" }} to={`/${tag}`}> */}
 										{getTagDisplayName(tag)}
 									</Link>
 									{tags.indexOf(tag) !== tags.length - 1 && ", "}
@@ -247,7 +257,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 								}}
 							>
 								<img
-								crossOrigin="anonymous"
+									crossOrigin="anonymous"
 									src={gemImage}
 									alt=""
 									style={{
@@ -272,8 +282,6 @@ const ReadSingleBlockComponent = (props: Props) => {
 
 				<Box sx={{ mt: 4 }}>
 					<Typography variant="body2">{textElements}</Typography>
-
-
 
 					{!fullBlock && (
 						<Box
