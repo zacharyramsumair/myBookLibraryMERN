@@ -147,7 +147,23 @@ const LoginForm: React.FC = () => {
 									/>
 								)}
 							/>
+							<Typography variant="body2">
+								{" "}
+								Forgot Password?{" "}
+								<Typography
+									onClick={() => navigate("/forgotpassword")}
+									variant="body2"
+									component={"span"}
+									sx={{ color: "#3366CC", cursor: "pointer" }}
+								>
+									Click here.
+								</Typography>{" "}
+							</Typography>
 						</Box>
+
+						{/* <Box sx={{ marginY: 1 }}>
+						
+					</Box> */}
 
 						<Button
 							type="submit"
