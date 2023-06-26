@@ -37,11 +37,11 @@ const UserProfileComponent = (props: Props) => {
 		blockId
 	);
 
-	// useEffect(() => {
-	// 	if (ProfileData) {
-	// 		console.log(ProfileData);
-	// 	}
-	// }, [ProfileData]);
+	useEffect(() => {
+		if (ProfileData) {
+			console.log(ProfileData);
+		}
+	}, [ProfileData]);
 
 	function calculateAge(birthday: string): number {
 		const birthDate = new Date(birthday);

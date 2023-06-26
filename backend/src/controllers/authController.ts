@@ -516,9 +516,9 @@ const getProfilePage = async (req: Request, res: Response) => {
 	const { id } = req.params; // Assuming the user ID is provided as a route parameter
 
 	const user = await User.findById(id)
-		.populate("favorites", "title imageUrl tags")
+		.populate("favorites", "title imageUrl tags tier")
 		.populate("userRatings.blockInfo", "title imageUrl")
-		.populate("myBlocks", "title imageUrl tags")
+		.populate("myBlocks", "title imageUrl tags tier")
 		.exec();
 
 	if (!user) {

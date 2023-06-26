@@ -416,9 +416,9 @@ const getMyProfilePageForEditing = (req, res) => __awaiter(void 0, void 0, void 
 const getProfilePage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params; // Assuming the user ID is provided as a route parameter
     const user = yield User_1.default.findById(id)
-        .populate("favorites", "title imageUrl tags")
+        .populate("favorites", "title imageUrl tags tier")
         .populate("userRatings.blockInfo", "title imageUrl")
-        .populate("myBlocks", "title imageUrl tags")
+        .populate("myBlocks", "title imageUrl tags tier")
         .exec();
     if (!user) {
         res.status(http_status_codes_1.StatusCodes.NOT_FOUND);

@@ -29,6 +29,7 @@ export default function OurCard(props: Props) {
 				cursor:"pointer"
 			}}
 
+			// onClick={()=>console.log(props.item)}
 			onClick={()=>navigate(`/block/${props.item._id}`)}
 		>
 			
