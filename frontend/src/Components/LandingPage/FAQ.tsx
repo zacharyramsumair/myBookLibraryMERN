@@ -36,7 +36,7 @@ const FAQ = (props: Props) => {
 						<Grid item xs={12} md={6} lg={6}>
 							<FAQItem
 								question="Do I need to pay to read?"
-								answer="No. There are many free blocks available. However there are some paid ones."
+								answer="No. There are many free blocks available. However, there are some paid ones."
 							/>
 						</Grid>
 						<Grid
