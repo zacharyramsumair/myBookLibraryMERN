@@ -29,7 +29,7 @@ const EditBlockComponent = () => {
 		blockId = id;
 	}
 
-	const { user, setUser } = React.useContext(UserContext);
+	const { user, setUser, fetchUser } = React.useContext(UserContext);
 
 	const [formData, setFormData] = useState({
 		title: "",
@@ -115,6 +115,7 @@ const EditBlockComponent = () => {
 
 	useEffect(() => {
 		if (isSuccessUpdateBlock) {
+			fetchUser()
 			navigate(`/block/${UpdateBlockData._id}`);
 		}
 	}, [isSuccessUpdateBlock]);

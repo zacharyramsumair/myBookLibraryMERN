@@ -234,8 +234,11 @@ const createBlock = async (req: Request, res: Response) => {
 				"Paid Blocks must be a minimum of 500 characters long"
 			);
 		}
+
 		if (currentUser.role != "admin") {
-			currentUser.noOfGems -= paidBlockCost;
+			if (currentUser.tier != "premium") {
+				currentUser.noOfGems -= paidBlockCost;
+			}
 		}
 	}
 
@@ -324,14 +327,16 @@ const updateBlock = async (req: Request, res: Response) => {
 		if (oldTier == "free" && price > 0) {
 			if (
 				currentUser.noOfGems < paidBlockCost &&
-				currentUser.role != "admin"
+				currentUser.role != "admin" && currentUser.tier !="premium"
 			) {
 				res.status(StatusCodes.EXPECTATION_FAILED);
 				throw new Error("Not enough gems.");
 			}
 
 			if (currentUser.role != "admin") {
-				currentUser.noOfGems -= paidBlockCost;
+				if (currentUser.tier != "premium") {
+					currentUser.noOfGems -= paidBlockCost;
+				}
 			}
 		}
 	}
