@@ -32,7 +32,7 @@ const NotFoundPage = (props: Props) => {
 						Sorry this page does not exist
 					</Typography>
 
-					<Link to="/home">
+					<Link to="/hom">
 					<Button
 						variant="contained"
 						sx={{
