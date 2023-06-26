@@ -64,6 +64,7 @@ const SearchCard = ({ item }: SearchCardProps) => {
 					sx={{
 						display: "grid",
 						gridArea: "image",
+						justifyItems: "center"
 					}}
 				>
 					<Box
@@ -73,13 +74,14 @@ const SearchCard = ({ item }: SearchCardProps) => {
 							alignItems: "center",
 							justifyContent: "center",
 							position: "relative",
-							width: "6em",
+							width: { xs: "100%", md: "6em" },
+							// width: "6em",
 							height: "8em",
 							marginX: 2,
 						}}
 					>
 						<img
-						crossOrigin="anonymous"
+							crossOrigin="anonymous"
 							src={item.image}
 							alt={item.title}
 							style={{ width: "6em", height: "8em" }}
@@ -87,7 +89,14 @@ const SearchCard = ({ item }: SearchCardProps) => {
 						{item.tier == "paid" && (
 							<Box
 								component="div"
-								sx={{ position: "absolute", top: 3, right: 3 }}
+								sx={{
+									position: "absolute",
+									top: 3,
+									right: {
+										xs: `calc((100% - 6em) / 2 + 5px)`,
+										md: 3
+									  },
+								}}
 							>
 								{/* <DiamondIcon sx={{color:"#FFD700"}} /> */}
 								<svg
