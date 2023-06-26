@@ -304,7 +304,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 					)}
 				</Box>
 
-				{fullBlock && (
+				{fullBlock && user && (
 					<Box
 						sx={{
 							width: "100%",
