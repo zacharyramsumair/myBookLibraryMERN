@@ -121,7 +121,7 @@ const UserSettingsEdit = () => {
 	const handleSave = () => {
 		// console.log(profileData);
 		editProfile(profileData);
-		fetchUser()
+		fetchUser();
 	};
 
 	const handleModalOpen = () => {
@@ -130,10 +130,10 @@ const UserSettingsEdit = () => {
 
 	const handleCancelSubscription = async () => {
 		handleSubModalClose();
-		await handleSave();
-		await deleteSubscription();
+		handleSave();
+		deleteSubscription();
 		setSubscription(null);
-		fetchUser()
+		fetchUser();
 		// refetch();
 	};
 
