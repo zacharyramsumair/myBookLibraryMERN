@@ -72,7 +72,7 @@ const FAQ = (props: Props) => {
 						<Grid item xs={12} md={6} lg={6}>
 							<FAQItem
 								question="Coming soon"
-								answer="• Comments • Followers • Direct Messages • Tags Page • Google Login • Updated Dashboard with more Recommendations "
+								answer="• Comments • Followers • Direct Messages • Tags Page • Google Login • Updated Dashboard with more Recommendations • Suggestive Search • Cloudinary/Multer for images "
 							/>
 						</Grid>
 					</Grid>
