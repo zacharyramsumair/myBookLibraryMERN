@@ -175,6 +175,12 @@ const CreateBlockComponent = () => {
 			return;
 		}
 
+
+		if(typeof formData.price != "number"){
+			toast.error("Price must be a number.");
+			return;
+		}
+
 		// formData.tags = formData.tags.map((string) => string.replace(/\s/g, "").toLowerCase());
 
 		// Form submission logic
@@ -198,24 +204,45 @@ const CreateBlockComponent = () => {
 		// console.log(formData.text.split("\n"))
 	};
 
+	// const tagElements = allTags.slice(1).map((tag, index) => (
+	// 	<Button
+	// 		variant="contained"
+	// 		// color={
+	// 		// 	formData.tags.includes(tag.backendName) ? "#7dbeff" : "primary"
+	// 		// }
+	// 		onClick={() => handleTagClick(tag.backendName)}
+	// 		sx={{
+	// 			margin: 0.5,
+	// 			backgroundColor: formData.tags.includes(tag.backendName)
+	// 				? "#2f4d6b"
+	// 				: "primary",
+	// 		}}
+	// 		key={index}
+	// 	>
+	// 		{tag.display}
+	// 	</Button>
+	// ));
+
 	const tagElements = allTags.slice(1).map((tag, index) => (
 		<Button
-			variant="contained"
-			// color={
-			// 	formData.tags.includes(tag.backendName) ? "#7dbeff" : "primary"
-			// }
-			onClick={() => handleTagClick(tag.backendName)}
-			sx={{
-				margin: 0.5,
-				backgroundColor: formData.tags.includes(tag.backendName)
-					? "#2f4d6b"
-					: "primary",
-			}}
-			key={index}
+		  variant="contained"
+		  onClick={() => handleTagClick(tag.backendName)}
+		  sx={{
+			margin: 0.5,
+			backgroundColor: formData.tags.includes(tag.backendName) ? "#d25d19" : "primary",
+			'&:hover': {
+			  backgroundColor: formData.tags.includes(tag.backendName) ? "#b9693b" : "primary",
+			},
+			'&:focus': {
+			  backgroundColor: formData.tags.includes(tag.backendName) ? "#b9693b" : "primary",
+			},
+		  }}
+		  key={index}
 		>
-			{tag.display}
+		  {tag.display}
 		</Button>
-	));
+	  ));
+
 	return (
 		<BlockFraming hideSearch={true}>
 			<Box sx={{ padding: 4 }}>
