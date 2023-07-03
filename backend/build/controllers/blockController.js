@@ -16,6 +16,7 @@ const http_status_codes_1 = require("http-status-codes");
 const Block_1 = __importDefault(require("../models/Block"));
 const User_1 = __importDefault(require("../models/User"));
 const quotes_1 = __importDefault(require("../utils/quotes"));
+const mongoose_1 = __importDefault(require("mongoose"));
 let paidBlockCost = Number(process.env.PAID_BLOCK_COST);
 // @desc    Get all blocks
 // @route   POST /
@@ -92,6 +93,10 @@ const buyBlock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 // @access  Public
 const getBlockById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
+    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+        res.status(http_status_codes_1.StatusCodes.NOT_FOUND);
+        throw new Error("Block not found");
+    }
     const currentUser = yield User_1.default.findById(req.user);
     const block = yield Block_1.default.findById(id).populate("createdBy", "name email");
     if (!block) {
@@ -222,6 +227,10 @@ const createBlock = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 const updateBlock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { title, tags, imageUrl, text, price, tier, oldTier } = req.body;
+    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+        res.status(http_status_codes_1.StatusCodes.NOT_FOUND);
+        throw new Error("Block not found");
+    }
     const currentUser = yield User_1.default.findById(req.user);
     if (!currentUser) {
         res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED);

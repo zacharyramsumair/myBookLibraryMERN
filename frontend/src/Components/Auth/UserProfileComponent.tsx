@@ -8,7 +8,6 @@ import {
 	Box,
 	Avatar,
 	Grid,
-	Link,
 	CircularProgress,
 	useMediaQuery,
 	Theme,
@@ -16,7 +15,7 @@ import {
 import ImageCarousel from "../Blocks/ImageCarousel/ImageCarousel";
 import { Favorite } from "@mui/icons-material";
 import { useGetProfile } from "../../Hooks/Auth/useGetProfile";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import allTags from "../Blocks/allTags";
 
@@ -30,8 +29,8 @@ const UserProfileComponent = (props: Props) => {
 	}
 
 	const isSmallScreen = useMediaQuery((theme: Theme) =>
-	theme.breakpoints.down("md")
-);
+		theme.breakpoints.down("md")
+	);
 
 	let { LoadingProfile, ErrorProfile, ProfileData, refetch } = useGetProfile(
 		blockId
@@ -85,6 +84,38 @@ const UserProfileComponent = (props: Props) => {
 		);
 	}
 
+	if (ErrorProfile) {
+		return (
+			<BlockFraming hideSearch={false}>
+				<Box
+					display="flex"
+					flexDirection="column"
+					alignItems="center"
+					textAlign="center"
+				>
+					<Typography variant="h6" sx={{ padding: 3 }}>
+						Sorry could not find the Profile you requested
+					</Typography>
+
+					<Link to="/">
+						<Button
+							variant="contained"
+							sx={{
+								mr: 2,
+								backgroundColor: "#FFB3A6",
+								color: "#000",
+								"&:hover, &:focus": {
+									backgroundColor: "#FF977D",
+								},
+							}}
+						>
+							Go Back home
+						</Button>
+					</Link>
+				</Box>
+			</BlockFraming>
+		);
+	}
 	// console.log(calculateAge(ProfileData.personalInfo.birthday));
 
 	let doesNameEndWithS =
@@ -124,7 +155,10 @@ const UserProfileComponent = (props: Props) => {
 					</Grid>
 					<Grid item xs={12} sm={6}>
 						<Box>
-							<Typography variant={isSmallScreen ? "subtitle1" : "h6"} gutterBottom>
+							<Typography
+								variant={isSmallScreen ? "subtitle1" : "h6"}
+								gutterBottom
+							>
 								Name: {ProfileData.personalInfo.name}{" "}
 								{/* Replace with the actual name */}
 							</Typography>
@@ -172,52 +206,57 @@ const UserProfileComponent = (props: Props) => {
 								</Typography>
 							)}
 
-						{ProfileData.personalInfo.website != "" &&<Typography variant="subtitle1" gutterBottom>
-							Website:{" "}
-							<Typography
-								variant="subtitle1"
-								component={"span"}
-								sx={{
-									textDecoration: "none",
-									color: "blue",
-									cursor: "pointer",
-									wordBreak: "break-all",
-									wordWrap: "break-word",
-									whiteSpace: "pre-wrap",
-								}}
-								onClick={() => {
-									window.open(
-										ProfileData.personalInfo.website.startsWith(
-											"https://"
-										)
-											? `${ProfileData.personalInfo.website}`
-											: `https://${ProfileData.personalInfo.website}`,
-										"_blank"
-									);
-								}}
-							>
-								{ProfileData.personalInfo.website}
-							</Typography>
-						</Typography>}
+							{ProfileData.personalInfo.website != "" && (
+								<Typography variant="subtitle1" gutterBottom>
+									Website:{" "}
+									<Typography
+										variant="subtitle1"
+										component={"span"}
+										sx={{
+											textDecoration: "none",
+											color: "blue",
+											cursor: "pointer",
+											wordBreak: "break-all",
+											wordWrap: "break-word",
+											whiteSpace: "pre-wrap",
+										}}
+										onClick={() => {
+											window.open(
+												ProfileData.personalInfo.website.startsWith(
+													"https://"
+												)
+													? `${ProfileData.personalInfo.website}`
+													: `https://${ProfileData.personalInfo.website}`,
+												"_blank"
+											);
+										}}
+									>
+										{ProfileData.personalInfo.website}
+									</Typography>
+								</Typography>
+							)}
 						</Box>
 					</Grid>
 				</Grid>
 				<Box>
 					{/* <ImageCarousel  fullRow={true} headerText={` Blocks`} align="left" listOfImages={ProfileData.createdBlocks} /> */}
-					{ProfileData.createdBlocks.length > 0 && <ImageCarousel
-						fullRow={true}
-						headerText={`${possessiveName} Blocks`}
-						align="left"
-						listOfImages={ProfileData.createdBlocks}
-					/>}
-					{ProfileData.favoriteBlocks && ProfileData.favoriteBlocks.length >0 && (
+					{ProfileData.createdBlocks.length > 0 && (
 						<ImageCarousel
 							fullRow={true}
-							headerText={`${possessiveName} Favorites`}
+							headerText={`${possessiveName} Blocks`}
 							align="left"
-							listOfImages={ProfileData.favoriteBlocks}
+							listOfImages={ProfileData.createdBlocks}
 						/>
 					)}
+					{ProfileData.favoriteBlocks &&
+						ProfileData.favoriteBlocks.length > 0 && (
+							<ImageCarousel
+								fullRow={true}
+								headerText={`${possessiveName} Favorites`}
+								align="left"
+								listOfImages={ProfileData.favoriteBlocks}
+							/>
+						)}
 				</Box>
 			</Box>
 		</BlockFraming>

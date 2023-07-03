@@ -113,6 +113,7 @@ const StoreComponent = () => {
 
 	const handleNotLoggedIn = () => {
 		navigate("/login");
+
 		toast.error("You must be logged in to make a purchase", {
 			position: toast.POSITION.TOP_CENTER,
 		});

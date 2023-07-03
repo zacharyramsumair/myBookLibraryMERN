@@ -4,6 +4,7 @@ import Block from "../models/Block";
 import { IBlock } from "../interfaces";
 import User from "../models/User";
 import quotes from "../utils/quotes";
+import mongoose from "mongoose";
 let paidBlockCost: number = Number(process.env.PAID_BLOCK_COST);
 
 // @desc    Get all blocks
@@ -105,6 +106,11 @@ const buyBlock = async (req: Request, res: Response) => {
 // @access  Public
 const getBlockById = async (req: Request, res: Response) => {
 	const { id } = req.params;
+
+	if(!mongoose.Types.ObjectId.isValid(id)){
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("Block not found");
+	}
 
 	const currentUser = await User.findById(req.user);
 
@@ -285,6 +291,11 @@ const createBlock = async (req: Request, res: Response) => {
 const updateBlock = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const { title, tags, imageUrl, text, price, tier, oldTier } = req.body;
+
+	if(!mongoose.Types.ObjectId.isValid(id)){
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("Block not found");
+	}
 
 	const currentUser = await User.findById(req.user);
 	if (!currentUser) {

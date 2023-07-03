@@ -9,7 +9,7 @@ type Props = {};
 const NotFoundPage = (props: Props) => {
 	return (
 		<BasePageDesign>
-    <Navbar/>
+			<Navbar />
 			<Container
 				maxWidth="sm"
 				sx={{
@@ -32,20 +32,20 @@ const NotFoundPage = (props: Props) => {
 						Sorry this page does not exist
 					</Typography>
 
-					<Link to="/hom">
-					<Button
-						variant="contained"
-						sx={{
-							mr: 2,
-							backgroundColor: "#FFB3A6",
-							color: "#000",
-							"&:hover, &:focus": {
-								backgroundColor: "#FF977D",
-							},
-						}}
-					>
-						Go Back home
-					</Button>
+					<Link to="/">
+						<Button
+							variant="contained"
+							sx={{
+								mr: 2,
+								backgroundColor: "#FFB3A6",
+								color: "#000",
+								"&:hover, &:focus": {
+									backgroundColor: "#FF977D",
+								},
+							}}
+						>
+							Go Back home
+						</Button>
 					</Link>
 				</Box>
 			</Container>

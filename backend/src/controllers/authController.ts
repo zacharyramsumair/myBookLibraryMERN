@@ -18,6 +18,7 @@ import {
 	startOfMinute,
 	startOfMonth,
 } from "date-fns";
+import mongoose from "mongoose";
 
 //base url '/api/v1/auth'
 
@@ -514,6 +515,11 @@ const getMyProfilePageForEditing = async (req: Request, res: Response) => {
 // @access  Public
 const getProfilePage = async (req: Request, res: Response) => {
 	const { id } = req.params; // Assuming the user ID is provided as a route parameter
+
+	if(!mongoose.Types.ObjectId.isValid(id)){
+		res.status(StatusCodes.NOT_FOUND);
+		throw new Error("User not found");
+	}
 
 	const user = await User.findById(id)
 		.populate("favorites", "title imageUrl tags tier")

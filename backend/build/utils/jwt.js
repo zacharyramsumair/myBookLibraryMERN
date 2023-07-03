@@ -30,12 +30,14 @@ const attachCookiesToResponse = ({ res, user, refreshToken, }) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         signed: true,
+        // sameSite:"strict",
         maxAge: 1000 * 60 * 10,
     });
     res.cookie("refreshToken", refreshTokenJWT, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         signed: true,
+        // sameSite:"strict",
         expires: new Date(Date.now() + oneDay * 30),
     });
 };

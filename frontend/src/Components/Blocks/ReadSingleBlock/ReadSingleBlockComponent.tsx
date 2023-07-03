@@ -134,6 +134,39 @@ const ReadSingleBlockComponent = (props: Props) => {
 		);
 	}
 
+	if (ErrorSingleBlock) {
+		return (
+			<BlockFraming hideSearch={false}>
+				<Box
+					display="flex"
+					flexDirection="column"
+					alignItems="center"
+					textAlign="center"
+				>
+					<Typography variant="h6" sx={{ padding: 3 }}>
+						Sorry could not find the Block you requested
+					</Typography>
+
+					<Link to="/">
+						<Button
+							variant="contained"
+							sx={{
+								mr: 2,
+								backgroundColor: "#FFB3A6",
+								color: "#000",
+								"&:hover, &:focus": {
+									backgroundColor: "#FF977D",
+								},
+							}}
+						>
+							Go Back home
+						</Button>
+					</Link>
+				</Box>
+			</BlockFraming>
+		);
+	}
+
 	const handleRatingChange = (
 		event: React.SyntheticEvent<Element, Event>,
 		value: number | null
@@ -152,7 +185,7 @@ const ReadSingleBlockComponent = (props: Props) => {
 		if (user) {
 			setIsFavorite((prev) => !prev);
 			postFavorite(blockId);
-		}else{
+		} else {
 			toast.error("Log in to save to favorites", {
 				position: toast.POSITION.TOP_CENTER,
 			});

@@ -12,7 +12,7 @@ import BlockFraming from "../BlockFraming/BlockFraming";
 import allTags from "../allTags";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Modal from "@mui/material/Modal";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUpdateBlock } from "../../../Hooks/Blocks/useUpdateBlock";
 import { useGetSingleBlock } from "../../../Hooks/Blocks/useGetSingleBlock";
 import { useGetBlockForUpdating } from "../../../Hooks/Blocks/useGetBlockForUpdating";
@@ -300,6 +300,39 @@ const EditBlockComponent = () => {
 					>
 						<CircularProgress />
 					</Box>
+				</Box>
+			</BlockFraming>
+		);
+	}
+
+	if (ErrorBlockForUpdating) {
+		return (
+			<BlockFraming hideSearch={false}>
+				<Box
+					display="flex"
+					flexDirection="column"
+					alignItems="center"
+					textAlign="center"
+				>
+					<Typography variant="h6" sx={{ padding: 3 }}>
+						Sorry could not find the Block you requested
+					</Typography>
+
+					<Link to="/">
+						<Button
+							variant="contained"
+							sx={{
+								mr: 2,
+								backgroundColor: "#FFB3A6",
+								color: "#000",
+								"&:hover, &:focus": {
+									backgroundColor: "#FF977D",
+								},
+							}}
+						>
+							Go Back home
+						</Button>
+					</Link>
 				</Box>
 			</BlockFraming>
 		);

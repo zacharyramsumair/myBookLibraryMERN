@@ -24,6 +24,7 @@ const sendResetPasswordEmail_1 = __importDefault(require("../utils/sendResetPass
 const createHash_1 = __importDefault(require("../utils/createHash"));
 const stripe_1 = require("../utils/stripe");
 const date_fns_1 = require("date-fns");
+const mongoose_1 = __importDefault(require("mongoose"));
 //base url '/api/v1/auth'
 // @desc    Register new user
 // @route   POST /
@@ -415,6 +416,10 @@ const getMyProfilePageForEditing = (req, res) => __awaiter(void 0, void 0, void 
 // @access  Public
 const getProfilePage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params; // Assuming the user ID is provided as a route parameter
+    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+        res.status(http_status_codes_1.StatusCodes.NOT_FOUND);
+        throw new Error("User not found");
+    }
     const user = yield User_1.default.findById(id)
         .populate("favorites", "title imageUrl tags tier")
         .populate("userRatings.blockInfo", "title imageUrl")
