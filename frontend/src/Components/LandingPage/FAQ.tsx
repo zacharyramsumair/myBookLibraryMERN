@@ -72,7 +72,7 @@ const FAQ = (props: Props) => {
 						<Grid item xs={12} md={6} lg={6}>
 							<FAQItem
 								question="Coming soon"
-								answer="• Comments • Followers • Direct Messages • Tags Page • Google Login • Updated Dashboard with more Recommendations • Suggestive Search • Cloudinary/Multer for images • Redirect to store page after loginning in after being sent to login page from store page • React Quill for Text "
+								answer="• Comments • Followers • Direct Messages • Tags Page • Google Login • Updated Dashboard with more Recommendations • Suggestive Search • Cloudinary/Multer for images • Redirect to store page after loginning in after being sent to login page from store page • React Quill for Text • Read Me file "
 							/>
 						</Grid>
 					</Grid>
